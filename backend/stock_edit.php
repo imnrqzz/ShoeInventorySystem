@@ -44,33 +44,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Item - <?= htmlspecialchars($item['item_name']) ?></title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .edit-box {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        .actions-row { display: flex; gap: 10px; margin-top: 20px; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="stockstyle.css">
 </head>
-<body style="background-color: #5d6cc6;">
+<body class="edit-body">
 
     <div class="edit-box">
-        <h2>Edit Stock Item</h2>
-        <p style="margin-bottom: 20px; color: #555;">Item: <strong><?= htmlspecialchars($item['item_name']) ?></strong></p>
+        <div class="edit-header">
+            <div class="edit-icon">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <div>
+                <h2>Modify Stock Level</h2>
+            </div>
+        </div>
+
+        <div class="item-preview-badge">
+            <span class="item-preview-label">Product Title</span>
+            <strong><?= htmlspecialchars($item['item_name']) ?></strong>
+        </div>
 
         <form method="POST">
             <div class="form-group">
                 <label>Current Quantity</label>
-                <input type="number" step="0.01" name="current_qty" value="<?= htmlspecialchars($item['current_qty']) ?>" required>
+                <input type="number" step="0.01" name="current_qty" value="<?= htmlspecialchars($item['current_qty']) ?>" required autofocus>
             </div>
 
             <div class="form-group">
@@ -79,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="actions-row">
-                <button type="submit" class="btn btn-filter" style="border-radius: 4px;">Save Changes</button>
-                <a href="stock.php" class="btn btn-reset" style="border-radius: 4px; text-decoration: none; display: flex; align-items: center; justify-content: center;">Cancel</a>
+                <a href="stock.php" class="btn btn-reset">Cancel</a>
+                <button type="submit" class="btn btn-filter">Save Changes</button>
             </div>
         </form>
     </div>
