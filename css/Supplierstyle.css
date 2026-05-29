@@ -1,4 +1,25 @@
-/* --- Reset & Base Styles --- */
+/* ==========================================================================
+   1. CORE VARIABLES & RESETS
+   ========================================================================== */
+:root {
+    --bg-main: #f0f4f9;
+    --bg-card: #ffffff;
+    --primary-purple: #4d57db;
+    --primary-light: #e8eefd;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    
+    /* Button & Action Colors */
+    --color-add: #10b981;       /* Emerald Green */
+    --color-update: #3b82f6;    /* Info Blue */
+    --color-delete: #ef4444;    /* Danger Red */
+    --color-cancel: #64748b;    /* Slate Gray */
+    
+    /* Shadows */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -7,323 +28,304 @@
 }
 
 body {
-    background-color: #ffffff;
-    color: #333333;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    padding: 24px;
+    min-height: 100vh;
 }
 
-/* --- Top Navigation Header --- */
+/* ==========================================================================
+   2. NAVBAR COMPONENT
+   ========================================================================== */
 .navbar {
-    width: 100%;
-    background-color: #ffffff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    padding: 15px 0;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 16px 24px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 30px;
 }
 
 .nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 30px;
 }
 
 .logo {
-    font-size: 18px;
-    font-weight: bold;
-    color: #222222;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--text-dark);
 }
 
 .nav-links {
     display: flex;
-    gap: 25px;
+    gap: 8px;
+    align-items: center;
 }
 
 .nav-links a {
     text-decoration: none;
-    color: #666666;
+    color: var(--text-muted);
     font-weight: 500;
-    font-size: 14px;
-    padding-bottom: 5px;
-    transition: color 0.2s ease;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
 }
 
-.nav-links a:hover, 
+.nav-links a:hover {
+    color: var(--text-dark);
+}
+
 .nav-links a.active {
-    color: #5c6bc0;
-    border-bottom: 2px solid #5c6bc0;
+    background: var(--primary-light);
+    color: var(--primary-purple);
+    font-weight: 600;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    font-weight: 500;
+    gap: 12px;
 }
 
 .avatar {
-    width: 30px;
-    height: 30px;
-    background-color: #ddd;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
+    background: #cbd5e1;
 }
 
-/* --- Purple Main Content Area --- */
+/* ==========================================================================
+   3. MAIN CONTENT & HEADINGS
+   ========================================================================== */
 .main-content {
-    background-color: #5c6bc0; 
-    margin: 30px auto;
     max-width: 1300px;
-    min-height: 85vh;
-    border-radius: 24px;
-    padding: 35px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    margin: 0 auto;
 }
 
 .page-title {
-    color: #ffffff;
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 30px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text-dark);
 }
 
-/* --- Modern Form Panel Card --- */
+/* ==========================================================================
+   4. FORM CARD COMPONENT (ADD / EDIT)
+   ========================================================================== */
 .form-card {
-    background-color: #ffffff;
+    background: var(--bg-card);
     border-radius: 20px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
 }
 
 .form-card h3 {
-    font-size: 18px;
-    color: #222222;
-    margin-bottom: 25px;
+    font-size: 1.1rem;
     font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-dark);
+    border-left: 4px solid var(--primary-purple);
+    padding-left: 10px;
 }
 
-/* Main Form Wrapper */
-.form-card form {
-    display: flex;
-    flex-direction: column;
-    gap: 25px; /* Creates clean visual separation between grid and buttons */
-    width: 100%;
-}
-
-/* --- Smooth Horizontal Form Inputs Grid --- */
-.form-grid { 
+.form-grid {
     display: grid;
-    /* Spreads all 5 items across a balanced landscape grid */
-    grid-template-columns: repeat(5, 1fr); 
-    gap: 20px; 
-    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
-/* --- Input Elements & Label Text --- */
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
-.form-group label { 
-    font-weight: 500; 
-    font-size: 13px; 
-    color: #555555;
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
 }
 
 .form-group input, 
-.form-group select { 
-    width: 100%; 
-    height: 42px;
-    padding: 0 14px; 
-    border: 1px solid #e2e8f0; 
-    border-radius: 8px; 
-    font-size: 14px;
-    color: #333333;
-    background-color: #ffffff;
+.form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    color: var(--text-dark);
+    font-size: 0.9rem;
     outline: none;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
 }
 
 .form-group input:focus, 
 .form-group select:focus {
-    border-color: #5c6bc0;
-    box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.1);
+    border-color: var(--primary-purple);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(77, 87, 219, 0.15);
 }
 
-/* --- Action Buttons Base --- */
+/* Buttons Styles inside Form */
 .btn-add, .btn-update, .btn-cancel {
-    height: 42px;
-    padding: 0 25px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 0.9rem;
     font-weight: 600;
-    font-size: 14px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
     text-decoration: none;
-    white-space: nowrap;
-    align-self: flex-start; /* Aligns buttons on the left side */
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    transition: background-color 0.2s;
+    text-align: center;
 }
 
-.btn-add:active, .btn-update:active {
-    transform: scale(0.98);
+.btn-add {
+    background-color: var(--color-add);
+    color: white;
 }
+.btn-add:hover { background-color: #059669; }
 
-/* Reference UI Green Match */
-.btn-add { 
-    background-color: #00e676; 
-    color: #ffffff; 
+.btn-update {
+    background-color: var(--color-update);
+    color: white;
 }
-.btn-add:hover { 
-    background-color: #00c853; 
-}
+.btn-update:hover { background-color: #2563eb; }
 
-.btn-update { 
-    background-color: #2979ff; 
-    color: #ffffff; 
+.btn-cancel {
+    background-color: #e2e8f0;
+    color: var(--color-cancel);
+    margin-left: 8px;
 }
+.btn-cancel:hover { background-color: #cbd5e1; }
 
-.btn-cancel { 
-    background-color: #757575; 
-    color: #ffffff; 
-    margin-left: 10px;
-}
 
-/* --- Round Pill Search Filter Bar --- */
+/* ==========================================================================
+   5. FILTER / SEARCH BAR COMPONENT
+   ========================================================================== */
 .filter-bar {
     display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 30px;
 }
 
 .search-input {
     flex: 1;
-    max-width: 550px;
-    height: 46px;
-    border: none;
-    border-radius: 30px; /* Gives the capsule look from your photo */
-    background-color: #e0e0e0;
-    padding: 0 25px;
+    max-width: 400px;
+    padding: 10px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.9rem;
     outline: none;
-    font-size: 15px;
-    color: #333333;
+    background-color: var(--bg-card);
 }
 
-.search-input::placeholder {
-    color: #777777;
+.search-input:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(77, 87, 219, 0.15);
 }
 
-/* Pill Utility Buttons */
 .btn {
-    height: 46px;
-    padding: 0 30px;
-    border: none;
-    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
     font-weight: 600;
-    font-size: 14px;
+    border-radius: 8px;
+    border: none;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    transition: background-color 0.2s;
 }
 
 .btn-search {
-    background-color: #00e676; 
-    color: #ffffff;
+    background-color: var(--primary-purple);
+    color: white;
 }
+.btn-search:hover { background-color: #3b44b8; }
 
 .btn-reset {
-    background-color: #ff3d00; 
-    color: #ffffff;
+    background-color: #fff;
+    border: 1px solid #cbd5e1;
+    color: var(--text-muted);
+}
+.btn-reset:hover { 
+    background-color: #f8fafc; 
+    color: var(--text-dark);
 }
 
-/* --- Data Table System Layout --- */
+
+/* ==========================================================================
+   6. DATA TABLE COMPONENT
+   ========================================================================== */
 .table-card {
-    background-color: #ffffff;
+    background: var(--bg-card);
     border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden; /* Clips contents nicely to borders */
+    border: 1px solid #e2e8f0;
 }
 
 table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;
+    text-align: left;
 }
 
-/* Brown Table Header Match */
 th {
-    background-color: #4e342e; 
-    color: #ffffff;
-    padding: 16px;
-    text-align: left;
+    background-color: #f8fafc;
+    color: var(--text-muted);
+    font-size: 0.85rem;
     font-weight: 600;
-    font-size: 14px;
+    padding: 16px 20px;
+    border-bottom: 2px solid #e2e8f0;
+    text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-th:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-th:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
 td {
-    padding: 16px;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 14px;
-    color: #444444;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    vertical-align: middle;
 }
 
 tr:last-child td {
     border-bottom: none;
 }
 
-/* Action Buttons Grid Layout */
+tr:hover td {
+    background-color: #f8fafc; /* Subtle hover highlight for rows */
+}
+
+/* Action Buttons Wrapper & Styles */
 .action-buttons {
     display: flex;
     gap: 8px;
 }
 
 .btn-action {
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    color: #ffffff;
-    font-size: 13px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
     font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
+    border-radius: 6px;
+    transition: opacity 0.2s;
 }
 
 .btn-action:hover {
-    opacity: 0.9;
+    opacity: 0.85;
 }
 
 .btn-action.edit {
-    background-color: #ff9100; 
+    background-color: var(--primary-light);
+    color: var(--primary-purple);
 }
 
 .btn-action.delete {
-    background-color: #ff1744; 
+    background-color: #ffebeb;
+    color: var(--color-delete);
 }
 
-/* --- Mobile Responsiveness Adjustment --- */
-@media (max-width: 1024px) {
-    .form-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-}
