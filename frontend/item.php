@@ -5,7 +5,7 @@ $host = 'localhost';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';
-$database_name = 'db_item';
+$database_name = 'pos_inventory_system';
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -13,50 +13,72 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
 
-function createDatabaseAndTable(PDO $pdo, string $dbName): void
-{
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbName` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    $pdo->exec("USE `$dbName`");
-    $pdo->exec(
-        "CREATE TABLE IF NOT EXISTS items (
-            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            category VARCHAR(100) DEFAULT '',
-            unit VARCHAR(50) DEFAULT '',
-            unit_price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-            supplier VARCHAR(255) DEFAULT '',
-            stock DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-            min_threshold DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
-    );
-}
-
 try {
-    $pdo = new PDO("mysql:host=$host;charset=$charset", $user, $pass, $options);
-    createDatabaseAndTable($pdo, $database_name);
+    $pdo = new PDO("mysql:host=$host;dbname=$database_name;charset=$charset", $user, $pass, $options);
 } catch (\PDOException $e) {
     die("<div style='font-family:sans-serif; padding:20px; background:#fff0f0; border-left:5px solid #ff4d4d; margin:20px;'><strong>Database Connection Failed!</strong><br>" . htmlspecialchars($e->getMessage()) . "</div>");
 }
 
-// Create new item (POST)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add') {
-    $name          = trim($_POST['item_name'] ?? '');
-    $category      = trim($_POST['category'] ?? '');
-    $unit          = trim($_POST['unit'] ?? '');
-    $unit_price    = floatval($_POST['unit_price'] ?? 0);
-    $supplier      = trim($_POST['supplier'] ?? '');
-    $min_threshold = floatval($_POST['min_threshold'] ?? 0);
-
-    if ($name !== '') {
-        $stmt = $pdo->prepare('INSERT INTO items (name, category, unit, unit_price, supplier, stock, min_threshold) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$name, $category, $unit, $unit_price, $supplier, 0.00, $min_threshold]);
-    }
-    header('Location: item.php');
-    exit;
+// Fetch all active suppliers for form dropdowns
+try {
+    $supplierStmt = $pdo->query("SELECT id, name FROM suppliers WHERE active = 1 ORDER BY name ASC");
+    $suppliers = $supplierStmt->fetchAll();
+} catch (\PDOException $e) {
+    $suppliers = [];
 }
 
-// Delete item (GET)
+// Handle Form Submissions (Add OR Update)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    
+    // CREATE NEW ITEM WITH AUTOMATIC ID REUSE
+    if ($action === 'add') {
+        $name          = trim($_POST['item_name'] ?? '');
+        $supplier_id   = $_POST['supplier_id'] !== '' ? intval($_POST['supplier_id']) : null;
+        $min_quantity  = intval($_POST['min_quantity'] ?? 0);
+        $price         = floatval($_POST['price'] ?? 0);
+
+        if ($name !== '') {
+            // Find the lowest missing sequence ID to fill the gap
+            $gapQuery = "SELECT MIN(unused.id) AS next_id 
+                         FROM (
+                             SELECT 1 AS id 
+                             UNION ALL 
+                             SELECT id + 1 FROM items
+                         ) AS unused 
+                         LEFT JOIN items USING (id) 
+                         WHERE items.id IS NULL";
+            
+            $gapStmt = $pdo->query($gapQuery);
+            $result = $gapStmt->fetch();
+            $next_id = isset($result['next_id']) ? intval($result['next_id']) : 1;
+
+            // Force insert using the missing ID number
+            $stmt = $pdo->prepare('INSERT INTO items (id, name, supplier_id, quantity, min_quantity, price) VALUES (?, ?, ?, ?, ?, ?)');
+            $stmt->execute([$next_id, $name, $supplier_id, 0, $min_quantity, $price]);
+        }
+        header('Location: item.php');
+        exit;
+    }
+    
+    // UPDATE EXISTING ITEM
+    if ($action === 'edit') {
+        $id            = intval($_POST['id'] ?? 0);
+        $name          = trim($_POST['item_name'] ?? '');
+        $supplier_id   = $_POST['supplier_id'] !== '' ? intval($_POST['supplier_id']) : null;
+        $min_quantity  = intval($_POST['min_quantity'] ?? 0);
+        $price         = floatval($_POST['price'] ?? 0);
+
+        if ($id > 0 && $name !== '') {
+            $stmt = $pdo->prepare('UPDATE items SET name = ?, supplier_id = ?, min_quantity = ?, price = ? WHERE id = ?');
+            $stmt->execute([$name, $supplier_id, $min_quantity, $price, $id]);
+        }
+        header('Location: item.php');
+        exit;
+    }
+}
+
+// DELETE ITEM
 if (isset($_GET['delete_id'])) {
     $id = intval($_GET['delete_id']);
     $stmt = $pdo->prepare('DELETE FROM items WHERE id = ?');
@@ -65,24 +87,28 @@ if (isset($_GET['delete_id'])) {
     exit;
 }
 
-// Search & filter
-$search = trim($_GET['search'] ?? '');
-$category_filter = trim($_GET['category_filter'] ?? 'All Categories');
+// FETCH INDIVIDUAL ITEM DATA IF EDITING
+$editing_item = null;
+if (isset($_GET['edit_id'])) {
+    $edit_id = intval($_GET['edit_id']);
+    $stmt = $pdo->prepare('SELECT * FROM items WHERE id = ?');
+    $stmt->execute([$edit_id]);
+    $editing_item = $stmt->fetch();
+}
 
-$sql = 'SELECT * FROM items WHERE 1=1';
+// SEARCH & LIST ITEMS
+$search = trim($_GET['search'] ?? '');
+$sql = 'SELECT items.*, suppliers.name AS supplier_name 
+        FROM items 
+        LEFT JOIN suppliers ON items.supplier_id = suppliers.id 
+        WHERE 1=1';
 $params = [];
 
 if ($search !== '') {
-    $sql .= ' AND name LIKE ?';
+    $sql .= ' AND items.name LIKE ?';
     $params[] = "%$search%";
 }
-
-if ($category_filter !== '' && $category_filter !== 'All Categories') {
-    $sql .= ' AND category = ?';
-    $params[] = $category_filter;
-}
-
-$sql .= ' ORDER BY id DESC';
+$sql .= ' ORDER BY items.id DESC';
 
 try {
     $stmt = $pdo->prepare($sql);
@@ -98,7 +124,16 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shoes Inventory System</title>
-    <link rel="stylesheet" href="Item.css">
+    <link rel="stylesheet" href="../css/Item.css">
+    <style>
+        /* Automatically opens edit popup frame dynamically if data is active */
+        <?php if ($editing_item): ?>
+        #editItemModal {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        <?php endif; ?>
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -121,35 +156,22 @@ try {
             <div class="user-profile">
                 <svg class="profile-avatar-glyph" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5-4-8-4z"/></svg>
                 <span class="username">Admin</span>
-                <span class="role-badge">Manager</span>
             </div>
-            <button class="logout-pill-btn" onclick="alert('Logging out...');">Logout</button>
+            <button class="logout-pill-btn" onclick="alert('Logging out...');"></button>
         </div>
     </nav>
 
     <main class="purple-canvas-panel">
         <div class="section-heading-row">
             <h1 class="page-title-label">Items Management</h1>
-            <a href="#addItemModal" class="btn-add-item-trigger">+ Add New Item</a>
+            <a href="#addItemModal" class="btn-add-item-trigger">+ Add New Shoe Item</a>
         </div>
 
         <form method="GET" action="item.php" class="search-filter-pill-capsule">
-            <input type="text" name="search" class="search-box-field" placeholder="Search items..." value="<?php echo htmlspecialchars($search); ?>">
-            <div class="dropdown-wrapper-control">
-                <select name="category_filter" class="category-select-menu">
-                    <option value="All Categories" <?php echo $category_filter === 'All Categories' ? 'selected' : ''; ?>>All Categories</option>
-                    <option value="Dairy" <?php echo $category_filter === 'Dairy' ? 'selected' : ''; ?>>Dairy</option>
-                    <option value="Flavoring" <?php echo $category_filter === 'Flavoring' ? 'selected' : ''; ?>>Flavoring</option>
-                    <option value="Sweetener" <?php echo $category_filter === 'Sweetener' ? 'selected' : ''; ?>>Sweetener</option>
-                    <option value="Coffee" <?php echo $category_filter === 'Coffee' ? 'selected' : ''; ?>>Coffee</option>
-                    <option value="Equipment" <?php echo $category_filter === 'Equipment' ? 'selected' : ''; ?>>Equipment</option>
-                </select>
-            </div>
+            <input type="text" name="search" class="search-box-field" placeholder="Search shoes by name..." value="<?php echo htmlspecialchars($search); ?>">
             <button type="submit" class="action-btn execution-search-btn">Search</button>
             <button type="button" class="action-btn execution-reset-btn" onclick="window.location.href='item.php';">Reset</button>
         </form>
-
-        <div class="central-showcase-label">Inventory Ledger</div>
 
         <div class="curved-ledger-table-card">
             <div class="table-scroll-axis-frame">
@@ -157,42 +179,38 @@ try {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Item Name</th>
-                            <th>Category</th>
-                            <th>Unit</th>
-                            <th>Unit Price</th>
+                            <th>Shoe Model Name</th>
+                            <th>Price</th>
                             <th>Supplier</th>
-                            <th>Stock</th>
-                            <th>Min</th>
+                            <th>Current Stock</th>
+                            <th>Min. Alert Threshold</th>
                             <th style="text-align:center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($items)): ?>
                             <?php foreach ($items as $item): 
-                                $stock = floatval($item['stock']);
-                                $min = floatval($item['min_threshold']);
-                                $lowClass = $stock <= $min ? 'low' : '';
+                                $quantity = (int)$item['quantity'];
+                                $min_qty = (int)$item['min_quantity'];
+                                $lowClass = $quantity <= $min_qty ? 'low' : '';
                             ?>
                             <tr>
                                 <td><span class="row-index-id"><?php echo (int)$item['id']; ?></span></td>
                                 <td><strong><?php echo htmlspecialchars($item['name']); ?></strong></td>
-                                <td><?php echo htmlspecialchars($item['category']); ?></td>
-                                <td><?php echo htmlspecialchars($item['unit']); ?></td>
-                                <td>₱<?php echo number_format($item['unit_price'], 2); ?></td>
-                                <td><?php echo htmlspecialchars($item['supplier'] ?: '—'); ?></td>
-                                <td><span class="qty-indicator <?php echo $lowClass; ?>"><?php echo number_format($stock, 2) . ' ' . htmlspecialchars($item['unit']); ?></span></td>
-                                <td><?php echo number_format($min, 2); ?></td>
+                                <td>$<?php echo number_format($item['price'], 2); ?></td>
+                                <td><?php echo htmlspecialchars($item['supplier_name'] ?: '—'); ?></td>
+                                <td><span class="qty-indicator <?php echo $lowClass; ?>"><?php echo $quantity; ?> pairs</span></td>
+                                <td><?php echo $min_qty; ?> pairs</td>
                                 <td>
                                     <div class="action-buttons-inline-flex">
-                                        <button class="row-btn edit-action-btn" onclick="alert('Edit implementation for ID <?php echo (int)$item['id']; ?>');">Edit</button>
+                                        <a href="item.php?edit_id=<?php echo (int)$item['id']; ?>" class="row-btn edit-action-btn" style="text-decoration: none;">Edit</a>
                                         <button class="row-btn delete-action-btn" onclick="if(confirm('Are you sure?')) window.location.href='item.php?delete_id=<?php echo (int)$item['id']; ?>';">Del</button>
                                     </div>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="9" style="text-align:center;padding:24px;color:#8e8e93;">No matching items found.</td></tr>
+                            <tr><td colspan="7" style="text-align:center;padding:24px;color:#8e8e93;">No matching shoes found in inventory.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -203,40 +221,35 @@ try {
     <div class="modal-overlay" id="addItemModal">
         <div class="modal-box">
             <div class="modal-header">
-                <div class="modal-title-text">✦ Add New Item</div>
+                <div class="modal-title-text">✦ Add New Shoe Item</div>
                 <a href="#" class="close-frame-btn">&times;</a>
             </div>
             <div class="modal-body">
                 <form method="POST" action="item.php">
                     <input type="hidden" name="action" value="add">
                     <div class="modal-form-grid-layout">
-                        <div class="input-form-block">
-                            <label>Item Name *</label>
-                            <input type="text" name="item_name" placeholder="Sugar" required>
+                        <div class="input-form-block full-width-span-row">
+                            <label>Shoe Model Name *</label>
+                            <input type="text" name="item_name" placeholder="e.g. Air Max 90" required>
                         </div>
                         <div class="input-form-block">
-                            <label>Category</label>
-                            <input type="text" name="category" placeholder="Dairy">
+                            <label>Retail Price ($)</label>
+                            <input type="number" step="0.01" name="price" value="0.00" min="0">
                         </div>
                         <div class="input-form-block">
-                            <label>Unit</label>
-                            <input type="text" name="unit" placeholder="kg, bottle">
-                        </div>
-                        <div class="input-form-block">
-                            <label>Unit Price (₱)</label>
-                            <input type="number" step="0.01" name="unit_price" value="0.00">
+                            <label>Min. Alert Threshold</label>
+                            <input type="number" name="min_quantity" value="5" min="0">
                         </div>
                         <div class="input-form-block full-width-span-row">
                             <label>Supplier</label>
-                            <select name="supplier">
+                            <select name="supplier_id">
                                 <option value="">— None —</option>
-                                <option value="SugarSweet Co."></option>
-                                <option value="BenCafe Roasters"></option>
+                                <?php foreach ($suppliers as $supplier): ?>
+                                    <option value="<?php echo (int)$supplier['id']; ?>">
+                                        <?php echo htmlspecialchars($supplier['name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
-                        </div>
-                        <div class="input-form-block full-width-span-row">
-                            <label>Min. Threshold</label>
-                            <input type="number" step="0.01" name="min_threshold" value="10.00">
                         </div>
                     </div>
                     <div class="modal-action-footer">
@@ -247,5 +260,52 @@ try {
             </div>
         </div>
     </div>
+
+    <?php if ($editing_item): ?>
+    <div class="modal-overlay" id="editItemModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title-text">✦ Edit Shoe Item (#<?php echo (int)$editing_item['id']; ?>)</div>
+                <a href="item.php" class="close-frame-btn">&times;</a>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="item.php">
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="id" value="<?php echo (int)$editing_item['id']; ?>">
+                    
+                    <div class="modal-form-grid-layout">
+                        <div class="input-form-block full-width-span-row">
+                            <label>Shoe Model Name *</label>
+                            <input type="text" name="item_name" value="<?php echo htmlspecialchars($editing_item['name']); ?>" required>
+                        </div>
+                        <div class="input-form-block">
+                            <label>Retail Price ($)</label>
+                            <input type="number" step="0.01" name="price" value="<?php echo htmlspecialchars($editing_item['price']); ?>" min="0">
+                        </div>
+                        <div class="input-form-block">
+                            <label>Min. Alert Threshold</label>
+                            <input type="number" name="min_quantity" value="<?php echo (int)$editing_item['min_quantity']; ?>" min="0">
+                        </div>
+                        <div class="input-form-block full-width-span-row">
+                            <label>Supplier</label>
+                            <select name="supplier_id">
+                                <option value="">— None —</option>
+                                <?php foreach ($suppliers as $supplier): ?>
+                                    <option value="<?php echo (int)$supplier['id']; ?>" <?php echo $editing_item['supplier_id'] == $supplier['id'] ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($supplier['name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-action-footer">
+                        <a href="item.php" class="modal-footer-btn btn-modal-cancel">Cancel</a>
+                        <button type="submit" class="modal-footer-btn btn-modal-confirm">Update Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 </body>
 </html>
