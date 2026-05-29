@@ -61,7 +61,7 @@ $inventoryItems = $stmt->fetchAll();
     <title>Shoes Inventory System - Stock Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stockstyle.css">
 </head>
 <body>
 
@@ -179,10 +179,10 @@ $inventoryItems = $stmt->fetchAll();
                                     <?= date('M d, Y H:i', strtotime($row['last_updated'])) ?>
                                 </td>
                                 <td>
-                                    <a href="edit.php?id=<?= $row['id'] ?>" class="btn-action btn-edit" style="text-decoration: none; display: inline-block;">
+                                    <a href="stock_edit.php?id=<?= $row['id'] ?>" class="btn-action btn-edit" style="text-decoration: none; display: inline-block;">
                                         <i class="fa-solid fa-pencil"></i> Edit
                                     </a>
-                                    <a href="delete.php?id=<?= $row['id'] ?>" class="btn-action btn-delete" style="text-decoration: none; display: inline-block;" onclick="return confirm('Are you sure you want to permanently delete \'<?= htmlspecialchars(addslashes($row['item_name'])) ?>\' from inventory records?');">
+                                    <a href="stock_delete.php?id=<?= $row['id'] ?>" class="btn-action btn-delete" style="text-decoration: none; display: inline-block;" onclick="return confirm('Are you sure you want to permanently delete \'<?= htmlspecialchars(addslashes($row['item_name'])) ?>\' from inventory records?');">
                                         <i class="fa-solid fa-trash"></i> Delete
                                     </a>
                                 </td>
