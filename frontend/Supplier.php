@@ -1,101 +1,6 @@
 <?php
-// Supplier.php
-
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-$database_name = 'pos_inventory_system';
-
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$database_name;charset=$charset", $user, $pass, $options);
-} catch (\PDOException $e) {
-    die("<div style='font-family:sans-serif; padding:20px; background:#fff0f0; border-left:5px solid #ff4d4d; margin:20px;'><strong>Database Connection Failed!</strong><br>" . htmlspecialchars($e->getMessage()) . "</div>");
-}
-
-// Handle Form Actions (Add OR Update)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
-    
-    // ACTION: ADD NEW SUPPLIER
-    if ($action === 'add') {
-        $name   = trim($_POST['supplier_name'] ?? '');
-        $status = isset($_POST['active']) && (int)$_POST['active'] === 1 ? 'Active' : 'Inactive';
-
-        if ($name !== '') {
-            $gapQuery = "SELECT MIN(unused.order_id) AS next_id 
-                         FROM (
-                             SELECT 1 AS order_id 
-                             UNION ALL 
-                             SELECT order_id + 1 FROM suppliers
-                         ) AS unused 
-                         LEFT JOIN suppliers USING (order_id) 
-                         WHERE suppliers.order_id IS NULL";
-            
-            $gapStmt = $pdo->query($gapQuery);
-            $result = $gapStmt->fetch();
-            $next_id = isset($result['next_id']) ? intval($result['next_id']) : 1;
-
-            $stmt = $pdo->prepare('INSERT INTO suppliers (order_id, company_name, status) VALUES (?, ?, ?)');
-            $stmt->execute([$next_id, $name, $status]);
-        }
-        header('Location: Supplier.php');
-        exit;
-    }
-    
-    // ACTION: UPDATE EXISTING SUPPLIER
-    if ($action === 'edit') {
-        $id     = intval($_POST['id'] ?? 0);
-        $name   = trim($_POST['supplier_name'] ?? '');
-        $status = isset($_POST['active']) && (int)$_POST['active'] === 1 ? 'Active' : 'Inactive';
-
-        if ($id > 0 && $name !== '') {
-            $stmt = $pdo->prepare('UPDATE suppliers SET company_name = ?, status = ? WHERE order_id = ?');
-            $stmt->execute([$name, $status, $id]);
-        }
-        header('Location: Supplier.php');
-        exit;
-    }
-}
-
-// ACTION: DELETE SUPPLIER
-if (isset($_GET['delete_id'])) {
-    $id = intval($_GET['delete_id']);
-    $stmt = $pdo->prepare('DELETE FROM suppliers WHERE order_id = ?');
-    $stmt->execute([$id]);
-    header('Location: Supplier.php');
-    exit;
-}
-
-// HELPER: FETCH INDIVIDUAL ENTRY FOR ACTIVE EDIT STATE
-$editing_supplier = null;
-if (isset($_GET['edit_id'])) {
-    $edit_id = intval($_GET['edit_id']);
-    $stmt = $pdo->prepare('SELECT * FROM suppliers WHERE order_id = ?');
-    $stmt->execute([$edit_id]);
-    $editing_supplier = $stmt->fetch();
-}
-
-// SEARCH & RENDER QUERY DATATABLE
-$search = trim($_GET['search'] ?? '');
-$sql = 'SELECT * FROM suppliers WHERE 1=1';
-$params = [];
-
-if ($search !== '') {
-    $sql .= ' AND company_name LIKE ?';
-    $params[] = "%$search%";
-}
-$sql .= ' ORDER BY order_id DESC';
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$suppliers = $stmt->fetchAll();
+// Pulls the database connection, form submissions handlers, and the synchronized datasets array
+require_once __DIR__ . '/../backend/suppliertab.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -151,11 +56,11 @@ $suppliers = $stmt->fetchAll();
         <?php if ($editing_supplier): ?>
         <div class="curved-ledger-table-card" style="margin-bottom: 25px;">
             <div class="modal-header" style="padding: 12px 0 20px 0;">
-                <h2 class="modal-title-text">Update Existing Supplier Details (#<?php echo (int)$editing_supplier['order_id']; ?>)</h2>
+                <h2 class="modal-title-text">Update Existing Supplier Details (#<?php echo (int)$editing_supplier['id']; ?>)</h2>
             </div>
             <form method="POST" action="Supplier.php" style="margin-top: 15px;">
                 <input type="hidden" name="action" value="edit">
-                <input type="hidden" name="id" value="<?php echo (int)$editing_supplier['order_id']; ?>">
+                <input type="hidden" name="id" value="<?php echo (int)$editing_supplier['id']; ?>">
                 <div class="modal-form-grid-layout">
                     <div class="input-form-block">
                         <label>Supplier Brand Name *</label>
