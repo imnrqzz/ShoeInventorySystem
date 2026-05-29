@@ -3,7 +3,7 @@
 $host     = "localhost";
 $username = "root";
 $password = "";
-$dbname   = "inventory";
+$dbname   = "pos_inventory_system";
 
 try {
     $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
@@ -15,40 +15,47 @@ try {
 }
 
 // 2. ACTION: ADD NEW SUPPLIER
-if (isset($_POST['add_supplier'])) {
-    $company_name   = $_POST['company_name'];
-    $contact_person = $_POST['contact_person'];
-    $category       = $_POST['category'];
-    $phone_email    = $_POST['phone_email'];
-    $status         = $_POST['status'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
+    $company_name   = trim($_POST['supplier_name'] ?? '');
+    $contact_person = trim($_POST['contact_person'] ?? 'N/A');
+    $category       = trim($_POST['category'] ?? 'General');
+    $phone_email    = trim($_POST['phone_email'] ?? 'N/A');
+    // Read numeric active state and map to text badge label state matching code tables
+    $active_state   = isset($_POST['active']) ? intval($_POST['active']) : 1;
+    $status         = ($active_state === 1) ? 'Active' : 'Inactive';
 
-    $query = "INSERT INTO suppliers (company_name, contact_person, category, phone_email, status) 
-              VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$company_name, $contact_person, $category, $phone_email, $status]);
+    if (!empty($company_name)) {
+        $query = "INSERT INTO suppliers (company_name, contact_person, category, phone_email, status) 
+                  VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$company_name, $contact_person, $category, $phone_email, $status]);
+    }
     
     header("Location: Supplier.php");
     exit();
 }
 
 // 3. ACTION: UPDATE (EDIT) EXISTING SUPPLIER
-if (isset($_POST['update_supplier'])) {
-    $id             = intval($_POST['order_id']);
-    $company_name   = $_POST['company_name'];
-    $contact_person = $_POST['contact_person'];
-    $category       = $_POST['category'];
-    $phone_email    = $_POST['phone_email'];
-    $status         = $_POST['status'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
+    $id             = intval($_POST['id'] ?? 0);
+    $company_name   = trim($_POST['supplier_name'] ?? '');
+    $contact_person = trim($_POST['contact_person'] ?? 'N/A');
+    $category       = trim($_POST['category'] ?? 'General');
+    $phone_email    = trim($_POST['phone_email'] ?? 'N/A');
+    $active_state   = isset($_POST['active']) ? intval($_POST['active']) : 1;
+    $status         = ($active_state === 1) ? 'Active' : 'Inactive';
 
-    $query = "UPDATE suppliers SET 
-              company_name = ?, 
-              contact_person = ?, 
-              category = ?, 
-              phone_email = ?, 
-              status = ? 
-              WHERE order_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$company_name, $contact_person, $category, $phone_email, $status, $id]);
+    if ($id > 0 && !empty($company_name)) {
+        $query = "UPDATE suppliers SET 
+                  company_name = ?, 
+                  contact_person = ?, 
+                  category = ?, 
+                  phone_email = ?, 
+                  status = ? 
+                  WHERE order_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$company_name, $contact_person, $category, $phone_email, $status, $id]);
+    }
     
     header("Location: Supplier.php");
     exit();
@@ -67,35 +74,50 @@ if (isset($_GET['delete_id'])) {
 }
 
 // 5. HELPER: FETCH SUPPLIER FOR EDITING
-$edit_data = null;
+$editing_supplier = null;
 if (isset($_GET['edit_id'])) {
     $id = intval($_GET['edit_id']);
     
     $query = "SELECT * FROM suppliers WHERE order_id = ?";
     $stmt = $conn->prepare($query);
     $stmt->execute([$id]);
-    $edit_data = $stmt->fetch(); 
+    $raw_edit = $stmt->fetch();
+    
+    if ($raw_edit) {
+        // Map database records to properties expected by page template forms
+        $editing_supplier = [
+            'id'     => $raw_edit['order_id'],
+            'name'   => $raw_edit['company_name'],
+            'active' => (strtolower($raw_edit['status']) === 'active') ? 1 : 0
+        ];
+    }
 }
 
 // 6. VIEW: FETCH ALL/SEARCHED SUPPLIERS FOR THE TABLE
 $search = "";
 if (isset($_GET['search'])) {
-    $search = $_GET['search'];
+    $search = trim($_GET['search']);
 }
 
 if (!empty($search)) {
-    $query = "SELECT * FROM suppliers WHERE company_name LIKE ?";
+    $query = "SELECT * FROM suppliers WHERE company_name LIKE ? ORDER BY order_id DESC";
     $stmt = $conn->prepare($query);
     $stmt->execute(["%$search%"]);
 } else {
-    $query = "SELECT * FROM suppliers";
+    $query = "SELECT * FROM suppliers ORDER BY order_id DESC";
     $stmt = $conn->query($query); 
 }
 
-/* FIX FOR THE FATAL ERROR:
-   We fetch all matching records into a native array. 
-   This lets us interact with $result identically to a standard MySQL database record array 
-   without disrupting your row validation or table loops!
-*/
-$result = $stmt->fetchAll(); 
+$raw_suppliers = $stmt->fetchAll();
+$suppliers = [];
+
+// Format database column structures to array entries read by template tables
+foreach ($raw_suppliers as $row) {
+    $suppliers[] = [
+        'id'         => $row['order_id'],
+        'name'       => $row['company_name'],
+        'active'     => (strtolower($row['status']) === 'active') ? 1 : 0,
+        'created_at' => $row['phone_email'] // Display phone/email or timestamps dynamically
+    ];
+}
 ?>
