@@ -1,122 +1,6 @@
 <?php
-// item.php
-
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-$database_name = 'pos_inventory_system';
-
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$database_name;charset=$charset", $user, $pass, $options);
-} catch (\PDOException $e) {
-    die("<div style='font-family:sans-serif; padding:20px; background:#fff0f0; border-left:5px solid #ff4d4d; margin:20px;'><strong>Database Connection Failed!</strong><br>" . htmlspecialchars($e->getMessage()) . "</div>");
-}
-
-// Fetch all active suppliers for form dropdowns
-try {
-    $supplierStmt = $pdo->query("SELECT id, name FROM suppliers WHERE active = 1 ORDER BY name ASC");
-    $suppliers = $supplierStmt->fetchAll();
-} catch (\PDOException $e) {
-    $suppliers = [];
-}
-
-// Handle Form Submissions (Add OR Update)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
-    
-    // CREATE NEW ITEM WITH AUTOMATIC ID REUSE
-    if ($action === 'add') {
-        $name          = trim($_POST['item_name'] ?? '');
-        $supplier_id   = $_POST['supplier_id'] !== '' ? intval($_POST['supplier_id']) : null;
-        $min_quantity  = intval($_POST['min_quantity'] ?? 0);
-        $price         = floatval($_POST['price'] ?? 0);
-
-        if ($name !== '') {
-            // Find the lowest missing sequence ID to fill the gap
-            $gapQuery = "SELECT MIN(unused.id) AS next_id 
-                         FROM (
-                             SELECT 1 AS id 
-                             UNION ALL 
-                             SELECT id + 1 FROM items
-                         ) AS unused 
-                         LEFT JOIN items USING (id) 
-                         WHERE items.id IS NULL";
-            
-            $gapStmt = $pdo->query($gapQuery);
-            $result = $gapStmt->fetch();
-            $next_id = isset($result['next_id']) ? intval($result['next_id']) : 1;
-
-            // Force insert using the missing ID number
-            $stmt = $pdo->prepare('INSERT INTO items (id, name, supplier_id, quantity, min_quantity, price) VALUES (?, ?, ?, ?, ?, ?)');
-            $stmt->execute([$next_id, $name, $supplier_id, 0, $min_quantity, $price]);
-        }
-        header('Location: item.php');
-        exit;
-    }
-    
-    // UPDATE EXISTING ITEM
-    if ($action === 'edit') {
-        $id            = intval($_POST['id'] ?? 0);
-        $name          = trim($_POST['item_name'] ?? '');
-        $supplier_id   = $_POST['supplier_id'] !== '' ? intval($_POST['supplier_id']) : null;
-        $min_quantity  = intval($_POST['min_quantity'] ?? 0);
-        $price         = floatval($_POST['price'] ?? 0);
-
-        if ($id > 0 && $name !== '') {
-            $stmt = $pdo->prepare('UPDATE items SET name = ?, supplier_id = ?, min_quantity = ?, price = ? WHERE id = ?');
-            $stmt->execute([$name, $supplier_id, $min_quantity, $price, $id]);
-        }
-        header('Location: item.php');
-        exit;
-    }
-}
-
-// DELETE ITEM
-if (isset($_GET['delete_id'])) {
-    $id = intval($_GET['delete_id']);
-    $stmt = $pdo->prepare('DELETE FROM items WHERE id = ?');
-    $stmt->execute([$id]);
-    header('Location: item.php');
-    exit;
-}
-
-// FETCH INDIVIDUAL ITEM DATA IF EDITING
-$editing_item = null;
-if (isset($_GET['edit_id'])) {
-    $edit_id = intval($_GET['edit_id']);
-    $stmt = $pdo->prepare('SELECT * FROM items WHERE id = ?');
-    $stmt->execute([$edit_id]);
-    $editing_item = $stmt->fetch();
-}
-
-// SEARCH & LIST ITEMS
-$search = trim($_GET['search'] ?? '');
-$sql = 'SELECT items.*, suppliers.name AS supplier_name 
-        FROM items 
-        LEFT JOIN suppliers ON items.supplier_id = suppliers.id 
-        WHERE 1=1';
-$params = [];
-
-if ($search !== '') {
-    $sql .= ' AND items.name LIKE ?';
-    $params[] = "%$search%";
-}
-$sql .= ' ORDER BY items.id DESC';
-
-try {
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $items = $stmt->fetchAll();
-} catch (\PDOException $e) {
-    die("<div style='font-family:sans-serif; padding:20px; background:#fff9e6; border-left:5px solid #ffcc00; margin:20px;'><strong>Error processing data:</strong> " . htmlspecialchars($e->getMessage()) . "</div>");
-}
+// Pulls the backend database variables, form action controls, and array structures directly into scope
+require_once __DIR__ . '/../backend/itemtab.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -146,7 +30,7 @@ try {
         <ul class="nav-menu">
             <li><a href="index.php">Dashboard</a></li>
             <li><a href="item.php" class="active">Items</a></li>
-            <li><a href="suppliers.php">Suppliers</a></li>
+            <li><a href="Supplier.php">Suppliers</a></li>
             <li><a href="stock.php">Stock</a></li>
             <li><a href="transactions.php">Transactions</a></li>
             <li><a href="users.php">Users</a></li>
@@ -191,7 +75,7 @@ try {
                         <?php if (!empty($items)): ?>
                             <?php foreach ($items as $item): 
                                 $quantity = (int)$item['quantity'];
-                                $min_qty = (int)$item['min_quantity'];
+                                $min_qty  = (int)$item['min_quantity'];
                                 $lowClass = $quantity <= $min_qty ? 'low' : '';
                             ?>
                             <tr>
@@ -204,7 +88,7 @@ try {
                                 <td>
                                     <div class="action-buttons-inline-flex">
                                         <a href="item.php?edit_id=<?php echo (int)$item['id']; ?>" class="row-btn edit-action-btn" style="text-decoration: none;">Edit</a>
-                                        <button class="row-btn delete-action-btn" onclick="if(confirm('Are you sure?')) window.location.href='item.php?delete_id=<?php echo (int)$item['id']; ?>';">Del</button>
+                                        <button class="row-btn delete-action-btn" onclick="if(confirm('Are you sure you want to delete this shoe line?')) window.location.href='item.php?delete_id=<?php echo (int)$item['id']; ?>';">Del</button>
                                     </div>
                                 </td>
                             </tr>
