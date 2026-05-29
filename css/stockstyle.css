@@ -1,0 +1,320 @@
+/* --- Global Styles & Reset --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #5d6cc6; /* The distinct blue background */
+    color: #333;
+    min-height: 100vh;
+}
+
+/* --- Color Helper Classes --- */
+.text-success { color: #2ecc71; }
+.text-alert { color: #f39c12; }
+.text-brown { color: #d35400; }
+.text-muted { color: #7f8c8d; }
+.text-sm { font-size: 0.85rem; }
+.font-weight-bold { font-weight: 600; }
+
+/* --- Navbar Styles --- */
+.navbar {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    color: #555;
+    transform: rotate(-15deg);
+}
+
+.system-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #222;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #333;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.nav-menu a:hover, .nav-menu a.active {
+    background-color: #f0f2f5;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.profile-icon {
+    font-size: 2rem;
+    color: #444;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.logout-btn:hover {
+    transform: scale(1.1);
+}
+
+/* --- Main Layout Container --- */
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+/* --- Breadcrumbs --- */
+.breadcrumbs {
+    margin-bottom: 25px;
+    color: #ffffff;
+}
+
+.page-title {
+    font-size: 1.35rem;
+    font-weight: 500;
+    margin-right: 15px;
+}
+
+.file-name {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* --- KPI Summary Cards --- */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background-color: #e2e4e9; /* Light grey backdrop */
+    border-radius: 24px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+}
+
+.card-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #222;
+}
+
+.card-label {
+    font-size: 1rem;
+    color: #444;
+    font-weight: 500;
+}
+
+/* --- Filters Section --- */
+.filters-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    align-items: center;
+}
+
+.search-bar {
+    flex: 1;
+    height: 44px;
+    border-radius: 22px;
+    border: none;
+    background-color: #e2e4e9;
+    padding: 0 20px;
+    outline: none;
+    font-size: 1rem;
+}
+
+.select-wrapper {
+    position: relative;
+    width: 180px;
+}
+
+.category-select {
+    width: 100%;
+    height: 44px;
+    border-radius: 0; /* Boxy select container */
+    border: none;
+    background-color: #e2e4e9;
+    padding: 0 15px;
+    font-size: 1rem;
+    appearance: none;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Custom dropdown indicator mimicking the original UI */
+.select-wrapper::after {
+    content: '\25BC';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    color: #888;
+    pointer-events: none;
+}
+
+.btn {
+    height: 44px;
+    padding: 0 30px;
+    border: none;
+    border-radius: 22px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: white;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-filter { background-color: #1abc9c; }
+.btn-reset { background-color: #e74c3c; }
+
+/* --- Inventory Table --- */
+.table-responsive {
+    background-color: #ffffff;
+    border-radius: 4px;
+    overflow-x: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.inventory-table th {
+    background-color: #4a2711; /* Table header deep brown */
+    color: #f1c40f; /* Amber colored column titles */
+    padding: 14px 16px;
+    font-weight: 500;
+}
+
+.inventory-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #333;
+}
+
+/* Row separation styling */
+.inventory-table tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+/* Progress bar inside data cells */
+.progress-bar {
+    height: 6px;
+    border-radius: 3px;
+    margin-top: 6px;
+}
+
+.bar-success {
+    background-color: #27ae60;
+}
+
+/* Status Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-ok {
+    border-color: #2ecc71;
+    color: #27ae60;
+    background-color: #f4fbf7;
+}
+
+/* Action Utility Buttons */
+.btn-action {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: white;
+    margin-right: 4px;
+}
+
+.btn-edit { background-color: #f39c12; }
+.btn-delete { background-color: #c0392b; }
+
+.btn-action:hover {
+    filter: brightness(0.9);
+}
+/* Custom additions for dynamic states */
+.badge-low {
+    border-color: #e74c3c;
+    color: #c0392b;
+    background-color: #fdf2f2;
+}
+
+.bar-alert {
+    background-color: #e67e22;
+}
