@@ -73,6 +73,7 @@ $cancelUrl = 'stock.php' . ($filters ? '?' . http_build_query($filters) : '');
             <a href="#" class="active"><i class="fa-solid fa-chart-simple"></i> Stock</a>
             <a href="#"><i class="fa-solid fa-square-poll-horizontal"></i> Transactions</a>
             <a href="#"><i class="fa-solid fa-users"></i> Users</a>
+            <a href="#"><i class="fa-solid fa-file-invoice-column"></i> Reports</a>
         </nav>
         <div class="nav-right"><div class="user-profile"><i class="profile-icon"></i><span>User1</span></div><button class="logout-btn"><i class="fa-solid fa-power-off"></i></button></div>
     </header>
