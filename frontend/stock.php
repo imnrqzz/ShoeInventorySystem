@@ -3,7 +3,7 @@
 $host    = 'localhost';
 $db      = 'shoes_inventory';
 $user    = 'root'; 
-$pass    = ''; // Update with your DB password if applicable
+$pass    = ''; 
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -19,19 +19,33 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-// 1. Fetch KPI metrics dynamically 
+// --- HANDLE INLINE EDIT SUBMISSION ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_stock') {
+    $updateId = (int)$_POST['item_id'];
+    $current_qty = $_POST['current_qty'];
+    $min_threshold = $_POST['min_threshold'];
+
+    $updateStmt = $pdo->prepare("UPDATE stock SET current_qty = ?, min_threshold = ? WHERE id = ?");
+    if ($updateStmt->execute([$current_qty, $min_threshold, $updateId])) {
+        // Redirect keeping filter parameters clean
+        $redirectUrl = 'stock.php' . (isset($_GET['search']) ? '?search=' . urlencode($_GET['search']) : '') . (isset($_GET['category']) ? (isset($_GET['search']) ? '&' : '?') . 'category=' . urlencode($_GET['category']) : '');
+        header("Location: " . $redirectUrl);
+        exit;
+    }
+}
+
+// Fetch KPI metrics dynamically 
 $totalItems  = $pdo->query("SELECT COUNT(*) FROM stock")->fetchColumn();
 $okStock     = $pdo->query("SELECT COUNT(*) FROM stock WHERE current_qty >= min_threshold")->fetchColumn();
 $lowStock    = $pdo->query("SELECT COUNT(*) FROM stock WHERE current_qty < min_threshold")->fetchColumn();
 
-// 2. Dynamic Categories for drop-down element
+// Dynamic Categories
 $categories  = $pdo->query("SELECT DISTINCT category FROM stock ORDER BY category ASC")->fetchAll();
 
-// 3. Process Live Filtering Arguments
+// Live Filtering Arguments
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $categoryFilter = isset($_GET['category']) ? trim($_GET['category']) : '';
 
-// Base query string construction
 $queryStr = "SELECT s.*, sup.name AS supplier_name 
              FROM stock s 
              JOIN suppliers sup ON s.supplier_id = sup.id WHERE 1=1";
@@ -47,11 +61,20 @@ if ($categoryFilter !== '' && $categoryFilter !== 'All Categories') {
     $params['category'] = $categoryFilter;
 }
 
-$queryStr .= " ORDER BY s.id DESC"; // Order matching table display sequence
+$queryStr .= " ORDER BY s.id DESC";
 
 $stmt = $pdo->prepare($queryStr);
 $stmt->execute($params);
 $inventoryItems = $stmt->fetchAll();
+
+// --- CHECK IF EDIT MODE IS ACTIVE ---
+$editItem = null;
+if (isset($_GET['edit_id'])) {
+    $editId = (int)$_GET['edit_id'];
+    $editStmt = $pdo->prepare("SELECT * FROM stock WHERE id = ?");
+    $editStmt->execute([$editId]);
+    $editItem = $editStmt->fetch();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,20 +90,20 @@ $inventoryItems = $stmt->fetchAll();
 
     <header class="navbar">
         <div class="nav-left">
-            <i class="fa-solid fa-shoe-prints logo-icon"></i>
+            <i class="logo-icon"></i>
             <span class="system-title">Shoes Inventory System</span>
         </div>
         <nav class="nav-menu">
-            <a href="#"><i class="fa-solid fa-chart-line text-info"></i> Dashboard</a>
-            <a href="#"><i class="fa-solid fa-boxes-stacked text-warning"></i> Items</a>
-            <a href="#"><i class="fa-solid fa-truck-field text-danger"></i> Suppliers</a>
-            <a href="#" class="active"><i class="fa-solid fa-chart-simple text-primary"></i> Stock</a>
-            <a href="#"><i class="fa-solid fa-square-poll-horizontal text-primary"></i> Transactions</a>
-            <a href="#"><i class="fa-solid fa-users text-secondary"></i> Users</a>
+            <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a href="#"><i class="fa-solid fa-boxes-stacked"></i> Items</a>
+            <a href="#"><i class="fa-solid fa-truck-field"></i> Suppliers</a>
+            <a href="#" class="active"><i class="fa-solid fa-chart-simple"></i> Stock</a>
+            <a href="#"><i class="fa-solid fa-square-poll-horizontal"></i> Transactions</a>
+            <a href="#"><i class="fa-solid fa-users"></i> Users</a>
         </nav>
         <div class="nav-right">
             <div class="user-profile">
-                <i class="fa-solid fa-circle-user profile-icon"></i>
+                <i class="profile-icon"></i>
                 <span>User1</span>
             </div>
             <button class="logout-btn"><i class="fa-solid fa-power-off"></i></button>
@@ -88,26 +111,22 @@ $inventoryItems = $stmt->fetchAll();
     </header>
 
     <main class="main-container">
-        <div class="breadcrumbs">
-            <span class="page-title">Stock Management</span>
-            <span class="file-name">stock.php</span>
-        </div>
 
         <section class="summary-cards">
             <div class="card">
-                <i class="fa-solid fa-shoe-prints card-icon text-brown"></i>
+                <div class="card-icon"><i class="fa-solid fa-shoe-prints"></i></div>
                 <div class="card-value"><?= htmlspecialchars($totalItems) ?></div>
                 <div class="card-label">Total Items Tracked</div>
             </div>
             <div class="card">
-                <i class="fa-solid fa-square-check card-icon text-success"></i>
+                <div class="card-icon text-success"><i class="fa-solid fa-square-check"></i></div>
                 <div class="card-value text-success"><?= htmlspecialchars($okStock) ?></div>
                 <div class="card-label">OK Stock</div>
             </div>
             <div class="card">
-                <i class="fa-solid fa-triangle-exclamation card-icon text-alert"></i>
+                <div class="card-icon text-alert"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 <div class="card-value text-alert"><?= htmlspecialchars($lowStock) ?></div>
-                <div class="card-label">Low / Critical</div>
+                <div class="card-label">Low / Critical Alerts</div>
             </div>
         </section>
 
@@ -153,7 +172,6 @@ $inventoryItems = $stmt->fetchAll();
                             $statusIcon = $isLow ? 'fa-triangle-exclamation' : 'fa-check';
                             $qtyColor = $isLow ? 'text-alert' : 'text-success';
                             
-                            // Visual bar width logic (capped at 100%)
                             $maxCapacity = max($row['current_qty'], $row['min_threshold'] * 2);
                             $fillPercentage = ($maxCapacity > 0) ? min(($row['current_qty'] / $maxCapacity) * 100, 100) : 0;
                             $barClass = $isLow ? 'bar-alert' : 'bar-success';
@@ -167,7 +185,9 @@ $inventoryItems = $stmt->fetchAll();
                                     <span class="<?= $qtyColor ?> font-weight-bold">
                                         <?= htmlspecialchars(number_format($row['current_qty'], 0)) . ' ' . htmlspecialchars($row['unit']) ?>
                                     </span>
-                                    <div class="progress-bar <?= $barClass ?>" style="width: <?= $fillPercentage ?>%;"></div>
+                                    <div class="progress-bar style-bar" style="width: 100%;">
+                                        <div class="progress-bar-fill <?= $barClass ?>" style="width: <?= $fillPercentage ?>%;"></div>
+                                    </div>
                                 </td>
                                 <td><?= htmlspecialchars(number_format($row['min_threshold'], 0)) . ' ' . htmlspecialchars($row['unit']) ?></td>
                                 <td>
@@ -179,10 +199,17 @@ $inventoryItems = $stmt->fetchAll();
                                     <?= date('M d, Y H:i', strtotime($row['last_updated'])) ?>
                                 </td>
                                 <td>
-                                    <a href="stock_edit.php?id=<?= $row['id'] ?>" class="btn-action btn-edit" style="text-decoration: none; display: inline-block;">
+                                    <?php 
+                                        $filterParams = [];
+                                        if ($search !== '') $filterParams['search'] = $search;
+                                        if ($categoryFilter !== '') $filterParams['category'] = $categoryFilter;
+                                        $filterParams['edit_id'] = $row['id'];
+                                        $editUrl = 'stock.php?' . http_build_query($filterParams);
+                                    ?>
+                                    <a href="<?= $editUrl ?>" class="btn-action btn-edit">
                                         <i class="fa-solid fa-pencil"></i> Edit
                                     </a>
-                                    <a href="stock_delete.php?id=<?= $row['id'] ?>" class="btn-action btn-delete" style="text-decoration: none; display: inline-block;" onclick="return confirm('Are you sure you want to permanently delete \'<?= htmlspecialchars(addslashes($row['item_name'])) ?>\' from inventory records?');">
+                                    <a href="stock_delete.php?id=<?= $row['id'] ?>" class="btn-action btn-delete" onclick="return confirm('Are you sure you want to delete this product?');">
                                         <i class="fa-solid fa-trash"></i> Delete
                                     </a>
                                 </td>
@@ -197,6 +224,51 @@ $inventoryItems = $stmt->fetchAll();
             </table>
         </section>
     </main>
+
+    <?php if ($editItem): ?>
+        <div class="modal-overlay">
+            <div class="edit-box">
+                <div class="edit-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="modal-sparkle">✦</span>
+                        <h2>Modify Stock Level</h2>
+                    </div>
+                    <?php 
+                        $cancelParams = [];
+                        if ($search !== '') $cancelParams['search'] = $search;
+                        if ($categoryFilter !== '') $cancelParams['category'] = $categoryFilter;
+                        $cancelUrl = 'stock.php' . (!empty($cancelParams) ? '?' . http_build_query($cancelParams) : '');
+                    ?>
+                    <a href="<?= $cancelUrl ?>" class="close-modal-btn">&times;</a>
+                </div>
+
+                <div class="item-preview-badge">
+                    <span class="item-preview-label">Active Item</span>
+                    <strong><?= htmlspecialchars($editItem['item_name']) ?></strong>
+                </div>
+
+                <form method="POST" action="stock.php">
+                    <input type="hidden" name="action" value="update_stock">
+                    <input type="hidden" name="item_id" value="<?= htmlspecialchars($editItem['id']) ?>">
+                    
+                    <div class="form-group">
+                        <label>Current Quantity</label>
+                        <input type="number" step="0.01" name="current_qty" value="<?= htmlspecialchars($editItem['current_qty']) ?>" required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Minimum Threshold</label>
+                        <input type="number" step="0.01" name="min_threshold" value="<?= htmlspecialchars($editItem['min_threshold']) ?>" required>
+                    </div>
+
+                    <div class="actions-row">
+                        <a href="<?= $cancelUrl ?>" class="btn btn-reset">Cancel</a>
+                        <button type="submit" class="btn btn-save-modal">✓ Save Level</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <?php endif; ?>
 
 </body>
 </html>
