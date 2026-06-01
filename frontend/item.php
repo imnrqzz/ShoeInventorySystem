@@ -93,11 +93,15 @@ require __DIR__ . '/components/toolbar.php';
                         </div>
                         <div class="form-group">
                             <label>Price ($)</label>
+                            <!-- Best Practice: step="0.01" allows cents (e.g. $129.99).
+                                 min="0" prevents negative prices. -->
                             <input type="number" step="0.01" name="price" value="0.00" min="0">
                         </div>
                         <div class="form-group">
                             <label>Min. Alert Threshold</label>
-                            <input type="number" name="min_quantity" value="5" min="0">
+                            <!-- Best Practice: step="1" restricts to whole numbers.
+                                 Shoes are counted in pairs, not fractions. -->
+                            <input type="number" step="1" name="min_quantity" value="5" min="0">
                         </div>
                         <div class="form-group full-width">
                             <label>Supplier</label>
@@ -137,11 +141,11 @@ require __DIR__ . '/components/toolbar.php';
                         </div>
                         <div class="form-group">
                             <label>Price ($)</label>
-                            <input type="number" step="0.01" name="price" value="<?= safe($editing_item['price']) ?>" min="0">
+                            <input type="number" step="0.01" name="price" value="<?= number_format((float)$editing_item['price'], 2, '.', '') ?>" min="0">
                         </div>
                         <div class="form-group">
                             <label>Min. Alert Threshold</label>
-                            <input type="number" name="min_quantity" value="<?= (int)$editing_item['min_quantity'] ?>" min="0">
+                            <input type="number" step="1" name="min_quantity" value="<?= (int)$editing_item['min_quantity'] ?>" min="0">
                         </div>
                         <div class="form-group full-width">
                             <label>Supplier</label>

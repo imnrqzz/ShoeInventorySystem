@@ -120,8 +120,10 @@ require __DIR__ . '/components/toolbar.php';
                     <input type="hidden" name="item_name" value="<?= safe($editItem['item_name']) ?>">
                     <input type="hidden" name="company_name" value="<?= safe($editItem['supplier_name']) ?>">
                     <div class="form-grid">
-                        <div class="form-group"><label>Current Quantity</label><input type="number" step="0.01" name="current_qty" value="<?= safe($editItem['current_qty']) ?>" required></div>
-                        <div class="form-group"><label>Min Threshold</label><input type="number" step="0.01" name="min_threshold" value="<?= safe($editItem['min_threshold']) ?>" required></div>
+                        <!-- Best Practice: step="1" and min="0" ensure users can only enter
+                             whole numbers. Shoes are counted in whole pairs, not fractions. -->
+                        <div class="form-group"><label>Current Quantity</label><input type="number" step="1" min="0" name="current_qty" value="<?= (int)$editItem['current_qty'] ?>" required></div>
+                        <div class="form-group"><label>Min Threshold</label><input type="number" step="1" min="0" name="min_threshold" value="<?= (int)$editItem['min_threshold'] ?>" required></div>
                     </div>
                     <div class="modal-footer"><a href="<?= $cancelUrl ?>" class="btn btn-secondary">Cancel</a><button type="submit" class="btn btn-primary">Save</button></div>
                 </form>
