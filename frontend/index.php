@@ -1,58 +1,26 @@
 <?php
 // frontend/index.php
 
-// Best Practice: Check login status before showing any page content.
-session_start();
-// Prevent cached pages from showing after logout via browser Back button
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Pragma: no-cache');
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
-    exit();
-}
+// Best Practice: Use a shared auth component instead of repeating session/cache/redirect code.
+require_once __DIR__ . '/components/auth.php';
 
 // db.php loads Database, InventoryManager, TransactionManager
 // and fetches all dashboard data ($totalItems, $lowStockItems, etc.)
 require_once __DIR__ . '/../backend/db.php';
+
+// Set component variables
+$pageTitle = 'Dashboard';          // used by head.php
+$pageCss = 'dashboard_style.css';  // used by head.php
+$activePage = 'dashboard';         // used by sidebar.php
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - ShoeInventory</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <?php require __DIR__ . '/components/head.php'; ?>
 </head>
 <body>
     <div class="page-wrapper">
-        <!-- ── Sidebar Navigation ──────────────────────────────── -->
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <div class="brand-icon"><img src="../images/shoes.png" alt="Logo"></div>
-                <span>ShoeInventory</span>
-            </div>
-            <ul class="sidebar-nav">
-                <li><a href="index.php" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li><a href="item.php"><i class="fa-solid fa-shoe-prints"></i> Items</a></li>
-                <li><a href="Supplier.php"><i class="fa-solid fa-truck-field"></i> Suppliers</a></li>
-                <li><a href="stock.php"><i class="fa-solid fa-boxes-stacked"></i> Stock</a></li>
-                <li><a href="transactions.php"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transactions</a></li>
-                <li><a href="user.php"><i class="fa-solid fa-users"></i> Users</a></li>
-                <li><a href="reports.php"><i class="fa-solid fa-file-lines"></i> Reports</a></li>
-            </ul>
-            <div class="sidebar-user">
-                <div class="user-avatar"><?= strtoupper(substr($_SESSION['username'], 0, 1)) ?></div>
-                <div class="user-info">
-                    <div class="user-name"><?= safe($_SESSION['username']) ?></div>
-                    <div class="user-role">User</div>
-                </div>
-                <a href="../backend/logout.php" class="logout-btn" title="Logout" onclick="event.preventDefault(); confirmLogout();">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                </a>
-            </div>
-        </aside>
+        <?php require __DIR__ . '/components/sidebar.php'; ?>
 
         <!-- ── Main Content ────────────────────────────────────── -->
         <main class="main-content">
@@ -159,6 +127,4 @@ require_once __DIR__ . '/../backend/db.php';
             </div>
         </main>
     </div>
-    <script src="../js/confirm-modal.js"></script>
-</body>
-</html>
+    <?php require __DIR__ . '/components/footer.php'; ?>

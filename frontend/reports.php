@@ -1,11 +1,10 @@
 <?php
 // frontend/reports.php
-session_start();
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Pragma: no-cache');
-if (!isset($_SESSION['username'])) { header("Location: login.php"); exit(); }
+
+// Best Practice: Use a shared auth component instead of repeating session/cache/redirect code.
+require_once __DIR__ . '/components/auth.php';
+
 require_once '../backend/classes/Database.php';
-if (!function_exists('safe')) { function safe($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); } }
 
 $db = (new Database())->getConnection();
 $search = $_GET['search'] ?? '';
@@ -31,36 +30,20 @@ if (!empty($search)) $stmt->bindValue(':search', "%$search%");
 if ($type !== 'All Types') $stmt->bindValue(':type', $type);
 $stmt->execute();
 $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Set component variables
+$pageTitle = 'Reports';              // used by head.php
+$pageCss = 'reportanalysis.css';     // used by head.php
+$activePage = 'reports';             // used by sidebar.php
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports - ShoeInventory</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/reportanalysis.css">
+    <?php require __DIR__ . '/components/head.php'; ?>
 </head>
 <body>
     <div class="page-wrapper">
-        <aside class="sidebar">
-            <div class="sidebar-brand"><div class="brand-icon"><img src="../images/shoes.png" alt="Logo"></div><span>ShoeInventory</span></div>
-            <ul class="sidebar-nav">
-                <li><a href="index.php"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li><a href="item.php"><i class="fa-solid fa-shoe-prints"></i> Items</a></li>
-                <li><a href="Supplier.php"><i class="fa-solid fa-truck-field"></i> Suppliers</a></li>
-                <li><a href="stock.php"><i class="fa-solid fa-boxes-stacked"></i> Stock</a></li>
-                <li><a href="transactions.php"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transactions</a></li>
-                <li><a href="user.php"><i class="fa-solid fa-users"></i> Users</a></li>
-                <li><a href="reports.php" class="active"><i class="fa-solid fa-file-lines"></i> Reports</a></li>
-            </ul>
-            <div class="sidebar-user">
-                <div class="user-avatar"><?= strtoupper(substr($_SESSION['username'], 0, 1)) ?></div>
-                <div class="user-info"><div class="user-name"><?= safe($_SESSION['username']) ?></div><div class="user-role">User</div></div>
-                <a href="../backend/logout.php" class="logout-btn" title="Logout" onclick="event.preventDefault(); confirmLogout();"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
-            </div>
-        </aside>
+        <?php require __DIR__ . '/components/sidebar.php'; ?>
 
         <main class="main-content">
             <div class="page-header"><h1>Reports</h1><p>View, filter, and export transaction reports</p></div>
@@ -105,6 +88,4 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </main>
     </div>
-    <script src="../js/confirm-modal.js"></script>
-</body>
-</html>
+    <?php require __DIR__ . '/components/footer.php'; ?>
