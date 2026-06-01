@@ -995,27 +995,11 @@ body {
     font-size: var(--font-size-sm);
   }
 
-  /* Hide less-important table columns on tablet to reduce cramping.
-   * Best Practice: Use .col-hide-tablet on <th>/<td> to mark columns
-   * that should be hidden on smaller screens. */
-  .col-hide-tablet {
-    display: none;
-  }
-
-  /* Action buttons stack vertically on tablet for better touch targets */
-  .data-table .actions-cell {
-    white-space: normal;
-  }
-
-  .data-table .actions-cell .btn {
-    display: block;
-    width: 100%;
-    margin: 0 0 4px 0;
-    text-align: center;
-  }
-
-  .data-table .actions-cell .btn + .btn {
-    margin-left: 0;
+  /* Best Practice: On mobile, tables keep all columns visible but the
+   * table-scroll wrapper enables horizontal scrolling. We set min-widths
+   * on the table so columns don't get crushed. */
+  .data-table {
+    min-width: 600px;
   }
 
   .page-header h1 {
@@ -1072,18 +1056,9 @@ body {
     padding: 16px;
   }
 
-  /* Hide even more columns on phone */
-  .col-hide-phone {
-    display: none;
-  }
-
   .data-table {
+    min-width: 500px;
     font-size: 0.82rem;
-  }
-
-  .data-table th,
-  .data-table td {
-    padding: 8px 10px;
   }
 
   .data-table th,

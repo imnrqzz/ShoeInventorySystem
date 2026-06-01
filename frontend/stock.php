@@ -72,7 +72,7 @@ require __DIR__ . '/components/toolbar.php';
             <div class="table-card">
                 <div class="table-scroll">
                     <table class="data-table">
-                        <thead><tr><th class="col-hide-phone">#</th><th>Item</th><th class="col-hide-tablet">Category</th><th class="col-hide-tablet">Supplier</th><th>Qty</th><th class="col-hide-phone">Min</th><th>Status</th><th class="col-hide-phone">Updated</th><th class="actions-cell">Actions</th></tr></thead>
+                        <thead><tr><th>#</th><th>Item</th><th>Category</th><th>Supplier</th><th>Qty</th><th>Min</th><th>Status</th><th>Updated</th><th class="actions-cell">Actions</th></tr></thead>
                         <tbody>
                             <?php if (!empty($inventoryItems)): foreach ($inventoryItems as $row):
                                 $qty = (int)$row['current_qty'];
@@ -104,10 +104,10 @@ require __DIR__ . '/components/toolbar.php';
                                 }
                             ?>
                             <tr>
-                                <td class="col-hide-phone"><?= safe($row['id']) ?></td>
+                                <td><?= safe($row['id']) ?></td>
                                 <td><strong><?= safe($row['item_name']) ?></strong></td>
-                                <td class="text-muted col-hide-tablet"><?= safe($row['category']) ?></td>
-                                <td class="col-hide-tablet"><?= safe($row['supplier_name']) ?></td>
+                                <td class="text-muted"><?= safe($row['category']) ?></td>
+                                <td><?= safe($row['supplier_name']) ?></td>
                                 <td>
                                     <div class="stock-level">
                                         <div class="stock-level-text">
@@ -120,12 +120,12 @@ require __DIR__ . '/components/toolbar.php';
                                         </div>
                                     </div>
                                 </td>
-                                <td class="col-hide-phone"><?= $min ?></td>
+                                <td><?= $min ?></td>
                                 <td><span class="badge <?= $isLow ? 'badge-danger' : ($barColor === 'warning' ? 'badge-warning' : 'badge-success') ?>"><?= $isLow ? 'Low' : ($barColor === 'warning' ? 'Near Low' : 'OK') ?></span></td>
-                                <td class="text-muted col-hide-phone"><?= date('M d, Y', strtotime($row['last_updated'])) ?></td>
+                                <td class="text-muted"><?= date('M d, Y', strtotime($row['last_updated'])) ?></td>
                                 <td class="actions-cell">
                                     <a href="stock.php?<?= http_build_query(array_merge($filters, ['edit_id' => $row['id']])) ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this stock item? This action cannot be undone.', '../backend/stock_delete.php?<?= http_build_query(array_merge($filters, ['id' => $row['id']])) ?>')">Del</button>
+                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this stock item? This action cannot be undone.', '../backend/stock_delete.php?<?= http_build_query(array_merge($filters, ['id' => $row['id']])) ?>')">Delete</button>
                                 </td>
                             </tr>
                             <?php endforeach; else: ?>

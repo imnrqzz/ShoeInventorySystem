@@ -65,19 +65,19 @@ require __DIR__ . '/components/toolbar.php';
             <div class="table-card">
                 <div class="table-scroll">
                     <table class="data-table">
-                        <thead><tr><th class="col-hide-phone">#</th><th class="col-hide-phone">Username</th><th>Name</th><th class="col-hide-tablet">Email</th><th>Role</th><th>Status</th><th class="actions-cell">Actions</th></tr></thead>
+                        <thead><tr><th>#</th><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th class="actions-cell">Actions</th></tr></thead>
                         <tbody>
                             <?php if (!empty($users)): foreach ($users as $user): ?>
                             <tr>
-                                <td class="col-hide-phone">#<?= safe($user['id']) ?></td>
-                                <td class="col-hide-phone"><?= safe($user['username'] ?? 'N/A') ?></td>
+                                <td>#<?= safe($user['id']) ?></td>
+                                <td><?= safe($user['username'] ?? 'N/A') ?></td>
                                 <td><strong><?= safe($user['name'] ?? '') ?></strong></td>
-                                <td class="text-muted col-hide-tablet"><?= safe($user['email'] ?? 'N/A') ?></td>
+                                <td class="text-muted"><?= safe($user['email'] ?? 'N/A') ?></td>
                                 <td><?= safe(ucfirst($user['role'] ?? 'User')) ?></td>
                                 <td><span class="badge <?= strtolower($user['status'] ?? '') === 'active' ? 'badge-success' : 'badge-neutral' ?>"><?= safe(ucfirst($user['status'] ?? '')) ?></span></td>
                                 <td class="actions-cell">
                                     <button class="btn btn-secondary btn-sm" onclick="openEditModal(<?= (int)$user['id'] ?>, '<?= safe($user['username'] ?? '') ?>', '<?= safe($user['name'] ?? '') ?>', '<?= safe($user['email'] ?? '') ?>', '<?= safe($user['status'] ?? 'active') ?>')">Edit</button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteUser(<?= (int)$user['id'] ?>)">Del</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteUser(<?= (int)$user['id'] ?>)">Delete</button>
                                 </td>
                             </tr>
                             <?php endforeach; else: ?>

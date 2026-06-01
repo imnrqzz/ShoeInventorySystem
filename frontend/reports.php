@@ -68,16 +68,16 @@ require __DIR__ . '/components/toolbar.php';
             <div class="table-card">
                 <div class="table-scroll">
                     <table class="data-table">
-                        <thead><tr><th class="col-nowrap">Date</th><th>Item</th><th class="col-hide-tablet">Supplier</th><th>Type</th><th>Qty</th><th class="col-hide-phone">By</th></tr></thead>
+                        <thead><tr><th class="col-nowrap">Date</th><th>Item</th><th>Supplier</th><th>Type</th><th>Qty</th><th>By</th></tr></thead>
                         <tbody>
                             <?php if (!empty($reports)): foreach ($reports as $row): ?>
                             <tr>
-                                <td class="text-muted col-nowrap"><?= date('M d', strtotime($row['transaction_date'])) ?><span class="col-hide-phone">, <?= date('Y', strtotime($row['transaction_date'])) ?></span></td>
+                                <td class="text-muted col-nowrap"><?= safe($row['transaction_date']) ?></td>
                                 <td><strong><?= safe($row['item_name']) ?></strong></td>
-                                <td class="col-hide-tablet"><?= safe($row['supplier_name']) ?></td>
+                                <td><?= safe($row['supplier_name']) ?></td>
                                 <td><span class="badge <?= $row['transaction_type'] === 'Sale' ? 'badge-warning' : ($row['transaction_type'] === 'Restock' ? 'badge-success' : 'badge-danger') ?>"><?= safe($row['transaction_type']) ?></span></td>
                                 <td><?= safe($row['quantity']) ?></td>
-                                <td class="col-hide-phone"><?= safe($row['user_name']) ?></td>
+                                <td><?= safe($row['user_name']) ?></td>
                             </tr>
                             <?php endforeach; else: ?>
                             <tr class="empty-row"><td colspan="6">No records found.</td></tr>
