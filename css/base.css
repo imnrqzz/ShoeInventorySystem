@@ -422,10 +422,9 @@ body {
   border-top: 1px solid var(--color-border-light);
   color: var(--color-text);
   vertical-align: middle;
-  /* Best Practice: break-word prevents long text (emails, item names)
-     from overflowing the table on narrow screens. */
-  word-break: break-word;
-  overflow-wrap: break-word;
+  /* Best Practice: nowrap keeps cell text on one line so the table maintains
+     its min-width and triggers horizontal scroll instead of crushing text. */
+  white-space: nowrap;
 }
 
 .data-table tbody tr:hover {
@@ -462,6 +461,7 @@ body {
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .badge-success {
@@ -999,9 +999,10 @@ body {
 
   /* Best Practice: On mobile, tables keep all columns visible but the
    * table-scroll wrapper enables horizontal scrolling. We set min-widths
-   * on the table so columns don't get crushed. */
+   * on the table so columns maintain readable sizing and the user can
+   * swipe right to see all data. */
   .data-table {
-    min-width: 600px;
+    min-width: 700px;
   }
 
   .page-header h1 {
@@ -1059,7 +1060,7 @@ body {
   }
 
   .data-table {
-    min-width: 500px;
+    min-width: 700px;
     font-size: 0.82rem;
   }
 
