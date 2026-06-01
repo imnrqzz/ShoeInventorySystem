@@ -43,7 +43,7 @@ require __DIR__ . '/components/toolbar.php';
                 <div class="table-scroll">
                     <table class="data-table">
                         <thead>
-                            <tr><th>#</th><th>Shoe Model</th><th>Price</th><th>Supplier</th><th>Stock</th><th>Min</th><th style="text-align:center;">Actions</th></tr>
+                            <tr><th>#</th><th>Shoe Model</th><th>Price</th><th>Supplier</th><th>Stock</th><th>Min</th><th class="actions-cell">Actions</th></tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($items)): foreach ($items as $item):
@@ -61,7 +61,7 @@ require __DIR__ . '/components/toolbar.php';
                                     </span>
                                 </td>
                                 <td><?= $min ?> pairs</td>
-                                <td style="text-align:center;">
+                                <td class="actions-cell">
                                     <a href="item.php?edit_id=<?= (int)$item['id'] ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
                                     <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this item? This action cannot be undone.', 'item.php?delete_id=<?= (int)$item['id'] ?>')">Delete</button>
                                 </td>

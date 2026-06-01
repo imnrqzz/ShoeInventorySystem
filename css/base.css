@@ -420,10 +420,24 @@ body {
   border-top: 1px solid var(--color-border-light);
   color: var(--color-text);
   vertical-align: middle;
+  /* Best Practice: break-word prevents long text (emails, item names)
+     from overflowing the table on narrow screens. */
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .data-table tbody tr:hover {
   background: #fafbfc;
+}
+
+/* Action buttons column — keeps Edit/Delete in a neat row with gap */
+.data-table .actions-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.data-table .actions-cell .btn + .btn {
+  margin-left: 6px;
 }
 
 .data-table .empty-row td {
@@ -973,10 +987,45 @@ body {
   .data-table th,
   .data-table td {
     padding: 10px 12px;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Hide less-important table columns on tablet to reduce cramping.
+   * Best Practice: Use .col-hide-tablet on <th>/<td> to mark columns
+   * that should be hidden on smaller screens. */
+  .col-hide-tablet {
+    display: none;
+  }
+
+  /* Action buttons stack vertically on tablet for better touch targets */
+  .data-table .actions-cell {
+    white-space: normal;
+  }
+
+  .data-table .actions-cell .btn {
+    display: block;
+    width: 100%;
+    margin: 0 0 4px 0;
+    text-align: center;
+  }
+
+  .data-table .actions-cell .btn + .btn {
+    margin-left: 0;
   }
 
   .page-header h1 {
     font-size: 1.15rem;
+  }
+
+  /* Modal buttons stack at tablet for comfortable touch */
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
   }
 }
 
@@ -995,32 +1044,41 @@ body {
     padding: 14px;
   }
 
+  /* Best Practice: Touch targets should be at least 44px tall.
+   * We keep font-size readable (0.82rem ≈ 11px, not smaller). */
   .btn {
-    padding: 8px 14px;
-    font-size: 0.75rem;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    min-height: 44px;
+  }
+
+  .btn-sm {
+    padding: 8px 12px;
+    min-height: 40px;
   }
 
   .modal-box {
     max-width: 100%;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    margin: auto 8px;
+    border-radius: var(--radius-lg);
   }
 
   .modal-body {
     padding: 16px;
   }
 
-  .modal-footer {
-    padding: 12px 16px;
-    flex-direction: column;
-  }
-
-  .modal-footer .btn {
-    width: 100%;
-    justify-content: center;
+  /* Hide even more columns on phone */
+  .col-hide-phone {
+    display: none;
   }
 
   .data-table {
-    font-size: 0.75rem;
+    font-size: 0.82rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
   }
 
   .data-table th,
