@@ -834,7 +834,11 @@ body {
 
 /* ── Tablet & Small Laptops (< 768px) ────────────────────── */
 @media (max-width: 768px) {
-  /* Show the mobile top bar */
+
+  /* ── Mobile Top Bar ──────────────────────────────────────
+   * Fixed bar at top with hamburger, app name, and user avatar.
+   * z-index 200 so it sits above everything except modals.
+   */
   .mobile-topbar {
     display: flex;
     align-items: center;
@@ -846,7 +850,7 @@ body {
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-border);
     padding: 0 16px;
-    z-index: 150;
+    z-index: 200;
     gap: 12px;
   }
 
@@ -859,10 +863,7 @@ body {
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
-  }
-
-  .mobile-topbar-menu:hover {
-    background: var(--color-border-light);
+    -webkit-tap-highlight-color: transparent;
   }
 
   .mobile-topbar-title {
@@ -885,28 +886,35 @@ body {
     font-weight: 700;
   }
 
-  /* Slide sidebar off-screen by default */
+  /* ── Sidebar Drawer ──────────────────────────────────────
+   * Slides in from the left. z-index 300 so it covers the
+   * top bar and everything else (except modals at 1000).
+   */
   .sidebar {
-    left: -260px;
-    transition: left 0.3s ease;
-    box-shadow: 2px 0 16px rgba(0,0,0,0.12);
+    left: -280px;
+    width: 260px;
+    transition: left 0.25s ease;
+    box-shadow: none;
+    z-index: 300;
   }
 
-  /* When .open is toggled, slide it into view */
   .sidebar.open {
     left: 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
   }
 
-  /* Show the dark overlay when sidebar is open */
+  /* Dark backdrop behind the sidebar — covers entire screen.
+   * z-index 250: above topbar (200) but below sidebar (300). */
   .sidebar-overlay {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 99;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 250;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s;
+    transition: opacity 0.25s;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .sidebar-overlay.active {
@@ -914,30 +922,29 @@ body {
     pointer-events: auto;
   }
 
-  /* Content fills full width, top padding for the fixed top bar */
+  /* ── Main Content ────────────────────────────────────────
+   * Full width, with top padding to clear the fixed top bar.
+   */
   .main-content {
     margin-left: 0;
-    padding: 70px 16px 20px;
+    padding: 68px 16px 20px;
   }
 
-  /* Page header stacks title and button vertically */
+  /* Page header stacks vertically */
   .page-header-with-action {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
 
-  /* Stat cards: 2 per row on tablet */
   .stat-cards {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Dashboard two-column grid stacks to single column */
   .grid-2col {
     grid-template-columns: 1fr;
   }
 
-  /* Forms go single column */
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -946,7 +953,6 @@ body {
     grid-column: span 1;
   }
 
-  /* Toolbar stacks vertically */
   .toolbar {
     flex-direction: column;
     align-items: stretch;
@@ -956,7 +962,6 @@ body {
     max-width: 100%;
   }
 
-  /* Modals take more width on mobile */
   .modal-box {
     max-width: 95%;
   }
@@ -965,13 +970,11 @@ body {
     max-width: 90%;
   }
 
-  /* Table cells get tighter padding */
   .data-table th,
   .data-table td {
     padding: 10px 12px;
   }
 
-  /* Page title slightly smaller */
   .page-header h1 {
     font-size: 1.15rem;
   }
@@ -980,10 +983,9 @@ body {
 /* ── Phone (< 480px) ─────────────────────────────────────── */
 @media (max-width: 480px) {
   .main-content {
-    padding: 66px 12px 16px;
+    padding: 62px 12px 16px;
   }
 
-  /* Stat cards: single column on small phones */
   .stat-cards {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -993,13 +995,11 @@ body {
     padding: 14px;
   }
 
-  /* Smaller buttons */
   .btn {
     padding: 8px 14px;
     font-size: 0.75rem;
   }
 
-  /* Modals go full width with less padding */
   .modal-box {
     max-width: 100%;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
@@ -1019,7 +1019,6 @@ body {
     justify-content: center;
   }
 
-  /* Table font size smaller */
   .data-table {
     font-size: 0.75rem;
   }
