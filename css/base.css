@@ -601,6 +601,67 @@ body {
 .progress-bar .fill.success { background: var(--color-success); }
 .progress-bar .fill.danger { background: var(--color-danger); }
 
+/* ── Stock Level Bar (Stock page) ─────────────────────────
+ * A wider, more informative progress bar for the stock table.
+ * Shows quantity relative to the minimum threshold:
+ *   - Bar "full" (100%) = 2× the minimum threshold
+ *   - Threshold marker sits at the 50% mark
+ *   - Color: red (below min) → amber (near min) → green (healthy)
+ */
+.stock-level {
+  min-width: 100px;
+}
+
+.stock-level-text {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.stock-level-qty {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.stock-level-unit {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.stock-bar {
+  position: relative;
+  height: 8px;
+  background: var(--color-border-light);
+  border-radius: 4px;
+  overflow: visible;
+}
+
+.stock-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.stock-bar-fill.danger  { background: var(--color-danger); }
+.stock-bar-fill.warning { background: var(--color-warning); }
+.stock-bar-fill.success { background: var(--color-success); }
+
+/* Threshold marker: a small vertical line at the 50% mark.
+ * This shows WHERE the minimum threshold sits on the bar,
+ * so you can see at a glance if stock is above or below it. */
+.stock-bar-threshold {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--color-text-muted);
+  border-radius: 1px;
+  opacity: 0.5;
+}
+
 /* ── Form Validation Styles ───────────────────────────────
  * Used by form-validation.js to show inline error messages.
  * .input-error: red border on the invalid input/select

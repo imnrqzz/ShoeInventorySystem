@@ -75,9 +75,33 @@ require __DIR__ . '/components/toolbar.php';
                         <thead><tr><th>#</th><th>Item</th><th>Category</th><th>Supplier</th><th>Qty</th><th>Min</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
                         <tbody>
                             <?php if (!empty($inventoryItems)): foreach ($inventoryItems as $row):
-                                $isLow = $row['current_qty'] < $row['min_threshold'];
-                                $maxCap = max($row['current_qty'], $row['min_threshold'] * 2);
-                                $fill = ($maxCap > 0) ? min(($row['current_qty'] / $maxCap) * 100, 100) : 0;
+                                $qty = (int)$row['current_qty'];
+                                $min = (int)$row['min_threshold'];
+                                $isLow = $qty < $min;
+
+                                /*
+                                 * Stock Level Bar Calculation
+                                 *
+                                 * The bar shows stock health relative to the minimum threshold:
+                                 *   - 100% of the bar = 2× the min threshold ("comfortable" level)
+                                 *   - 50% mark = exactly at the min threshold (warning zone)
+                                 *   - Below 50% = under threshold (danger zone)
+                                 *   - Capped at 100% for items well above threshold
+                                 *
+                                 * This gives a meaningful visual: you can see at a glance
+                                 * how far each item is from its danger line.
+                                 */
+                                $comfortLevel = max($min * 2, 1); // 2× threshold = "full" bar
+                                $fillPct = min(($qty / $comfortLevel) * 100, 100);
+
+                                // Color: red if below threshold, amber if at/near threshold, green if healthy
+                                if ($qty < $min) {
+                                    $barColor = 'danger';       // Red — below minimum
+                                } elseif ($qty < $min * 1.5) {
+                                    $barColor = 'warning';      // Amber — near minimum
+                                } else {
+                                    $barColor = 'success';      // Green — healthy stock
+                                }
                             ?>
                             <tr>
                                 <td><?= safe($row['id']) ?></td>
@@ -85,11 +109,21 @@ require __DIR__ . '/components/toolbar.php';
                                 <td class="text-muted"><?= safe($row['category']) ?></td>
                                 <td><?= safe($row['supplier_name']) ?></td>
                                 <td>
-                                    <span class="<?= $isLow ? 'text-danger' : 'text-success' ?> font-bold"><?= number_format($row['current_qty'], 0) ?> <?= safe($row['unit'] ?? 'pairs') ?></span>
-                                    <div class="progress-bar"><div class="fill <?= $isLow ? 'danger' : 'success' ?>" style="width:<?= $fill ?>%"></div></div>
+                                    <!-- Stock level display with visual bar -->
+                                    <div class="stock-level">
+                                        <div class="stock-level-text">
+                                            <span class="stock-level-qty <?= $isLow ? 'text-danger' : '' ?>"><?= $qty ?></span>
+                                            <span class="stock-level-unit"><?= safe($row['unit'] ?? 'pairs') ?></span>
+                                        </div>
+                                        <div class="stock-bar">
+                                            <div class="stock-bar-fill <?= $barColor ?>" style="width:<?= round($fillPct) ?>%"></div>
+                                            <!-- Threshold marker: a small line at the 50% mark showing where the minimum is -->
+                                            <div class="stock-bar-threshold" title="Min: <?= $min ?>"></div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td><?= number_format($row['min_threshold'], 0) ?> <?= safe($row['unit'] ?? 'pairs') ?></td>
-                                <td><span class="badge <?= $isLow ? 'badge-danger' : 'badge-success' ?>"><?= $isLow ? 'Low' : 'OK' ?></span></td>
+                                <td><?= $min ?> <?= safe($row['unit'] ?? 'pairs') ?></td>
+                                <td><span class="badge <?= $isLow ? 'badge-danger' : ($barColor === 'warning' ? 'badge-warning' : 'badge-success') ?>"><?= $isLow ? 'Low' : ($barColor === 'warning' ? 'Near Low' : 'OK') ?></span></td>
                                 <td class="text-muted"><?= date('M d, Y', strtotime($row['last_updated'])) ?></td>
                                 <td>
                                     <a href="stock.php?<?= http_build_query(array_merge($filters, ['edit_id' => $row['id']])) ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
