@@ -6,7 +6,7 @@
  * modal that matches the app's light & minimal design.
  *
  * Usage:
- *   confirmAction('Are you sure?', function() { /* do something */ });
+ *   confirmAction('Are you sure?', function() { doSomething(); });
  *   confirmAction('Delete this item?', function() { window.location.href = 'delete-url'; }, 'danger');
  *
  * The third argument (type) changes the confirm button style:
