@@ -1,198 +1,160 @@
 <?php
+// frontend/index.php
+
+// Best Practice: Check login status before showing any page content.
 session_start();
-// Check if user is logged in
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); // Redirect to login if not logged in
+    header("Location: login.php");
     exit();
 }
-require_once __DIR__.'/../backend/db.php';
+
+// db.php loads Database, InventoryManager, TransactionManager
+// and fetches all dashboard data ($totalItems, $lowStockItems, etc.)
+require_once __DIR__ . '/../backend/db.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shoes Inventory System - Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ShoeInventory</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/dashboard_style.css?v=<?php echo time(); ?>" />
+    <link rel="stylesheet" href="../css/dashboard_style.css">
 </head>
 <body>
-    <div class="page">
-        <header class="topbar">
-            <div class="brand">
-                <div class="logo">
-                    <img src="../images/shoes.png" alt="Shoes Logo" style="width: 60%; height: 60%; object-fit: contain;" />
-                </div>
-                <div class="title">
-                    <span>Shoes Inventory System</span>
-                </div>
+    <div class="page-wrapper">
+        <!-- ── Sidebar Navigation ──────────────────────────────── -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon"><img src="../images/shoes.png" alt="Logo"></div>
+                <span>ShoeInventory</span>
             </div>
-
-            <nav class="nav-links">
-                <a href="index.php" class="active">Dashboard</a>
-                <a href="item.php">Items</a>
-                <a href="Supplier.php">Suppliers</a>
-                <a href="transactions.php">Transactions</a>
-                <a href="stock.php">Stock</a>
-                <a href="user.php">Users</a>
-                <a href="reports.php">Reports</a>
-            </nav>
-
-            <div class="top-actions">
-                <div class="user-badge">
-                <div class="profile-avatar-glyph" style="display: flex; align-items: center; justify-content: center; width: 30px; height: 30px;">
-                    <i class="fa-solid fa-user"></i>
+            <ul class="sidebar-nav">
+                <li><a href="index.php" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="item.php"><i class="fa-solid fa-shoe-prints"></i> Items</a></li>
+                <li><a href="Supplier.php"><i class="fa-solid fa-truck-field"></i> Suppliers</a></li>
+                <li><a href="stock.php"><i class="fa-solid fa-boxes-stacked"></i> Stock</a></li>
+                <li><a href="transactions.php"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transactions</a></li>
+                <li><a href="user.php"><i class="fa-solid fa-users"></i> Users</a></li>
+                <li><a href="reports.php"><i class="fa-solid fa-file-lines"></i> Reports</a></li>
+            </ul>
+            <div class="sidebar-user">
+                <div class="user-avatar"><?= strtoupper(substr($_SESSION['username'], 0, 1)) ?></div>
+                <div class="user-info">
+                    <div class="user-name"><?= safe($_SESSION['username']) ?></div>
+                    <div class="user-role">User</div>
                 </div>
-                <span><?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                <a href="../backend/logout.php" class="logout-button" title="Logout" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline>
-                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
+                <a href="../backend/logout.php" class="logout-btn" title="Logout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 </a>
             </div>
-        </header>
+        </aside>
 
-        <section class="dashboard-panel">
-            <h2>Dashboard Overview</h2>
-            <div class="summary">
-                <article class="dashboard-card">
-                    <div class="icon">📦</div>
-                    <div class="value"><?= safe($totalItems) ?></div>
-                    <div class="label">Total Items</div>
-                </article>
-                <article class="dashboard-card">
-                    <div class="icon">🚚</div>
-                    <div class="value"><?= safe($activeSuppliers) ?></div>
-                    <div class="label">Active Suppliers</div>
-                </article>
-                <article class="dashboard-card">
-                    <div class="icon">👥</div>
-                    <div class="value"><?= safe($systemUsers) ?></div>
-                    <div class="label">System Users</div>
-                </article>
-                <article class="dashboard-card">
-                    <div class="icon">🔁</div>
-                    <div class="value"><?= safe($transactionsCount) ?></div>
-                    <div class="label">Transactions</div>
-                </article>
-                <article class="dashboard-card danger">
-                    <div class="icon">⚠️</div>
-                    <div class="value"><?= safe($lowStockAlerts) ?></div>
-                    <div class="label">Low Stock Alerts</div>
-                </article>
+        <!-- ── Main Content ────────────────────────────────────── -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p>Overview of your inventory</p>
             </div>
-        </section>
 
-        <div class="tables-row">
-            <section class="panel">
-                <div class="panel-header alert">
-                    <span class="dot"></span>
-                    Low Stock Alerts
+            <!-- KPI Stat Cards -->
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-label">Total Items</div>
+                    <div class="stat-value"><?= safe($totalItems) ?></div>
                 </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Item Name</th>
-                                    <th>Current</th>
-                                    <th>Min Qty</th>
-                                    <th>Supplier</th>
-                                </tr>
-                            </thead>
+                <div class="stat-card">
+                    <div class="stat-label">Active Suppliers</div>
+                    <div class="stat-value"><?= safe($activeSuppliers) ?></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">System Users</div>
+                    <div class="stat-value"><?= safe($systemUsers) ?></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Transactions</div>
+                    <div class="stat-value"><?= safe($transactionsCount) ?></div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-label">Low Stock Alerts</div>
+                    <div class="stat-value"><?= safe($lowStockAlerts) ?></div>
+                </div>
+            </div>
+
+            <!-- Two-column table row -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <!-- Low Stock Alerts -->
+                <div class="table-card">
+                    <div class="table-card-header">Low Stock Alerts</div>
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead><tr><th>Item</th><th>Current</th><th>Min</th><th>Supplier</th></tr></thead>
                             <tbody>
-                                <?php if(!empty($lowStockItems)): foreach($lowStockItems as $item): ?>
-                                    <tr>
-                                        <td><strong><?= safe($item['item_name']) ?></strong></td>
-                                        <td style="color: #ef4444; font-weight: 600;"><?= safe($item['quantity']) ?></td>
-                                        <td><?= safe($item['min_quantity']) ?></td>
-                                        <td><?= safe($item['supplier_name']) ?></td>
-                                    </tr>
+                                <?php if (!empty($lowStockItems)): foreach ($lowStockItems as $item): ?>
+                                <tr>
+                                    <td><strong><?= safe($item['item_name']) ?></strong></td>
+                                    <td class="text-danger font-bold"><?= safe($item['quantity']) ?></td>
+                                    <td><?= safe($item['min_quantity']) ?></td>
+                                    <td><?= safe($item['supplier_name']) ?></td>
+                                </tr>
                                 <?php endforeach; else: ?>
-                                    <tr><td colspan="4" style="color: var(--text-muted); text-align: center; padding: 20px;">No low stock items at the moment.</td></tr>
+                                <tr class="empty-row"><td colspan="4">No low stock items.</td></tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </section>
 
-            <section class="panel">
-                <div class="panel-header">
-                    <span class="dot" style="background-color: #3b82f6;"></span>
-                    Recent Transactions
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Type</th>
-                                    <th>Qty</th>
-                                    <th>Processed By</th>
-                                </tr>
-                            </thead>
+                <!-- Recent Transactions -->
+                <div class="table-card">
+                    <div class="table-card-header">Recent Transactions</div>
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead><tr><th>Item</th><th>Type</th><th>Qty</th><th>By</th></tr></thead>
                             <tbody>
-                                <?php if(!empty($recentTransactions)): foreach($recentTransactions as $tx): ?>
-                                    <tr>
-                                        <td><?= safe($tx['item_name']) ?></td>
-                                        <td>
-                                            <span style="font-weight: 600; color: <?= $tx['transaction_type'] === 'In' ? '#10b981' : '#3b82f6' ?>;">
-                                                <?= safe($tx['transaction_type']) ?>
-                                            </span>
-                                        </td>
-                                        <td><?= safe($tx['quantity']) ?></td>
-                                        <td><?= safe($tx['user_name']) ?></td>
-                                    </tr>
+                                <?php if (!empty($recentTransactions)): foreach ($recentTransactions as $tx): ?>
+                                <tr>
+                                    <td><?= safe($tx['item_name']) ?></td>
+                                    <td><span class="font-bold"><?= safe($tx['transaction_type']) ?></span></td>
+                                    <td><?= safe($tx['quantity']) ?></td>
+                                    <td><?= safe($tx['user_name']) ?></td>
+                                </tr>
                                 <?php endforeach; else: ?>
-                                    <tr><td colspan="4" style="color: var(--text-muted); text-align: center; padding: 20px;">No recent transactions log found.</td></tr>
+                                <tr class="empty-row"><td colspan="4">No recent transactions.</td></tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </section>
-        </div>
-        
-        <section class="panel items-panel" style="margin-top: 24px;">
-            <div class="panel-header">
-                <span class="dot" style="background-color: #4d57db;"></span>
-                Inventory Master Stock Preview
             </div>
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="items-table">
+
+            <!-- Inventory Master Table -->
+            <div class="table-card">
+                <div class="table-card-header">Inventory Overview</div>
+                <div class="table-scroll">
+                    <table class="data-table">
                         <thead>
-                            <tr>
-                                <th style="width: 10%;">ID</th>
-                                <th>Item Name</th>
-                                <th>In Stock</th>
-                                <th>Threshold (Min)</th>
-                                <th>Supplier/Brand</th>
-                                <th>Price</th>
-                            </tr>
+                            <tr><th>ID</th><th>Item Name</th><th>In Stock</th><th>Min</th><th>Supplier</th><th>Price</th></tr>
                         </thead>
                         <tbody>
-                            <?php if(!empty($items)): foreach($items as $it): ?>
-                                <tr>
-                                    <td>#<?= safe($it['id']) ?></td>
-                                    <td><strong><?= safe($it['name']) ?></strong></td>
-                                    <td><?= safe($it['quantity']) ?></td>
-                                    <td><?= safe($it['min_quantity']) ?></td>
-                                    <td><?= safe($it['supplier_name']) ?></td>
-                                    <td style="font-weight: 600; color: #1e293b;">$<?= number_format((float)$it['price'], 2) ?></td>
-                                </tr>
+                            <?php if (!empty($items)): foreach ($items as $it): ?>
+                            <tr>
+                                <td>#<?= safe($it['id']) ?></td>
+                                <td><strong><?= safe($it['name']) ?></strong></td>
+                                <td><?= safe($it['quantity']) ?></td>
+                                <td><?= safe($it['min_quantity']) ?></td>
+                                <td><?= safe($it['supplier_name']) ?></td>
+                                <td class="font-bold">$<?= number_format((float)$it['price'], 2) ?></td>
+                            </tr>
                             <?php endforeach; else: ?>
-                                <tr><td colspan="6" style="color: var(--text-muted); text-align: center; padding: 20px;">No master stock items initialized yet.</td></tr>
+                            <tr class="empty-row"><td colspan="6">No items in inventory.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </section>
+        </main>
     </div>
 </body>
 </html>
