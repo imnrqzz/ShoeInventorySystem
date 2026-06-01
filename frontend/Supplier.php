@@ -38,11 +38,11 @@ require __DIR__ . '/components/toolbar.php';
             <div class="table-card">
                 <div class="table-scroll">
                     <table class="data-table">
-                        <thead><tr><th>#</th><th>Company</th><th class="col-hide-tablet">Contact</th><th class="col-hide-tablet">Category</th><th class="col-hide-phone">Phone/Email</th><th>Status</th><th class="actions-cell">Actions</th></tr></thead>
+                        <thead><tr><th class="col-hide-phone">#</th><th>Company</th><th class="col-hide-tablet">Contact</th><th class="col-hide-tablet">Category</th><th class="col-hide-phone">Phone/Email</th><th>Status</th><th class="actions-cell">Actions</th></tr></thead>
                         <tbody>
                             <?php if (!empty($suppliers)): foreach ($suppliers as $row): ?>
                             <tr>
-                                <td><?= (int)$row['order_id'] ?></td>
+                                <td class="col-hide-phone"><?= (int)$row['order_id'] ?></td>
                                 <td><strong><?= safe($row['company_name']) ?></strong></td>
                                 <td class="col-hide-tablet"><?= safe($row['contact_person'] ?? '') ?></td>
                                 <td class="col-hide-tablet"><?= safe($row['category'] ?? '') ?></td>
@@ -50,7 +50,7 @@ require __DIR__ . '/components/toolbar.php';
                                 <td><span class="badge <?= $row['status'] === 'Active' ? 'badge-success' : 'badge-neutral' ?>"><?= safe($row['status']) ?></span></td>
                                 <td class="actions-cell">
                                     <a href="Supplier.php?edit_id=<?= (int)$row['order_id'] ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this supplier? This action cannot be undone.', 'Supplier.php?delete_id=<?= (int)$row['order_id'] ?>')">Delete</button>
+                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this supplier? This action cannot be undone.', 'Supplier.php?delete_id=<?= (int)$row['order_id'] ?>')">Del</button>
                                 </td>
                             </tr>
                             <?php endforeach; else: ?>

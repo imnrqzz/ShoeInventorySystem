@@ -77,7 +77,7 @@ require __DIR__ . '/components/toolbar.php';
                                 <td><span class="badge <?= strtolower($user['status'] ?? '') === 'active' ? 'badge-success' : 'badge-neutral' ?>"><?= safe(ucfirst($user['status'] ?? '')) ?></span></td>
                                 <td class="actions-cell">
                                     <button class="btn btn-secondary btn-sm" onclick="openEditModal(<?= (int)$user['id'] ?>, '<?= safe($user['username'] ?? '') ?>', '<?= safe($user['name'] ?? '') ?>', '<?= safe($user['email'] ?? '') ?>', '<?= safe($user['status'] ?? 'active') ?>')">Edit</button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteUser(<?= (int)$user['id'] ?>)">Delete</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteUser(<?= (int)$user['id'] ?>)">Del</button>
                                 </td>
                             </tr>
                             <?php endforeach; else: ?>

@@ -43,7 +43,15 @@ require __DIR__ . '/components/toolbar.php';
                 <div class="table-scroll">
                     <table class="data-table">
                         <thead>
-                            <tr><th>#</th><th>Shoe Model</th><th>Price</th><th>Supplier</th><th>Stock</th><th>Min</th><th class="actions-cell">Actions</th></tr>
+                            <tr>
+                                <th class="col-hide-phone">#</th>
+                                <th>Shoe Model</th>
+                                <th class="col-nowrap">Price</th>
+                                <th class="col-hide-tablet">Supplier</th>
+                                <th>Stock</th>
+                                <th class="col-hide-phone">Min</th>
+                                <th class="actions-cell">Actions</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($items)): foreach ($items as $item):
@@ -51,19 +59,17 @@ require __DIR__ . '/components/toolbar.php';
                                 $min = (int)$item['min_quantity'];
                             ?>
                             <tr>
-                                <td><?= (int)$item['id'] ?></td>
+                                <td class="col-hide-phone"><?= (int)$item['id'] ?></td>
                                 <td><strong><?= safe($item['name']) ?></strong></td>
-                                <td>$<?= number_format($item['price'], 2) ?></td>
-                                <td><?= safe($item['supplier_name'] ?: '—') ?></td>
+                                <td class="col-nowrap">$<?= number_format($item['price'], 2) ?></td>
+                                <td class="col-hide-tablet"><?= safe($item['supplier_name'] ?: '—') ?></td>
                                 <td>
-                                    <span class="badge <?= $qty <= $min ? 'badge-danger' : 'badge-success' ?>">
-                                        <?= $qty ?> pairs
-                                    </span>
+                                    <span class="badge <?= $qty <= $min ? 'badge-danger' : 'badge-success' ?>"><?= $qty ?></span>
                                 </td>
-                                <td><?= $min ?> pairs</td>
+                                <td class="col-hide-phone"><?= $min ?></td>
                                 <td class="actions-cell">
                                     <a href="item.php?edit_id=<?= (int)$item['id'] ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this item? This action cannot be undone.', 'item.php?delete_id=<?= (int)$item['id'] ?>')">Delete</button>
+                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this item? This action cannot be undone.', 'item.php?delete_id=<?= (int)$item['id'] ?>')">Del</button>
                                 </td>
                             </tr>
                             <?php endforeach; else: ?>

@@ -55,12 +55,12 @@ require __DIR__ . '/components/toolbar.php';
             <div class="table-card">
                 <div class="table-scroll">
                     <table class="data-table">
-                        <thead><tr><th class="col-hide-phone">#</th><th>Date</th><th>Item</th><th>Type</th><th>Qty</th><th class="col-hide-phone">By</th><th class="col-hide-tablet">Reason</th></tr></thead>
+                        <thead><tr><th class="col-hide-phone">#</th><th class="col-nowrap">Date</th><th>Item</th><th>Type</th><th>Qty</th><th class="col-hide-phone">By</th><th class="col-hide-tablet">Reason</th></tr></thead>
                         <tbody>
                             <?php if (!empty($transactions)): foreach ($transactions as $tx): ?>
                             <tr>
                                 <td class="col-hide-phone">#<?= safe($tx['id']) ?></td>
-                                <td class="text-muted"><?= safe($tx['transaction_date']) ?></td>
+                                <td class="text-muted col-nowrap"><?= date('M d', strtotime($tx['transaction_date'])) ?><span class="col-hide-phone">, <?= date('Y', strtotime($tx['transaction_date'])) ?></span></td>
                                 <td><strong><?= safe($tx['item_name']) ?></strong></td>
                                 <td><span class="badge <?= $tx['transaction_type'] === 'Sale' ? 'badge-warning' : ($tx['transaction_type'] === 'Restock' ? 'badge-success' : 'badge-danger') ?>"><?= safe($tx['transaction_type']) ?></span></td>
                                 <td><?= safe($tx['quantity']) ?></td>

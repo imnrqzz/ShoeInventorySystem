@@ -440,6 +440,11 @@ body {
   margin-left: 6px;
 }
 
+/* Prevent specific columns from wrapping (prices, short values) */
+.col-nowrap {
+  white-space: nowrap;
+}
+
 .data-table .empty-row td {
   text-align: center;
   padding: 32px 20px;

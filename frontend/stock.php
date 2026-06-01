@@ -72,7 +72,7 @@ require __DIR__ . '/components/toolbar.php';
             <div class="table-card">
                 <div class="table-scroll">
                     <table class="data-table">
-                        <thead><tr><th>#</th><th>Item</th><th class="col-hide-tablet">Category</th><th class="col-hide-tablet">Supplier</th><th>Qty</th><th>Min</th><th>Status</th><th class="col-hide-phone">Updated</th><th>Actions</th></tr></thead>
+                        <thead><tr><th class="col-hide-phone">#</th><th>Item</th><th class="col-hide-tablet">Category</th><th class="col-hide-tablet">Supplier</th><th>Qty</th><th class="col-hide-phone">Min</th><th>Status</th><th class="col-hide-phone">Updated</th><th class="actions-cell">Actions</th></tr></thead>
                         <tbody>
                             <?php if (!empty($inventoryItems)): foreach ($inventoryItems as $row):
                                 $qty = (int)$row['current_qty'];
@@ -104,12 +104,11 @@ require __DIR__ . '/components/toolbar.php';
                                 }
                             ?>
                             <tr>
-                                <td><?= safe($row['id']) ?></td>
+                                <td class="col-hide-phone"><?= safe($row['id']) ?></td>
                                 <td><strong><?= safe($row['item_name']) ?></strong></td>
                                 <td class="text-muted col-hide-tablet"><?= safe($row['category']) ?></td>
                                 <td class="col-hide-tablet"><?= safe($row['supplier_name']) ?></td>
                                 <td>
-                                    <!-- Stock level display with visual bar -->
                                     <div class="stock-level">
                                         <div class="stock-level-text">
                                             <span class="stock-level-qty <?= $isLow ? 'text-danger' : '' ?>"><?= $qty ?></span>
@@ -117,17 +116,16 @@ require __DIR__ . '/components/toolbar.php';
                                         </div>
                                         <div class="stock-bar">
                                             <div class="stock-bar-fill <?= $barColor ?>" style="width:<?= round($fillPct) ?>%"></div>
-                                            <!-- Threshold marker: a small line at the 50% mark showing where the minimum is -->
                                             <div class="stock-bar-threshold" title="Min: <?= $min ?>"></div>
                                         </div>
                                     </div>
                                 </td>
-                                <td><?= $min ?> <?= safe($row['unit'] ?? 'pairs') ?></td>
+                                <td class="col-hide-phone"><?= $min ?></td>
                                 <td><span class="badge <?= $isLow ? 'badge-danger' : ($barColor === 'warning' ? 'badge-warning' : 'badge-success') ?>"><?= $isLow ? 'Low' : ($barColor === 'warning' ? 'Near Low' : 'OK') ?></span></td>
                                 <td class="text-muted col-hide-phone"><?= date('M d, Y', strtotime($row['last_updated'])) ?></td>
-                                <td>
+                                <td class="actions-cell">
                                     <a href="stock.php?<?= http_build_query(array_merge($filters, ['edit_id' => $row['id']])) ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this stock item? This action cannot be undone.', '../backend/stock_delete.php?<?= http_build_query(array_merge($filters, ['id' => $row['id']])) ?>')">Delete</button>
+                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this stock item? This action cannot be undone.', '../backend/stock_delete.php?<?= http_build_query(array_merge($filters, ['id' => $row['id']])) ?>')">Del</button>
                                 </td>
                             </tr>
                             <?php endforeach; else: ?>
