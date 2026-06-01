@@ -51,7 +51,7 @@ if (!function_exists('safe')) {
                     <div class="user-name"><?= safe($_SESSION['username']) ?></div>
                     <div class="user-role">User</div>
                 </div>
-                <a href="../backend/logout.php" class="logout-btn" title="Logout">
+                <a href="../backend/logout.php" class="logout-btn" title="Logout" onclick="event.preventDefault(); confirmLogout();">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 </a>
             </div>
@@ -96,7 +96,7 @@ if (!function_exists('safe')) {
                                 <td><?= $min ?> pairs</td>
                                 <td style="text-align:center;">
                                     <a href="item.php?edit_id=<?= (int)$item['id'] ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
-                                    <button class="btn btn-danger btn-sm" onclick="if(confirm('Delete this item?')) window.location.href='item.php?delete_id=<?= (int)$item['id'] ?>';">Delete</button>
+                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this item? This action cannot be undone.', 'item.php?delete_id=<?= (int)$item['id'] ?>')">Delete</button>
                                 </td>
                             </tr>
                             <?php endforeach; else: ?>
@@ -195,5 +195,6 @@ if (!function_exists('safe')) {
         </div>
     </div>
     <?php endif; ?>
+    <script src="../js/confirm-modal.js"></script>
 </body>
 </html>

@@ -58,7 +58,7 @@ $cancelUrl = 'stock.php' . ($filters ? '?' . http_build_query($filters) : '');
             <div class="sidebar-user">
                 <div class="user-avatar"><?= strtoupper(substr($_SESSION['username'], 0, 1)) ?></div>
                 <div class="user-info"><div class="user-name"><?= safe($_SESSION['username']) ?></div><div class="user-role">User</div></div>
-                <a href="../backend/logout.php" class="logout-btn" title="Logout"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
+                <a href="../backend/logout.php" class="logout-btn" title="Logout" onclick="event.preventDefault(); confirmLogout();"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></a>
             </div>
         </aside>
 
@@ -107,7 +107,7 @@ $cancelUrl = 'stock.php' . ($filters ? '?' . http_build_query($filters) : '');
                                 <td class="text-muted"><?= date('M d, Y', strtotime($row['last_updated'])) ?></td>
                                 <td>
                                     <a href="stock.php?<?= http_build_query(array_merge($filters, ['edit_id' => $row['id']])) ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
-                                    <a href="../backend/stock_delete.php?<?= http_build_query(array_merge($filters, ['id' => $row['id']])) ?>" class="btn btn-danger btn-sm" style="text-decoration:none;" onclick="return confirm('Delete this product?');">Delete</a>
+                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this stock item? This action cannot be undone.', '../backend/stock_delete.php?<?= http_build_query(array_merge($filters, ['id' => $row['id']])) ?>')">Delete</button>
                                 </td>
                             </tr>
                             <?php endforeach; else: ?>
@@ -143,5 +143,6 @@ $cancelUrl = 'stock.php' . ($filters ? '?' . http_build_query($filters) : '');
         </div>
     </div>
     <?php endif; ?>
+    <script src="../js/confirm-modal.js"></script>
 </body>
 </html>
