@@ -140,6 +140,51 @@ body {
   border: 1px solid #fecaca;
 }
 
+/* ── Validation Styles ──────────────────────────────────────
+ * .input-error: red border on invalid fields
+ * .field-error: red error message text below the field
+ * .field-hint: gray helper text (always visible, e.g. "Min 3 characters")
+ */
+.form-group input.input-error {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.field-error {
+  display: block;
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 4px;
+  min-height: 0;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+/* ── Password Strength Bar ─────────────────────────────────
+ * Best Practice: A visual indicator that shows how strong the password is.
+ * The bar fills up and changes color (red → yellow → green) as the user
+ * adds length, uppercase, numbers, and special characters.
+ */
+.password-strength {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.password-strength-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 2px;
+  transition: width 0.3s, background 0.3s;
+}
+
 @media (max-width: 480px) {
   .register-card {
     padding: 24px 18px;

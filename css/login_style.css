@@ -188,6 +188,24 @@ body {
   background: #1d4ed8;
 }
 
+/* ── Validation Styles ──────────────────────────────────────
+ * Best Practice: Visual feedback on form errors using CSS classes.
+ * .input-error adds a red border to indicate which field has an issue.
+ * .field-error is a small red text below the field explaining the problem.
+ */
+.form-group input.input-error {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.field-error {
+  display: block;
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 4px;
+  min-height: 0;
+}
+
 @media (max-width: 480px) {
   .login-card {
     padding: 28px 20px;

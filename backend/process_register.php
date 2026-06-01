@@ -11,15 +11,39 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // 2. Capture and sanitize inputs
-$name     = trim($_POST['name'] ?? '');
-$email    = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-$username = trim($_POST['username'] ?? '');
-$password = $_POST['password'] ?? '';
+$name            = trim($_POST['name'] ?? '');
+$email           = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+$username        = trim($_POST['username'] ?? '');
+$password        = $_POST['password'] ?? '';
+$repeatPassword  = $_POST['repeatpassword'] ?? '';
 
-// Basic server-side validation
-if ($name === '' || $username === '' || $password === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) { 
-    header('Location: ../frontend/register.php?err=invalid_input'); 
-    exit; 
+// Best Practice: Server-side validation is the real security layer.
+// Client-side (JavaScript) validation can be bypassed, so we must
+// re-check every rule here on the server before touching the database.
+
+// Check all required fields are present and email is valid format
+if ($name === '' || $username === '' || $password === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    header('Location: ../frontend/register.php?err=invalid_input');
+    exit;
+}
+
+// Validate username length (min 3 characters)
+if (strlen($username) < 3) {
+    header('Location: ../frontend/register.php?err=username_short');
+    exit;
+}
+
+// Validate password length (min 6 characters)
+if (strlen($password) < 6) {
+    header('Location: ../frontend/register.php?err=password_short');
+    exit;
+}
+
+// Best Practice: Always verify password confirmation matches on the server.
+// Even though JavaScript checks this, a user could submit the form directly.
+if ($password !== $repeatPassword) {
+    header('Location: ../frontend/register.php?err=password_mismatch');
+    exit;
 }
 
 // 3. Instantiate your Database class wrapper and fetch the PDO handle
