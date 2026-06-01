@@ -323,9 +323,51 @@ body {
   cursor: pointer;
 }
 
+/* Active search/filter state — highlights the input when a search is applied */
+.toolbar .search-input.search-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.toolbar-select.filter-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
 .toolbar select:focus,
 .toolbar-select:focus {
   border-color: var(--color-primary);
+}
+
+/* ── Active Filters Indicator ──────────────────────────────
+ * Shows below the toolbar when search/filter is applied.
+ * Gives users a clear visual of what's filtering their results. */
+.toolbar-active-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: -12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.toolbar-filter-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.toolbar-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  white-space: nowrap;
 }
 
 /* ── Buttons ──────────────────────────────────────────────── */
