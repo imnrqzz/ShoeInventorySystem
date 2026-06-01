@@ -26,8 +26,13 @@ $manager = new InventoryManager($pdo);
 $transManager = new TransactionManager($pdo);
 
 // Global safe escaping string utility function
-function safe($v) {
-    return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+// Best Practice: Check if function already exists before defining it.
+// This prevents a fatal "Cannot redeclare" error when multiple files
+// (like auth.php and db.php) are both included in the same page.
+if (!function_exists('safe')) {
+    function safe($v) {
+        return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+    }
 }
 
 // 1. Fetch Stats Counters using OOP methods
