@@ -1,91 +1,91 @@
 # ShoeInventorySystem
 
-This is a web-based inventory management system built with PHP and MySQL, designed specifically for managing a shoe store's inventory. It provides a comprehensive suite of tools for tracking items, suppliers, stock levels, and user activity.
+A comprehensive, web-based inventory management system built with PHP and MySQL, specifically designed for a shoe store. The application provides a full suite of tools for tracking shoe items, managing suppliers, monitoring stock levels, logging transactions, and managing user accounts.
 
 ## Features
 
--   **User Authentication**: Secure login, registration, and session management using password hashing.
--   **Dashboard**: A central overview of key metrics like total items, active suppliers, low stock alerts, and recent transactions.
--   **Item Management**: Add, view, delete, and search for shoe items in the inventory.
--   **Supplier Management**: Maintain a directory of suppliers with full CRUD (Create, Read, Update, Delete) functionality.
--   **Stock Tracking**: Monitor current stock levels against minimum thresholds, with visual indicators and progress bars for low-stock items.
--   **Modular Interface**: Separate, styled pages for each major function (Dashboard, Items, Suppliers, Stock) for a clear user experience.
+-   **User Authentication**: Secure user registration and login with password hashing and session management.
+-   **Dashboard Overview**: A central hub displaying key metrics such as total items, active suppliers, system users, transaction counts, and critical low-stock alerts.
+-   **Item Management**: Full CRUD (Create, Read, Update, Delete) functionality for shoe items, including details like name, price, and associated supplier.
+-   **Supplier Management**: A complete interface to add, view, edit, and delete supplier information.
+-   **Stock Tracking**: A detailed view of inventory levels with progress bars and status indicators to quickly identify items that are running low based on set minimum thresholds.
+-   **Transaction Logging**: Record all inventory movements, including sales, restocks, and waste, with details on the item, quantity, user, and reason.
+-   **User Management**: An administrative interface to view, filter, edit, and delete user accounts and their roles.
+-   **Reporting**: Generate and filter reports on transaction history, with options to print or export data to XML.
 
 ## Technology Stack
 
 -   **Backend**: PHP
 -   **Frontend**: HTML, CSS, JavaScript
 -   **Database**: MySQL
--   **Web Server**: Apache (or a similar environment like Nginx)
+-   **Web Server**: Apache (or any server supporting PHP, such as Nginx)
 
 ## Getting Started
 
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+Follow these instructions to set up a local instance of the project for development and testing.
 
 ### Prerequisites
 
-You need a local web server environment that supports PHP and MySQL. The most common solution is a stack like:
--   [XAMPP](https://www.apachefriends.org/index.html) (Windows, macOS, Linux)
--   WAMP (Windows)
--   MAMP (macOS)
+You will need a local web server environment that supports PHP and MySQL. A stack like [XAMPP](https://www.apachefriends.org/index.html) is recommended as it includes Apache, MySQL, and phpMyAdmin.
 
 ### Installation
 
-1.  **Clone the repository**
+1.  **Clone the Repository**
+    Clone the project to your local machine.
     ```sh
     git clone https://github.com/imnrqzz/ShoeInventorySystem.git
     ```
 
-2.  **Place the project in your web server's root directory**
-    Move the cloned folder (`imnrqzz-shoeinventorysystem`) into your server's `htdocs` (for XAMPP) or `www` directory.
+2.  **Move to Web Server Directory**
+    Move the cloned project folder (e.g., `ShoeInventorySystem`) into your web server's root directory (typically `htdocs` for XAMPP or `www` for WAMP/MAMP).
 
-3.  **Set up the database**
-    -   Start Apache and MySQL from your server's control panel (e.g., XAMPP Control Panel).
-    -   Open phpMyAdmin in your browser (usually at `http://localhost/phpmyadmin`).
-    -   Create a new database. The project uses multiple database names across its files (`pos_inventory_system`, `shoes_inventory`, `inventory`, `db_items`). It is recommended to choose **one** name (e.g., `shoes_inventory`) and use it consistently.
-    -   Create the necessary tables (e.g., `users`, `items`, `suppliers`, `stock`, `transactions`). You will need to infer the table structures from the columns used in the PHP files. For example, the `users` table requires at least an `id`, `username`, and `password_hash` column.
+3.  **Set Up the Database**
+    -   Start the Apache and MySQL services from your server control panel (e.g., XAMPP Control Panel).
+    -   Navigate to `http://localhost/phpmyadmin` in your web browser.
+    -   Create a new database and name it `pos_inventory_system`.
+    -   Select the newly created database, go to the "Import" tab, and upload the `pos_inventory_system.sql` file located in the root of the project directory. This will create all the necessary tables and populate them with sample data.
 
-4.  **Configure Database Connections**
-    -   Manually update the database connection details (host, username, password, and database name) in each of the following files to match your local setup:
-        -   `backend/db.php`
-        -   `backend/stock_delete.php`
-        -   `backend/stock_edit.php`
-        -   `backend/suppliertab.php`
-        -   `frontend/item.php`
-        -   `frontend/stock.php`
+4.  **Configure the Database Connection**
+    -   Open the file `backend/Classes/Database.php`.
+    -   Update the following variables with your local MySQL database credentials. For a default XAMPP installation, you may only need to change `$password` if you have set one.
+      ```php
+      private $host = 'localhost';
+      private $db_name = 'pos_inventory_system';
+      private $username = 'root';
+      private $password = ''; // Your MySQL password
+      ```
 
-5.  **Run the application**
+5.  **Run the Application**
     -   Open your web browser and navigate to the project's login page. The URL will be similar to this:
-    `http://localhost/imnrqzz-shoeinventorysystem/frontend/login.php`
+    `http://localhost/ShoeInventorySystem/frontend/login.php`
+    -   You can log in with a user from the sample data, for example: `username: izana`. The password is not provided in clear text, but you can register a new user.
 
 ## Project Structure
 
-The project is organized into distinct directories for backend logic, frontend presentation, and styling.
+The project is organized into dedicated directories for backend logic, frontend pages, and styling.
 
 ```
 .
-├── backend/        # Contains all backend PHP scripts for database interactions and logic.
-│   ├── db.php      # Main database connection handler.
-│   ├── process_login.php # Handles user login authentication.
-│   ├── process_register.php # Handles new user registration.
-│   └── ...         # CRUD scripts for stock and suppliers.
-├── css/            # Contains all CSS stylesheets for different pages.
-│   ├── dashboard_style.css
-│   ├── login_style.css
+├── backend/            # Contains all backend PHP scripts and classes.
+│   ├── Classes/        # Object-Oriented classes for managing items, users, etc.
+│   ├── process_login.php # Handles user login.
 │   └── ...
-└── frontend/       # Contains all user-facing PHP/HTML pages.
-    ├── index.php   # The main dashboard.
-    ├── login.php   # The login page.
-    ├── item.php    # Item management page.
-    ├── stock.php   # Stock management page.
-    ├── Supplier.php # Supplier management page.
-    └── ...
+├── css/                # Contains all CSS stylesheets.
+├── frontend/           # Contains all user-facing PHP/HTML pages.
+│   ├── index.php       # The main dashboard page.
+│   ├── login.php       # User login page.
+│   ├── item.php        # Item management page.
+│   └── ...
+└── pos_inventory_system.sql # The database schema and sample data.
 ```
 
 ## Key Modules
 
--   **Login & Registration** (`login.php`, `register.php`): The entry point for users. The system handles user authentication and creates sessions upon successful login.
--   **Dashboard** (`index.php`): The main landing page after login. It displays key performance indicators (KPIs) in a clean, card-based layout, providing an at-a-glance summary of the inventory status.
--   **Item Management** (`item.php`): This module allows users to define and manage the shoe products, including details like category, unit price, and associated supplier.
--   **Supplier Management** (`Supplier.php`): A dedicated interface for adding, editing, searching, and deleting supplier information, helping to maintain an organized vendor list.
--   **Stock Management** (`stock.php`): Provides a detailed, table-based view of the current inventory. It uses color-coding and progress bars to visually flag items that are running low, allowing for quick stock assessments and updates.
+-   **Login & Registration** (`login.php`, `register.php`): The entry point for all users. Securely handles authentication and session creation.
+-   **Dashboard** (`index.php`): The main landing page after login, providing an at-a-glance summary of the inventory status through KPI cards and summary tables.
+-   **Item Management** (`item.php`): Allows users to add, edit, and delete shoe models, set prices, and link them to suppliers.
+-   **Supplier Management** (`Supplier.php`): A dedicated interface for maintaining an organized list of vendors with full CRUD capabilities.
+-   **Stock Management** (`stock.php`): Provides a detailed, table-based view of current stock. It uses color-coding and progress bars to visually flag items that are below their minimum threshold.
+-   **Transaction Management** (`transactions.php`): A comprehensive log of all stock movements (Sales, Restocks, Waste), which can be filtered and searched.
+-   **User Management** (`user.php`): An admin-level page to manage system users, their roles, and their status.
+-   **Reports** (`reports.php`): A module for generating, viewing, printing, and exporting transaction data for analysis.
