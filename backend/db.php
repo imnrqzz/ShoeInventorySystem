@@ -6,6 +6,14 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+// Best Practice: Prevent browser from caching authenticated pages.
+// Without these headers, pressing the Back button after logout shows
+// the cached page from browser memory — even though the session is gone.
+// These headers tell the browser to always re-request the page from the server.
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 // Dynamically reference our object-oriented class architecture
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/classes/InventoryManager.php';

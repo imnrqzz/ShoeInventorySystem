@@ -3,6 +3,9 @@
 
 // Best Practice: Check login status before showing any page content.
 session_start();
+// Prevent cached pages from showing after logout via browser Back button
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
