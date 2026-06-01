@@ -1,166 +1,195 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+/* css/login_style.css
+ * Light & minimal centered card design for the login page.
+ * Uses the same design tokens as the rest of the app for consistency.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    width: 100%;
-    min-height: 100vh;
-    padding: 0 10px;
-    display: flex;
-    background: #626cd6;
-    justify-content: center;
-    align-items: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f8f9fb;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-.login_form{
-    width: 100%;
-    max-width: 435px;
-    background: #fff;
-    border-radius: 6px;
-    padding: 41px 30px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
 }
 
-.login_form h3{
-    font-size: 20px;
-    text-align: center;
+.login-brand {
+  text-align: center;
+  margin-bottom: 28px;
 }
 
-form label{
-    display: block;
-    font-weight: 500;
-    margin-bottom: 8px;
+.login-brand .brand-icon {
+  width: 48px;
+  height: 48px;
+  background: #2563eb;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
 }
 
-input{
-    width: 100%;
-    height: 50px;
-    padding: 0px 20px;
-    margin: 8px 0;
-    border: 1px solid #DADAF2;
-    border-radius: 5px;
-    outline: none;
-    background: #F8F8FB;
-    font-size: 17px;
-    margin-bottom: 25px;
-    transition: 0.2s ease;
+.login-brand .brand-icon img {
+  width: 26px;
+  height: 26px;
+  filter: brightness(0) invert(1);
 }
 
-input:focus{
-    border-color: #626cd6;
+.login-brand h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
 }
 
-.container{
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    position: relative;
+.login-brand p {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin-top: 4px;
 }
 
-a{
-    text-decoration: none;
-    color: #626cd6;
-    font-weight: 500;
+.form-group {
+  margin-bottom: 18px;
 }
 
-a:hover{
-    text-decoration: underline;
+.form-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
 }
 
-button{
-    width: 100%;
-    height: 56px;
-    border-radius: 5px;
-    border: none;
-    outline: none;
-    background: #626cd6;
-    color: #fff;
-    font-size: 18px;
-    font-weight: 500;
-    text-transform: uppercase;
-    cursor: pointer;
-    margin-bottom: 28px;
-    transition: 0.3s ease;
+.form-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  background: #f3f4f6;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
 }
 
-button:hover{
-    background: #4954d0;
+.form-group input:focus {
+  border-color: #2563eb;
+  background: #fff;
 }
 
-.modal-backdrop{
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
+.btn-login {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
 }
 
-.modal{
-    width: min(420px, calc(100% - 40px));
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.22);
-    overflow: hidden;
-    animation: modalFade 0.3s ease;
+.btn-login:hover {
+  background: #1d4ed8;
 }
 
-.modal-header{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px 16px;
-    background: #f7f8fb;
+.login-footer {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 0.82rem;
+  color: #9ca3af;
 }
 
-.modal-header h4{
-    margin: 0;
-    font-size: 18px;
-    color: #111827;
+.login-footer a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-.modal-close{
-    width: 34px;
-    height: 34px;
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    line-height: 1;
-    color: #6b7280;
-    cursor: pointer;
+.login-footer a:hover {
+  text-decoration: underline;
 }
 
-.modal-body{
-    padding: 0 24px 18px;
-    color: #374151;
-    font-size: 15px;
-    line-height: 1.7;
+.alert-error {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 18px;
+  border: 1px solid #fecaca;
 }
 
-.modal-footer{
-    padding: 0 24px 24px;
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-.button-secondary{
-    width: 100%;
-    padding: 14px 0;
-    border: none;
-    border-radius: 10px;
-    background: #626cd6;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  text-align: center;
 }
 
-.button-secondary:hover{
-    background: #4954d0;
+.modal h4 {
+  font-size: 1rem;
+  color: #111827;
+  margin-bottom: 8px;
 }
 
-@keyframes modalFade{
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+.modal p {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.modal .btn-ok {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal .btn-ok:hover {
+  background: #1d4ed8;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 28px 20px;
+  }
 }

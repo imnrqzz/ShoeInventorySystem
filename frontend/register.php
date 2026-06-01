@@ -1,99 +1,59 @@
-<?php require_once __DIR__ . '/../backend/db.php'; ?>
-<?php $registered = isset($_GET['registered']) && $_GET['registered'] === '1'; ?>
+<?php
+// frontend/register.php
+require_once __DIR__ . '/../backend/db.php';
+$error = $_GET['err'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/register_styles.css" />
-    <title>Register</title>
+    <title>Register - ShoeInventory</title>
+    <link rel="stylesheet" href="../css/register_styles.css">
 </head>
 <body>
-    <?php if ($registered): ?>
-        <div class="modal-backdrop" id="successModal">
-            <div class="modal success-modal">
-                <div class="modal-header">
-                    <h4>Registration Successful</h4>
-                    <button type="button" class="modal-close" id="closeModal">×</button>
-                </div>
-                <div class="modal-body">
-                    <p>Your account has been created successfully. Please log in to continue.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="button-secondary" id="modalOk">OK</button>
-                </div>
+    <div class="register-card">
+        <div class="register-brand">
+            <div class="brand-icon">
+                <img src="../images/shoes.png" alt="ShoeInventory Logo">
             </div>
+            <h1>ShoeInventory</h1>
+            <p>Create a new account</p>
         </div>
-    <?php endif; ?>
-    <section class="container">
-        <header> Registration Form </header>
-        <?php
-        // Check if the error parameter exists in the URL
-        if (isset($_GET['err'])) {
-            $error = $_GET['err'];
-            if ($error === 'exists') {
-                echo '<div style="color: red; padding: 10px; border: 1px solid red; margin-bottom: 10px;">
-                        Error: The username or email is already registered. Please try another.
-                    </div>';
-            } elseif ($error === 'invalid_input') {
-                echo '<div style="color: red; padding: 10px; border: 1px solid red; margin-bottom: 10px;">
-                        Error: All fields are required and email must be valid.
-                    </div>';
-            }
-        }
-        ?>
-        <form method ="POST" action="../backend/process_register.php" class="form">
-            <div class="input-box">
-                <label>Name</label>
-                <input type="text" placeholder="Enter Name" name="name" autocomplete="name" required />
-            </div>
 
-            <div class="input-box">
-                <label>Username</label>
-                <input type="text" placeholder="Enter Username" name="username" autocomplete="username" required />
-            </div>
+        <?php if ($error === 'exists'): ?>
+        <div class="alert-error">Username or email already taken. Please try another.</div>
+        <?php elseif ($error === 'invalid_input'): ?>
+        <div class="alert-error">All fields are required and email must be valid.</div>
+        <?php elseif ($error): ?>
+        <div class="alert-error">An error occurred. Please try again.</div>
+        <?php endif; ?>
 
-            <div class="input-box">
-                <label>Email</label>
-                <input type="email" placeholder="Enter Email" name="email" autocomplete="email" required />
+        <form method="POST" action="../backend/process_register.php">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
             </div>
-
-            <div class="input-box">
-                <label>Password</label>
-                <input type="password" placeholder="Enter Password" name="password" autocomplete="new-password" required />
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required>
             </div>
-            
-            <div class="input-box">
-                <label>Repeat Password </label>
-                <input type="password" placeholder="Repeat Password" name="repeatpassword" autocomplete="new-password" required />
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
-
-
-            
-
-                
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
             </div>
-            <button>Submit</button>
-            <p class="sign_up">Already have an account? <a href="login.php"> Log In </a></p>
+            <div class="form-group">
+                <label for="repeatpassword">Confirm Password</label>
+                <input type="password" id="repeatpassword" name="repeatpassword" placeholder="Repeat your password" required>
+            </div>
+            <button type="submit" class="btn-register">Create Account</button>
         </form>
-      </section>
 
-    <?php if ($registered): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var modal = document.getElementById('successModal');
-            var close = document.getElementById('closeModal');
-            var ok = document.getElementById('modalOk');
-            function hideModal() {
-                if (modal) {
-                    modal.style.display = 'none';
-                }
-            }
-            if (close) close.addEventListener('click', hideModal);
-            if (ok) ok.addEventListener('click', hideModal);
-            setTimeout(hideModal, 4000);
-        });
-    </script>
-    <?php endif; ?>
-    </body>
+        <p class="register-footer">Already have an account? <a href="login.php">Sign In</a></p>
+    </div>
+</body>
 </html>
