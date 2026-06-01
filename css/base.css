@@ -68,10 +68,12 @@ body {
   min-height: 100vh;
 }
 
-/* ── Page Layout ───────────────────────────────────────────── */
+/* ── Page Layout ─────────────────────────────────────────────
+ * The sidebar is position:fixed, so it's removed from normal flow.
+ * We just need .main-content to have margin-left to avoid overlapping.
+ * No CSS Grid needed here — fixed sidebar + margin is simpler and reliable.
+ */
 .page-wrapper {
-  display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
   min-height: 100vh;
 }
 
@@ -606,12 +608,7 @@ body {
 
 /* ── Responsive Design ────────────────────────────────────── */
 @media (max-width: 768px) {
-  .page-wrapper {
-    grid-template-columns: 1fr;
-  }
-
   .sidebar {
-    position: fixed;
     left: -260px;
     transition: left 0.3s;
     box-shadow: 2px 0 12px rgba(0,0,0,0.1);
