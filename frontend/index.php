@@ -38,7 +38,7 @@ require __DIR__ . '/components/stat_cards.php';
 ?>
 
             <!-- Two-column table row -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="grid-2col">
                 <!-- Low Stock Alerts -->
                 <div class="table-card">
                     <div class="table-card-header">Low Stock Alerts</div>

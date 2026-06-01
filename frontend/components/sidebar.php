@@ -3,17 +3,21 @@
          * components/sidebar.php — Reusable Sidebar Navigation
          *
          * Best Practice: Extract repeated HTML into a component file so changes
-         * only need to be made in one place. Every page includes this file instead
-         * of duplicating the sidebar markup.
+         * only need to be made in one place.
          *
-         * Before including this file, set $activePage to the current page name.
-         * Example: $activePage = 'items'; require 'components/sidebar.php';
+         * Set $activePage before including: 'dashboard', 'items', 'suppliers', etc.
          *
-         * The $activePage variable determines which nav link gets the "active" class,
-         * giving users a visual indicator of which page they're on.
+         * On mobile (below 768px), the sidebar is hidden off-screen. The hamburger
+         * button (mobile-menu-toggle) slides it in. The overlay closes it on tap.
          */
         $activePage = $activePage ?? '';
         ?>
+        <!-- Mobile hamburger button — only visible on small screens -->
+        <button class="mobile-menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active');" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <!-- Overlay behind sidebar on mobile — tap to close -->
+        <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('open'); this.classList.remove('active');"></div>
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-icon"><img src="../images/shoes.png" alt="Logo"></div>
