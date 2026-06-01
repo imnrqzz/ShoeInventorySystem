@@ -601,6 +601,26 @@ body {
 .progress-bar .fill.success { background: var(--color-success); }
 .progress-bar .fill.danger { background: var(--color-danger); }
 
+/* ── Form Validation Styles ───────────────────────────────
+ * Used by form-validation.js to show inline error messages.
+ * .input-error: red border on the invalid input/select
+ * .field-error: small red text below the field explaining the issue
+ */
+.form-group input.input-error,
+.form-group select.input-error,
+.form-group textarea.input-error {
+  border-color: var(--color-danger);
+  background: var(--color-danger-light);
+}
+
+.field-error {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--color-danger);
+  margin-top: 4px;
+  min-height: 0;
+}
+
 /* ── Confirmation Modal (confirm-modal.js) ──────────────────
  * A styled replacement for the browser's native confirm() dialog.
  * The JS file dynamically injects the HTML; these styles control appearance.

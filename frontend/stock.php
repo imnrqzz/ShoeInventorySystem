@@ -112,7 +112,7 @@ require __DIR__ . '/components/toolbar.php';
             <div class="modal-header"><h2>Edit Stock Level</h2><a href="<?= $cancelUrl ?>" class="modal-close">&times;</a></div>
             <div class="modal-body">
                 <p style="font-size:var(--font-size-sm);color:var(--color-text-muted);margin-bottom:16px;">Editing: <strong style="color:var(--color-text)"><?= safe($editItem['item_name']) ?></strong></p>
-                <form method="POST" action="stock.php?<?= http_build_query($filters) ?>">
+                <form method="POST" action="stock.php?<?= http_build_query($filters) ?>" data-validate novalidate>
                     <input type="hidden" name="action" value="update_stock">
                     <input type="hidden" name="stock_id" value="<?= safe($editItem['id']) ?>">
                     <input type="hidden" name="item_id" value="<?= safe($editItem['item_id']) ?>">
@@ -122,8 +122,8 @@ require __DIR__ . '/components/toolbar.php';
                     <div class="form-grid">
                         <!-- Best Practice: step="1" and min="0" ensure users can only enter
                              whole numbers. Shoes are counted in whole pairs, not fractions. -->
-                        <div class="form-group"><label>Current Quantity</label><input type="number" step="1" min="0" name="current_qty" value="<?= (int)$editItem['current_qty'] ?>" required></div>
-                        <div class="form-group"><label>Min Threshold</label><input type="number" step="1" min="0" name="min_threshold" value="<?= (int)$editItem['min_threshold'] ?>" required></div>
+                        <div class="form-group"><label>Current Quantity *</label><input type="number" step="1" min="0" name="current_qty" value="<?= (int)$editItem['current_qty'] ?>" required><span class="field-error"></span></div>
+                        <div class="form-group"><label>Min Threshold *</label><input type="number" step="1" min="0" name="min_threshold" value="<?= (int)$editItem['min_threshold'] ?>" required><span class="field-error"></span></div>
                     </div>
                     <div class="modal-footer"><a href="<?= $cancelUrl ?>" class="btn btn-secondary">Cancel</a><button type="submit" class="btn btn-primary">Save</button></div>
                 </form>

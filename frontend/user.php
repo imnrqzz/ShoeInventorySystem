@@ -95,13 +95,13 @@ require __DIR__ . '/components/toolbar.php';
         <div class="modal-box">
             <div class="modal-header"><h2>Edit User</h2><button class="modal-close" onclick="document.getElementById('editModal').style.display='none'">&times;</button></div>
             <div class="modal-body">
-                <form method="POST" action="../backend/user_action.php">
+                <form method="POST" action="../backend/user_action.php" data-validate novalidate>
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="id" id="editUserId">
                     <div class="form-grid">
-                        <div class="form-group"><label>Username</label><input type="text" name="username" id="editUsername" required></div>
-                        <div class="form-group"><label>Name</label><input type="text" name="name" id="editUserName" required></div>
-                        <div class="form-group"><label>Email</label><input type="email" name="email" id="editUserEmail" required></div>
+                        <div class="form-group"><label>Username *</label><input type="text" name="username" id="editUsername" required minlength="3"><span class="field-error"></span></div>
+                        <div class="form-group"><label>Name *</label><input type="text" name="name" id="editUserName" required minlength="2"><span class="field-error"></span></div>
+                        <div class="form-group"><label>Email *</label><input type="email" name="email" id="editUserEmail" required><span class="field-error"></span></div>
                         <div class="form-group"><label>Status</label><select name="status" id="editUserStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
                     </div>
                     <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="document.getElementById('editModal').style.display='none'">Cancel</button><button type="submit" class="btn btn-primary">Save Changes</button></div>

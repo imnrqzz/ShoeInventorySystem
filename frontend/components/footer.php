@@ -2,10 +2,14 @@
     /**
      * components/footer.php — Shared page footer
      *
-     * Loads the confirmation modal script and closes the HTML document.
-     * Include this at the bottom of every authenticated page, right before </body>.
+     * Loads shared JavaScript and closes the HTML document.
+     * - confirm-modal.js: styled confirmation dialogs for delete/logout
+     * - form-validation.js: automatic validation for forms with data-validate
+     *
+     * Include this at the bottom of every authenticated page.
      */
     ?>
     <script src="../js/confirm-modal.js"></script>
+    <script src="../js/form-validation.js"></script>
 </body>
 </html>

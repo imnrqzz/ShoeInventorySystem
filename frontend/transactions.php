@@ -82,11 +82,11 @@ require __DIR__ . '/components/toolbar.php';
         <div class="modal-box">
             <div class="modal-header"><h2>Log Transaction</h2><button class="modal-close" onclick="document.getElementById('addTxModal').style.display='none'">&times;</button></div>
             <div class="modal-body">
-                <form method="POST" action="../backend/process_transaction.php">
+                <form method="POST" action="../backend/process_transaction.php" data-validate novalidate>
                     <div class="form-grid">
                         <div class="form-group full-width"><label>Item *</label><select name="item_id" required><?php foreach($items as $i): ?><option value="<?= $i['id'] ?>"><?= safe($i['name']) ?></option><?php endforeach; ?></select></div>
                         <div class="form-group"><label>Type *</label><select name="type"><option value="Restock">Restock</option><option value="Sale">Sale</option><option value="Waste">Waste</option></select></div>
-                        <div class="form-group"><label>Quantity *</label><input type="number" name="quantity" required min="1" step="1"></div>
+                        <div class="form-group"><label>Quantity *</label><input type="number" name="quantity" required min="1" step="1"><span class="field-error"></span></div>
                         <div class="form-group full-width"><label>Reason</label><input type="text" name="reason" placeholder="Optional note"></div>
                     </div>
                     <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="document.getElementById('addTxModal').style.display='none'">Cancel</button><button type="submit" class="btn btn-primary">Add Transaction</button></div>

@@ -68,10 +68,10 @@ require __DIR__ . '/components/toolbar.php';
         <div class="modal-box">
             <div class="modal-header"><h2>Add Supplier</h2><a href="#" class="modal-close">&times;</a></div>
             <div class="modal-body">
-                <form method="POST" action="Supplier.php">
+                <form method="POST" action="Supplier.php" data-validate novalidate>
                     <input type="hidden" name="action" value="add">
                     <div class="form-grid">
-                        <div class="form-group full-width"><label>Company Name *</label><input type="text" name="supplier_name" required></div>
+                        <div class="form-group full-width"><label>Company Name *</label><input type="text" name="supplier_name" required minlength="2"><span class="field-error"></span></div>
                         <div class="form-group"><label>Contact Person</label><input type="text" name="contact_person"></div>
                         <div class="form-group"><label>Category</label><input type="text" name="category"></div>
                         <div class="form-group full-width"><label>Phone / Email</label><input type="text" name="phone_email"></div>
@@ -88,11 +88,11 @@ require __DIR__ . '/components/toolbar.php';
         <div class="modal-box">
             <div class="modal-header"><h2>Edit Supplier</h2><a href="Supplier.php" class="modal-close">&times;</a></div>
             <div class="modal-body">
-                <form method="POST" action="Supplier.php">
+                <form method="POST" action="Supplier.php" data-validate novalidate>
                     <input type="hidden" name="action" value="edit">
                     <input type="hidden" name="id" value="<?= (int)($editing_supplier['order_id'] ?? 0) ?>">
                     <div class="form-grid">
-                        <div class="form-group full-width"><label>Company Name *</label><input type="text" name="supplier_name" value="<?= safe($editing_supplier['company_name'] ?? '') ?>" required></div>
+                        <div class="form-group full-width"><label>Company Name *</label><input type="text" name="supplier_name" value="<?= safe($editing_supplier['company_name'] ?? '') ?>" required minlength="2"><span class="field-error"></span></div>
                         <div class="form-group"><label>Contact Person</label><input type="text" name="contact_person" value="<?= safe($editing_supplier['contact_person'] ?? '') ?>"></div>
                         <div class="form-group"><label>Category</label><input type="text" name="category" value="<?= safe($editing_supplier['category'] ?? '') ?>"></div>
                         <div class="form-group full-width"><label>Phone / Email</label><input type="text" name="phone_email" value="<?= safe($editing_supplier['phone_email'] ?? '') ?>"></div>
