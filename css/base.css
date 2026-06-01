@@ -310,7 +310,8 @@ body {
   border-color: var(--color-primary);
 }
 
-.toolbar select {
+.toolbar select,
+.toolbar-select {
   padding: 10px 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -322,7 +323,8 @@ body {
   cursor: pointer;
 }
 
-.toolbar select:focus {
+.toolbar select:focus,
+.toolbar-select:focus {
   border-color: var(--color-primary);
 }
 

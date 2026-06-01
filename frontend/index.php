@@ -24,34 +24,18 @@ $activePage = 'dashboard';         // used by sidebar.php
 
         <!-- ── Main Content ────────────────────────────────────── -->
         <main class="main-content">
-            <div class="page-header">
-                <h1>Dashboard</h1>
-                <p>Overview of your inventory</p>
-            </div>
+<?php $pageSubtitle = 'Overview of your inventory'; require __DIR__ . '/components/page_header.php'; ?>
 
-            <!-- KPI Stat Cards -->
-            <div class="stat-cards">
-                <div class="stat-card">
-                    <div class="stat-label">Total Items</div>
-                    <div class="stat-value"><?= safe($totalItems) ?></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Active Suppliers</div>
-                    <div class="stat-value"><?= safe($activeSuppliers) ?></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">System Users</div>
-                    <div class="stat-value"><?= safe($systemUsers) ?></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Transactions</div>
-                    <div class="stat-value"><?= safe($transactionsCount) ?></div>
-                </div>
-                <div class="stat-card danger">
-                    <div class="stat-label">Low Stock Alerts</div>
-                    <div class="stat-value"><?= safe($lowStockAlerts) ?></div>
-                </div>
-            </div>
+<?php
+$statCards = [
+    ['label' => 'Total Items',      'value' => $totalItems],
+    ['label' => 'Active Suppliers', 'value' => $activeSuppliers],
+    ['label' => 'System Users',     'value' => $systemUsers],
+    ['label' => 'Transactions',     'value' => $transactionsCount],
+    ['label' => 'Low Stock Alerts', 'value' => $lowStockAlerts, 'type' => 'danger'],
+];
+require __DIR__ . '/components/stat_cards.php';
+?>
 
             <!-- Two-column table row -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">

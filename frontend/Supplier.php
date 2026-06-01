@@ -22,16 +22,18 @@ $activePage = 'suppliers';             // used by sidebar.php
         <?php require __DIR__ . '/components/sidebar.php'; ?>
 
         <main class="main-content">
-            <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
-                <div><h1>Suppliers Management</h1><p>Manage your supplier contacts and details</p></div>
-                <a href="#add-supplier-modal" class="btn btn-primary">+ Add Supplier</a>
-            </div>
+<?php
+$pageSubtitle = 'Manage your supplier contacts and details';
+$headerAction = ['label' => '+ Add Supplier', 'href' => '#add-supplier-modal'];
+require __DIR__ . '/components/page_header.php';
+?>
 
-            <form method="GET" action="Supplier.php" class="toolbar">
-                <input type="text" name="search" class="search-input" placeholder="Search suppliers..." value="<?= safe($search ?? '') ?>">
-                <button type="submit" class="btn btn-primary btn-sm">Search</button>
-                <a href="Supplier.php" class="btn btn-secondary btn-sm">Reset</a>
-            </form>
+<?php
+$toolbarAction = 'Supplier.php';
+$toolbarSearch = $search ?? '';
+$toolbarPlaceholder = 'Search suppliers...';
+require __DIR__ . '/components/toolbar.php';
+?>
 
             <div class="table-card">
                 <div class="table-scroll">

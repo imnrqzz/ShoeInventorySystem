@@ -34,25 +34,33 @@ $activePage = 'users';          // used by sidebar.php
         <?php require __DIR__ . '/components/sidebar.php'; ?>
 
         <main class="main-content">
-            <div class="page-header"><h1>User Management</h1><p>View and manage system user accounts</p></div>
+<?php $pageSubtitle = 'View and manage system user accounts'; require __DIR__ . '/components/page_header.php'; ?>
 
-            <div class="stat-cards">
-                <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value"><?= $total_users ?></div></div>
-                <div class="stat-card"><div class="stat-label">Administrators</div><div class="stat-value"><?= $admins ?></div></div>
-                <div class="stat-card"><div class="stat-label">Active Users</div><div class="stat-value"><?= $active_users ?></div></div>
-            </div>
+<?php
+$statCards = [
+    ['label' => 'Total Users',     'value' => $total_users],
+    ['label' => 'Administrators',  'value' => $admins],
+    ['label' => 'Active Users',    'value' => $active_users],
+];
+require __DIR__ . '/components/stat_cards.php';
+?>
 
-            <form method="GET" action="user.php" class="toolbar">
-                <input type="text" name="search" class="search-input" placeholder="Search name or email..." value="<?= safe($search) ?>">
-                <select name="role" style="padding:10px 14px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--font-size-sm);font-family:var(--font-family);background:var(--color-surface);">
-                    <option value="">All Roles</option>
-                    <option value="Admin" <?= $role == 'Admin' ? 'selected' : '' ?>>Admin</option>
-                    <option value="Staff" <?= $role == 'Staff' ? 'selected' : '' ?>>Staff</option>
-                    <option value="User" <?= $role == 'User' ? 'selected' : '' ?>>User</option>
-                </select>
-                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                <a href="user.php" class="btn btn-secondary btn-sm">Reset</a>
-            </form>
+<?php
+$toolbarAction = 'user.php';
+$toolbarSearch = $search;
+$toolbarPlaceholder = 'Search name or email...';
+$toolbarFilter = [
+    'name' => 'role',
+    'value' => $role,
+    'options' => [
+        ['value' => '',      'label' => 'All Roles'],
+        ['value' => 'Admin', 'label' => 'Admin'],
+        ['value' => 'Staff', 'label' => 'Staff'],
+        ['value' => 'User',  'label' => 'User'],
+    ]
+];
+require __DIR__ . '/components/toolbar.php';
+?>
 
             <div class="table-card">
                 <div class="table-scroll">

@@ -26,19 +26,18 @@ $activePage = 'items';     // used by sidebar.php
         <?php require __DIR__ . '/components/sidebar.php'; ?>
 
         <main class="main-content">
-            <div class="page-header" style="display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                    <h1>Items Management</h1>
-                    <p>Add, edit, and manage shoe inventory items</p>
-                </div>
-                <a href="#addItemModal" class="btn btn-primary">+ Add New Item</a>
-            </div>
+<?php
+$pageSubtitle = 'Add, edit, and manage shoe inventory items';
+$headerAction = ['label' => '+ Add New Item', 'href' => '#addItemModal'];
+require __DIR__ . '/components/page_header.php';
+?>
 
-            <form method="GET" action="item.php" class="toolbar">
-                <input type="text" name="search" class="search-input" placeholder="Search shoes by name..." value="<?= safe($search) ?>">
-                <button type="submit" class="btn btn-primary btn-sm">Search</button>
-                <a href="item.php" class="btn btn-secondary btn-sm">Reset</a>
-            </form>
+<?php
+$toolbarAction = 'item.php';
+$toolbarSearch = $search;
+$toolbarPlaceholder = 'Search shoes by name...';
+require __DIR__ . '/components/toolbar.php';
+?>
 
             <div class="table-card">
                 <div class="table-scroll">

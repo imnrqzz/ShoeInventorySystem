@@ -46,19 +46,24 @@ $activePage = 'reports';             // used by sidebar.php
         <?php require __DIR__ . '/components/sidebar.php'; ?>
 
         <main class="main-content">
-            <div class="page-header"><h1>Reports</h1><p>View, filter, and export transaction reports</p></div>
+<?php $pageSubtitle = 'View, filter, and export transaction reports'; require __DIR__ . '/components/page_header.php'; ?>
 
-            <form method="GET" action="reports.php" class="toolbar">
-                <input type="text" name="search" class="search-input" placeholder="Search by item name..." value="<?= safe($search) ?>">
-                <select name="type" style="padding:10px 14px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--font-size-sm);font-family:var(--font-family);background:var(--color-surface);">
-                    <option value="All Types" <?= $type == 'All Types' ? 'selected' : '' ?>>All Types</option>
-                    <option value="Sale" <?= $type == 'Sale' ? 'selected' : '' ?>>Sale</option>
-                    <option value="Restock" <?= $type == 'Restock' ? 'selected' : '' ?>>Restock</option>
-                    <option value="Waste" <?= $type == 'Waste' ? 'selected' : '' ?>>Waste</option>
-                </select>
-                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                <a href="reports.php" class="btn btn-secondary btn-sm">Reset</a>
-            </form>
+<?php
+$toolbarAction = 'reports.php';
+$toolbarSearch = $search;
+$toolbarPlaceholder = 'Search by item name...';
+$toolbarFilter = [
+    'name' => 'type',
+    'value' => $type,
+    'options' => [
+        ['value' => 'All Types', 'label' => 'All Types'],
+        ['value' => 'Sale',      'label' => 'Sale'],
+        ['value' => 'Restock',   'label' => 'Restock'],
+        ['value' => 'Waste',     'label' => 'Waste'],
+    ]
+];
+require __DIR__ . '/components/toolbar.php';
+?>
 
             <div class="table-card">
                 <div class="table-scroll">

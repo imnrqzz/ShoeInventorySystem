@@ -46,25 +46,28 @@ $activePage = 'stock';          // used by sidebar.php
         <?php require __DIR__ . '/components/sidebar.php'; ?>
 
         <main class="main-content">
-            <div class="page-header"><h1>Stock Management</h1><p>Monitor stock levels and set thresholds</p></div>
+<?php $pageSubtitle = 'Monitor stock levels and set thresholds'; require __DIR__ . '/components/page_header.php'; ?>
 
-            <div class="stat-cards">
-                <div class="stat-card"><div class="stat-label">Total Items</div><div class="stat-value"><?= safe($totalItems) ?></div></div>
-                <div class="stat-card"><div class="stat-label" style="color:var(--color-success)">OK Stock</div><div class="stat-value" style="color:var(--color-success)"><?= safe($okStock) ?></div></div>
-                <div class="stat-card danger"><div class="stat-label">Low / Critical</div><div class="stat-value"><?= safe($lowStock) ?></div></div>
-            </div>
+<?php
+$statCards = [
+    ['label' => 'Total Items',    'value' => $totalItems],
+    ['label' => 'OK Stock',       'value' => $okStock,  'type' => 'success'],
+    ['label' => 'Low / Critical', 'value' => $lowStock, 'type' => 'danger'],
+];
+require __DIR__ . '/components/stat_cards.php';
+?>
 
-            <form method="GET" action="stock.php" class="toolbar">
-                <input type="text" name="search" class="search-input" placeholder="Search shoe name..." value="<?= safe($filters['search'] ?? '') ?>">
-                <select name="category" style="padding:10px 14px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--font-size-sm);font-family:var(--font-family);background:var(--color-surface);">
-                    <option value="All Categories">All Categories</option>
-                    <?php foreach ($categories as $cat): ?>
-                    <option value="<?= safe($cat['category']) ?>" <?= ($filters['category'] ?? '') === $cat['category'] ? 'selected' : '' ?>><?= safe($cat['category']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                <a href="stock.php" class="btn btn-secondary btn-sm">Reset</a>
-            </form>
+<?php
+$toolbarAction = 'stock.php';
+$toolbarSearch = $filters['search'] ?? '';
+$toolbarPlaceholder = 'Search shoe name...';
+$categoryOptions = [['value' => 'All Categories', 'label' => 'All Categories']];
+foreach ($categories as $cat) {
+    $categoryOptions[] = ['value' => $cat['category'], 'label' => $cat['category']];
+}
+$toolbarFilter = ['name' => 'category', 'value' => $filters['category'] ?? '', 'options' => $categoryOptions];
+require __DIR__ . '/components/toolbar.php';
+?>
 
             <div class="table-card">
                 <div class="table-scroll">
