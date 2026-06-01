@@ -8,7 +8,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 require_once __DIR__ . '/classes/Database.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { 
-    header('Location: /PosInventorySystem/frontend/login.php'); 
+    header('Location: /ShoeInventorySystem/frontend/login.php'); 
     exit; 
 }
 
@@ -16,7 +16,7 @@ $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 
 if ($username === '' || $password === '') { 
-    header('Location: /PosInventorySystem/frontend/login.php?err=1'); 
+    header('Location: /ShoeInventorySystem/frontend/login.php?err=1'); 
     exit; 
 }
 
@@ -38,7 +38,7 @@ try {
         // Optional: If you have a role column for RBAC (Admin/User requirement)
         // $_SESSION['role'] = $user['role']; 
 
-        header('Location: /PosInventorySystem/frontend/index.php'); 
+        header('Location: /ShoeInventorySystem/frontend/index.php'); 
         exit;
     }
 } catch (\PDOException $e) {
@@ -46,5 +46,5 @@ try {
 }
 
 // If authentication fails, redirect back with error parameter
-header('Location: /PosInventorySystem/frontend/login.php?err=invalid');
+header('Location: /ShoeInventorySystem/frontend/login.php?err=invalid');
 exit;
