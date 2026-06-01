@@ -1,4 +1,12 @@
 <?php
+// Best Practice: Even file-download endpoints need authentication.
+// Without this, anyone could visit this URL and export all transaction data.
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit;
+}
+
 require_once '../backend/classes/Database.php';
 
 $db = (new Database())->getConnection();

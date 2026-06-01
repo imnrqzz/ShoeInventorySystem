@@ -1,6 +1,17 @@
 <?php
 // backend/itemtab.php
 
+// Best Practice: Always verify the user is logged in before processing any data.
+// session_start() initializes the session so we can check $_SESSION variables.
+// If no valid session exists, we redirect to the login page to prevent unauthorized access.
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+if (!isset($_SESSION['username'])) {
+    header('Location: /ShoeInventorySystem/frontend/login.php');
+    exit;
+}
+
 // 1. Secure Object Architecture Injections
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/classes/ItemManager.php';

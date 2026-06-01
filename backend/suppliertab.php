@@ -37,20 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit();
 }
 
-// In backend/suppliertab.php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
-    $company_name = trim($_POST['supplier_name'] ?? '');
-    $contact      = trim($_POST['contact_person'] ?? '');
-    $category     = trim($_POST['category'] ?? '');
-    $phone_email  = trim($_POST['phone_email'] ?? '');
-    $status       = isset($_POST['active']) && (int)$_POST['active'] === 1 ? 'Active' : 'Inactive';
-
-    // Ensure your SupplierManager class has this method signature
-    $supplierManager->addSupplier($company_name, $contact, $category, $phone_email, $status);
-    header("Location: Supplier.php");
-    exit();
-}
-
 // 4. ACTION: DELETE SUPPLIER
 if (isset($_GET['delete_id'])) {
     $id = intval($_GET['delete_id']);

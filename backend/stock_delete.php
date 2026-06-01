@@ -1,6 +1,16 @@
 <?php
 // backend/stock_delete.php
 
+// Best Practice: Authenticate before allowing any delete operation.
+// Without this check, anyone could call this URL directly and delete inventory data.
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+if (!isset($_SESSION['username'])) {
+    header('Location: /ShoeInventorySystem/frontend/login.php');
+    exit;
+}
+
 // 1. Initialize system-wide database structural layers
 require_once __DIR__ . '/classes/Database.php';
 
