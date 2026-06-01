@@ -809,28 +809,17 @@ body {
   margin-bottom: 20px;
 }
 
-/* ── Mobile Menu Toggle ─────────────────────────────────────
- * Best Practice: The hamburger button is hidden on desktop (sidebar is always
- * visible). On mobile (<768px), it appears in the top-left corner so users
- * can open the sidebar navigation.
+/* ── Mobile Top Bar ─────────────────────────────────────────
+ * Best Practice: On mobile, the sidebar is hidden and replaced by a fixed
+ * top bar with a hamburger menu, the app name, and the user avatar.
+ * This gives mobile users a native-feeling navigation pattern.
+ * Hidden on desktop where the full sidebar is visible.
  */
-.mobile-menu-toggle {
+.mobile-topbar {
   display: none;         /* Hidden on desktop */
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 200;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  color: var(--color-text);
 }
 
-/* Dark overlay behind sidebar on mobile — dims the page content
-   so the sidebar stands out and provides a tap-to-close target. */
+/* Overlay behind sidebar on mobile — dims page content */
 .sidebar-overlay {
   display: none;
 }
@@ -845,11 +834,55 @@ body {
 
 /* ── Tablet & Small Laptops (< 768px) ────────────────────── */
 @media (max-width: 768px) {
-  /* Show the hamburger menu button */
-  .mobile-menu-toggle {
+  /* Show the mobile top bar */
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 54px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0 16px;
+    z-index: 150;
+    gap: 12px;
+  }
+
+  .mobile-topbar-menu {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-topbar-menu:hover {
+    background: var(--color-border-light);
+  }
+
+  .mobile-topbar-title {
+    flex: 1;
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+  }
+
+  .mobile-topbar-avatar {
+    width: 30px;
+    height: 30px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
   }
 
   /* Slide sidebar off-screen by default */
@@ -881,10 +914,10 @@ body {
     pointer-events: auto;
   }
 
-  /* Remove sidebar margin — content now fills full width */
+  /* Content fills full width, top padding for the fixed top bar */
   .main-content {
     margin-left: 0;
-    padding: 60px 16px 20px; /* Extra top padding for the hamburger button */
+    padding: 70px 16px 20px;
   }
 
   /* Page header stacks title and button vertically */
@@ -947,7 +980,7 @@ body {
 /* ── Phone (< 480px) ─────────────────────────────────────── */
 @media (max-width: 480px) {
   .main-content {
-    padding: 56px 12px 16px;
+    padding: 66px 12px 16px;
   }
 
   /* Stat cards: single column on small phones */

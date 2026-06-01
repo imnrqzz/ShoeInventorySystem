@@ -2,21 +2,25 @@
         /**
          * components/sidebar.php — Reusable Sidebar Navigation
          *
-         * Best Practice: Extract repeated HTML into a component file so changes
-         * only need to be made in one place.
+         * Desktop: fixed sidebar on the left side.
+         * Mobile (<768px): sidebar hidden, replaced by a top bar with hamburger
+         * button. Tapping it slides the sidebar in with a dark overlay.
          *
          * Set $activePage before including: 'dashboard', 'items', 'suppliers', etc.
-         *
-         * On mobile (below 768px), the sidebar is hidden off-screen. The hamburger
-         * button (mobile-menu-toggle) slides it in. The overlay closes it on tap.
          */
         $activePage = $activePage ?? '';
         ?>
-        <!-- Mobile hamburger button — only visible on small screens -->
-        <button class="mobile-menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active');" aria-label="Toggle menu">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <!-- Overlay behind sidebar on mobile — tap to close -->
+        <!-- ── Mobile Top Bar ─────────────────────────────────────
+             Only visible on screens < 768px. Gives mobile users a proper
+             header with the hamburger menu, app name, and user initial. -->
+        <div class="mobile-topbar">
+            <button class="mobile-topbar-menu" onclick="document.querySelector('.sidebar').classList.add('open'); document.querySelector('.sidebar-overlay').classList.add('active');" aria-label="Open menu">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <span class="mobile-topbar-title">ShoeInventory</span>
+            <div class="mobile-topbar-avatar"><?= strtoupper(substr($_SESSION['username'], 0, 1)) ?></div>
+        </div>
+        <!-- Overlay behind sidebar — tap to close -->
         <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('open'); this.classList.remove('active');"></div>
         <aside class="sidebar">
             <div class="sidebar-brand">
