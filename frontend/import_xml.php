@@ -51,11 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['xml_file'])) {
                         // Update existing item
                         $stmt = $pdo->prepare("UPDATE items SET quantity = ?, min_quantity = ?, price = ?, supplier_id = ? WHERE name = ?");
                         $stmt->execute([$quantity, $minQuantity, $price, $supplierId, $name]);
+                        // Sync stock table
+                        $stmt = $pdo->prepare("UPDATE stock SET current_qty = ?, min_threshold = ?, supplier_id = ? WHERE item_id = (SELECT id FROM items WHERE name = ? LIMIT 1)");
+                        $stmt->execute([$quantity, $minQuantity, $supplierId, $name]);
                     } else {
                         // Insert new item
                         $nextId = $itemManager->getNextAvailableId();
                         $stmt = $pdo->prepare("INSERT INTO items (id, name, quantity, min_quantity, price, supplier_id) VALUES (?, ?, ?, ?, ?, ?)");
                         $stmt->execute([$nextId, $name, $quantity, $minQuantity, $price, $supplierId]);
+                        // Create corresponding stock record
+                        $stmt = $pdo->prepare("INSERT INTO stock (item_id, category, supplier_id, current_qty, min_threshold, unit) VALUES (?, 'Shoes', ?, ?, ?, 'pairs')");
+                        $stmt->execute([$nextId, $supplierId, $quantity, $minQuantity]);
                     }
                     $imported++;
                 }

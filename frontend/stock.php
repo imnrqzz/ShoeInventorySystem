@@ -6,10 +6,14 @@ require_once __DIR__ . '/components/auth.php';
 require_once __DIR__ . '/../backend/classes/StockManager.php';
 $stockManager = new StockManager($pdo);
 
+// Auto-sync missing stock records
+$stockManager->syncMissingStock();
+
 $filters = array_filter(['search' => trim($_GET['search'] ?? ''), 'category' => trim($_GET['category'] ?? '')]);
 
 // Handle stock update
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['action'] ?? '') === 'update_stock') {
+    verify_csrf();
     $success = $stockManager->updateGlobalInventorySync(
         (int)($_POST['stock_id'] ?? 0), (int)($_POST['item_id'] ?? 0), (int)($_POST['supplier_id'] ?? 0),
         trim($_POST['item_name'] ?? ''), trim($_POST['company_name'] ?? ''),
@@ -63,6 +67,12 @@ foreach ($categories as $cat) {
 $toolbarFilter = ['name' => 'category', 'value' => $filters['category'] ?? '', 'options' => $categoryOptions];
 require __DIR__ . '/components/toolbar.php';
 ?>
+
+            <div style="margin-bottom:12px;display:flex;gap:8px;">
+                <button class="btn btn-secondary" onclick="window.qrScanner.open()">
+                    <i class="fa-solid fa-qrcode"></i> Scan QR / Barcode
+                </button>
+            </div>
 
             <div class="table-card">
                 <div class="table-scroll">

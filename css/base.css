@@ -1117,3 +1117,136 @@ body {
     min-width: 70px;
   }
 }
+
+/* ============================================
+   QR Scanner Styles
+   ============================================ */
+
+.qr-scanner-overlay {
+  z-index: 2000;
+}
+
+.qr-scanner-box {
+  max-width: 480px;
+  width: 95%;
+}
+
+.qr-reader-container {
+  width: 100%;
+  min-height: 260px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+  margin-bottom: 16px;
+}
+
+.qr-reader-container video {
+  width: 100% !important;
+  border-radius: var(--radius-md);
+}
+
+.qr-scan-input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.qr-scan-input-group .form-input {
+  flex: 1;
+}
+
+.qr-scan-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.qr-scan-results {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.qr-scan-match {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  font-size: var(--font-size-sm);
+}
+
+.qr-scan-match i {
+  color: var(--color-success);
+}
+
+.qr-scan-error {
+  text-align: center;
+  padding: 20px;
+  color: var(--color-text-muted);
+}
+
+.qr-scan-error i {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  display: block;
+  color: var(--color-danger);
+}
+
+.qr-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.qr-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.qr-result-item:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.qr-result-item:hover .text-muted {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.qr-result-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-sm);
+}
+
+.qr-result-item i {
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+
+.qr-scan-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.qr-scan-action {
+  text-align: center;
+  padding: 12px;
+}
+
+.qr-scan-action p {
+  margin-bottom: 8px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}

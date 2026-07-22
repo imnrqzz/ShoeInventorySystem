@@ -157,6 +157,7 @@ CREATE TABLE `users` (
 
 --
 -- Dumping data for table `users`
+-- Default admin password: admin123 (change after first login)
 --
 
 INSERT INTO `users` (`id`, `username`, `password_hash`, `created_at`, `role`, `name`, `email`, `status`, `provider`, `provider_id`, `avatar`) VALUES
@@ -166,6 +167,21 @@ INSERT INTO `users` (`id`, `username`, `password_hash`, `created_at`, `role`, `n
 (16, 'beandr', '$2y$10$PF.T0/34pbqnAmW6/n1GFOWKEkhmgsChnyDP0NY/KnJ1l2jA7x5J6', '2026-07-21 02:26:12', 'Staff', 'bea', 'beandr@gmail.com', 'Active', 'local', NULL, NULL),
 (18, 'admin', '$2y$10$QIrFPRj8M34winZFkY2zDOCadHVNu40EueH9isnPc/ztLrmy7mxDS', '2026-07-22 08:57:29', 'Admin', 'Admin', 'admin@inventory.com', 'Active', 'local', NULL, NULL),
 (19, 'basto', '$2y$10$MOMtxxNtPH7g2F2y130S5uEnjHWB4xQ6uLB0eg1vMVDeSuKdzxCJi', '2026-07-22 10:19:44', 'Staff', 'Prince Christian Basto', 'princebasto123@gmail.com', 'Inactive', 'local', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `api_keys`
+--
+
+CREATE TABLE `api_keys` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `key_hash` varchar(255) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `user_id` int(10) UNSIGNED DEFAULT NULL,
+  `status` enum('active','revoked') NOT NULL DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Indexes for dumped tables
@@ -198,7 +214,9 @@ ALTER TABLE `suppliers`
 ALTER TABLE `transactions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `item_id` (`item_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `transaction_type` (`transaction_type`),
+  ADD KEY `created_at` (`created_at`);
 
 --
 -- Indexes for table `users`
@@ -207,6 +225,14 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD KEY `idx_provider` (`provider`,`provider_id`);
+
+--
+-- Indexes for table `api_keys`
+--
+ALTER TABLE `api_keys`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `key_hash` (`key_hash`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -243,6 +269,12 @@ ALTER TABLE `users`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
+-- AUTO_INCREMENT for table `api_keys`
+--
+ALTER TABLE `api_keys`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -265,6 +297,12 @@ ALTER TABLE `stock`
 ALTER TABLE `transactions`
   ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `api_keys`
+--
+ALTER TABLE `api_keys`
+  ADD CONSTRAINT `fk_api_keys_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

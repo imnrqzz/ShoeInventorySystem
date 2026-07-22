@@ -105,7 +105,7 @@ require __DIR__ . '/components/toolbar.php';
                             <p style="margin:4px 0 0;font-size:11px;color:#555;">Generated at <?= date('g:i A') ?></p>
                             <?php if ($search !== '' || $type !== 'All Types'): ?>
                             <p style="margin:6px 0 0;font-size:11px;color:#555;">
-                                Filters: <?= $search !== '' ? "\"$search\"" : '' ?> <?= $type !== 'All Types' ? "Type: $type" : '' ?>
+                                Filters: <?= $search !== '' ? '"' . safe($search) . '"' : '' ?> <?= $type !== 'All Types' ? "Type: " . safe($type) : '' ?>
                             </p>
                             <?php endif; ?>
                         </div>
