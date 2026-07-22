@@ -6,9 +6,12 @@ require_once __DIR__ . '/components/auth.php';
 
 require_once __DIR__ . '/../backend/suppliertab.php';
 
+// Only admins can manage suppliers
+$isAdmin = isAdmin();
+
 // Set component variables
 $pageTitle = 'Suppliers';              // used by head.php
-$pageCss = 'Supplierstyle.css';        // used by head.php
+$pageCss = 'supplier.css';        // used by head.php
 $activePage = 'suppliers';             // used by sidebar.php
 ?>
 <!DOCTYPE html>
@@ -23,7 +26,9 @@ $activePage = 'suppliers';             // used by sidebar.php
         <main class="main-content">
 <?php
 $pageSubtitle = 'Manage your supplier contacts and details';
-$headerAction = ['label' => '+ Add Supplier', 'href' => '#add-supplier-modal'];
+if ($isAdmin) {
+    $headerAction = ['label' => '+ Add Supplier', 'href' => '#add-supplier-modal'];
+}
 require __DIR__ . '/components/page_header.php';
 ?>
 
@@ -37,7 +42,7 @@ require __DIR__ . '/components/toolbar.php';
             <div class="table-card">
                 <div class="table-scroll">
                     <table class="data-table">
-                        <thead><tr><th>#</th><th>Company</th><th>Contact</th><th>Category</th><th>Phone/Email</th><th>Status</th><th class="actions-cell">Actions</th></tr></thead>
+                        <thead><tr><th>#</th><th>Company</th><th>Contact</th><th>Category</th><th>Phone/Email</th><th>Status</th><?php if ($isAdmin): ?><th class="actions-cell">Actions</th><?php endif; ?></tr></thead>
                         <tbody>
                             <?php if (!empty($suppliers)): foreach ($suppliers as $row): ?>
                             <tr>
@@ -47,13 +52,14 @@ require __DIR__ . '/components/toolbar.php';
                                 <td><?= safe($row['category'] ?? '') ?></td>
                                 <td><?= safe($row['phone_email'] ?? '') ?></td>
                                 <td><span class="badge <?= $row['status'] === 'Active' ? 'badge-success' : 'badge-neutral' ?>"><?= safe($row['status']) ?></span></td>
+                                <?php if ($isAdmin): ?>
                                 <td class="actions-cell">
                                     <a href="Supplier.php?edit_id=<?= (int)$row['order_id'] ?>" class="btn btn-secondary btn-sm" style="text-decoration:none;">Edit</a>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('Are you sure you want to delete this supplier? This action cannot be undone.', 'Supplier.php?delete_id=<?= (int)$row['order_id'] ?>')">Delete</button>
                                 </td>
+                                <?php endif; ?>
                             </tr>
                             <?php endforeach; else: ?>
-                            <tr class="empty-row"><td colspan="7">No suppliers found.</td></tr>
+                            <tr class="empty-row"><td colspan="<?= $isAdmin ? 7 : 6 ?>">No suppliers found.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>

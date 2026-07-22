@@ -5,7 +5,7 @@ require_once __DIR__ . '/components/auth.php';
 require_once __DIR__ . '/../backend/itemtab.php';
 
 $pageTitle = 'Items';
-$pageCss = 'item_cards.css';
+$pageCss = 'items.css';
 $activePage = 'items';
 $isAdmin = isset($_SESSION['role']) && strtolower($_SESSION['role']) === 'admin';
 ?>
@@ -47,9 +47,10 @@ require __DIR__ . '/components/toolbar.php';
     <?php require __DIR__ . '/components/items/edit_modal.php'; ?>
     <?php require __DIR__ . '/components/items/image_upload_modal.php'; ?>
     <?php endif; ?>
+    <?php require __DIR__ . '/components/items/variant_modal.php'; ?>
 
     <script>
-    // Flip card on click (unless clicking admin buttons)
+    // Flip card on click (unless clicking admin buttons or back-face actions)
     function handleCardClick(e, card) {
         if (e.target.closest('.flip-card-admin') || e.target.closest('.flip-card-actions')) return;
         card.classList.toggle('flipped');
@@ -89,7 +90,6 @@ require __DIR__ . '/components/toolbar.php';
         var img = container.querySelector('img');
         if (!img) return;
 
-        // Create a canvas with QR + label
         var canvas = document.createElement('canvas');
         var ctx = canvas.getContext('2d');
         var padding = 20;
@@ -99,20 +99,15 @@ require __DIR__ . '/components/toolbar.php';
         canvas.width = qrSize + padding * 2;
         canvas.height = qrSize + labelHeight + padding * 2;
 
-        // White background
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Draw QR code
         ctx.drawImage(img, padding, padding, qrSize, qrSize);
 
-        // Draw label
         ctx.fillStyle = '#333333';
         ctx.font = 'bold 14px Inter, Arial, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(name, canvas.width / 2, qrSize + padding + 20);
 
-        // Download
         var link = document.createElement('a');
         link.download = 'QR_' + name.replace(/[^a-zA-Z0-9]/g, '_') + '.png';
         link.href = canvas.toDataURL('image/png');

@@ -23,7 +23,6 @@
                                 <div class="flip-card-admin">
                                     <button type="button" title="Upload photo" onclick="event.stopPropagation(); openImageUpload(<?= (int)$item['id'] ?>, '<?= htmlspecialchars($item['name']) ?>')"><i class="fa-solid fa-camera"></i></button>
                                     <button type="button" title="Edit item" onclick="event.stopPropagation(); window.location.href='item.php?edit_id=<?= (int)$item['id'] ?>'"><i class="fa-solid fa-pen"></i></button>
-                                    <button type="button" class="delete-btn" title="Delete item" onclick="event.stopPropagation(); confirmDelete('Delete this item?', 'item.php?delete_id=<?= (int)$item['id'] ?>')"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                                 <?php endif; ?>
                             </div>
@@ -45,14 +44,14 @@
                             <div class="qr-container" id="qr-back-<?= (int)$item['id'] ?>"></div>
                             <div class="item-name-back"><?= safe($item['name']) ?></div>
                             <div class="item-details">
-                                ID: <?= (int)$item['id'] ?> | $<?= number_format($item['price'], 2) ?> | <?= htmlspecialchars($item['supplier_name'] ?? '—') ?>
+                                $<?= number_format($item['price'], 2) ?> | <?= htmlspecialchars($item['supplier_name'] ?? '—') ?>
                             </div>
                             <div class="flip-card-actions">
                                 <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); downloadQR(<?= (int)$item['id'] ?>, '<?= htmlspecialchars($item['name']) ?>')">
                                     <i class="fa-solid fa-download"></i> Download QR
                                 </button>
-                                <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); this.closest('.flip-card').classList.remove('flipped')">
-                                    <i class="fa-solid fa-rotate-left"></i> Flip Back
+                                <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); openVariantModal(<?= (int)$item['id'] ?>, '<?= htmlspecialchars($item['name']) ?>')">
+                                    <i class="fa-solid fa-list"></i> See Details
                                 </button>
                             </div>
                         </div>

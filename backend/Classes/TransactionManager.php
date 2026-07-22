@@ -19,14 +19,14 @@ class TransactionManager {
         try {
             $this->db->beginTransaction();
 
-            // 1. Insert record with original type name (Restock, Sale, Waste)
+            // 1. Insert record with original type name (Restock, Sold)
             $stmt = $this->db->prepare("
                 INSERT INTO transactions (item_id, transaction_type, quantity, user_id) 
                 VALUES (?, ?, ?, ?)
             ");
             $stmt->execute([$item_id, $type, $qty, $user_id]);
 
-            // 2. Sync Inventory - Restock adds, Sale/Waste subtracts
+            // 2. Sync Inventory - Restock adds, Sold subtracts
             $modifier = ($type === 'Restock') ? '+' : '-';
             $updateQuery = "UPDATE items SET quantity = quantity $modifier ? WHERE id = ?";
             $updateStmt = $this->db->prepare($updateQuery);

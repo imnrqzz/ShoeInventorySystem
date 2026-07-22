@@ -13,7 +13,7 @@ $usernameValue = trim($_GET['username'] ?? '');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - ShoeInventory</title>
-    <link rel="stylesheet" href="../css/login_style.css">
+    <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
     <?php if ($registered): ?>
@@ -35,7 +35,7 @@ $usernameValue = trim($_GET['username'] ?? '');
         <div class="alert-error">This account has been disabled. Please contact the administrator.</div>
         <?php endif; ?>
 
-        <form method="POST" action="../backend/process_login.php" id="loginForm" data-validate data-form-name="login" novalidate>
+        <form method="POST" action="../backend/handlers/process_login.php" id="loginForm" data-validate data-form-name="login" novalidate>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required

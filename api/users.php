@@ -8,8 +8,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/../backend/Classes/UserManager.php';
 
 $userId = requireApiAdmin();
-$db = new Database();
-$pdo = $db->getConnection();
+$pdo = getApiDb();
 $userManager = new UserManager($pdo);
 
 switch ($method) {

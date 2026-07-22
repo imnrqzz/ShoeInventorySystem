@@ -9,7 +9,7 @@
 
 // 1. Session with security flags
 if (session_status() !== PHP_SESSION_ACTIVE) {
-    $config = require __DIR__ . '/config.php';
+    $config = require __DIR__ . '/utils/config.php';
     ini_set('session.cookie_httponly', $config['session_httponly'] ? 1 : 0);
     ini_set('session.use_strict_mode', 1);
     ini_set('session.cookie_samesite', $config['session_samesite']);

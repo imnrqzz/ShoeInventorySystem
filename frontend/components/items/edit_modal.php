@@ -18,6 +18,14 @@
                             <span class="field-error"></span>
                         </div>
                         <div class="form-group">
+                            <label>Color</label>
+                            <input type="text" name="color" value="<?= safe($editing_item['color'] ?? '') ?>" placeholder="e.g. Black, White">
+                        </div>
+                        <div class="form-group">
+                            <label>Size</label>
+                            <input type="text" name="size" value="<?= safe($editing_item['size'] ?? '') ?>" placeholder="e.g. US 9, EU 42">
+                        </div>
+                        <div class="form-group">
                             <label>Price ($) *</label>
                             <input type="number" step="0.01" name="price" value="<?= number_format((float)$editing_item['price'], 2, '.', '') ?>" min="0" required>
                             <span class="field-error"></span>

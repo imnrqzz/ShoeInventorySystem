@@ -1,7 +1,7 @@
 <?php
-// backend/process_login.php
-require_once __DIR__ . '/bootstrap.php';
-require_once __DIR__ . '/validate.php';
+// backend/handlers/process_login.php
+require_once __DIR__ . '/../bootstrap.php';
+require_once __DIR__ . '/../utils/validate.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /ShoeInventorySystem/frontend/login.php');
@@ -36,6 +36,7 @@ try {
         }
 
         if (password_verify($password, $user['password_hash'])) {
+            session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $username;
             $_SESSION['role'] = $user['role'] ?? 'User';

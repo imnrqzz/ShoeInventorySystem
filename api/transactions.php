@@ -10,8 +10,7 @@ require_once __DIR__ . '/../backend/Classes/TransactionManager.php';
 require_once __DIR__ . '/../backend/Classes/Transaction.php';
 
 $userId = requireApiAuth();
-$db = new Database();
-$pdo = $db->getConnection();
+$pdo = getApiDb();
 
 switch ($method) {
     case 'GET':
@@ -38,8 +37,8 @@ switch ($method) {
         if ($itemId <= 0) {
             jsonError('item_id is required');
         }
-        if (!in_array($type, ['Restock', 'Sale', 'Waste'], true)) {
-            jsonError('type must be Restock, Sale, or Waste');
+        if (!in_array($type, ['Restock', 'Sold'], true)) {
+            jsonError('type must be Restock or Sold');
         }
         if ($quantity <= 0) {
             jsonError('quantity must be a positive integer');
@@ -91,7 +90,7 @@ switch ($method) {
             $stmt->execute([$id]);
 
             // Reverse the stock impact
-            $typeMap = ['Restock' => '-', 'Sale' => '+', 'Waste' => '+'];
+            $typeMap = ['Restock' => '-', 'Sold' => '+'];
             $modifier = $typeMap[$tx['transaction_type']] ?? '+';
             $stmt = $pdo->prepare("UPDATE items SET quantity = quantity $modifier ? WHERE id = ?");
             $stmt->execute([$tx['quantity'], $tx['item_id']]);
@@ -104,7 +103,8 @@ switch ($method) {
             jsonSuccess(null, 'Transaction deleted');
         } catch (\Exception $e) {
             $pdo->rollBack();
-            jsonError('Failed to delete transaction: ' . $e->getMessage(), 500);
+            error_log("Transaction delete error: " . $e->getMessage());
+            jsonError('Failed to delete transaction', 500);
         }
         break;
 

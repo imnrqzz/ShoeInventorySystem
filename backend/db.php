@@ -76,3 +76,15 @@ $chartTransactions = $chartTxStmt->fetchAll();
 // 7. Chart Data: Stock health summary for comparison chart
 $okStockCount   = $manager->getCount('SELECT COUNT(*) AS cnt FROM items WHERE quantity > min_quantity');
 $chartStockHealth = [['label' => 'OK Stock', 'value' => $okStockCount], ['label' => 'Low Stock', 'value' => $lowStockAlerts]];
+
+// 8. Chart Data: Best selling items (by sale transaction count)
+$bestSellersSql = "SELECT i.name, COUNT(t.id) AS sale_count
+                   FROM transactions t
+                   LEFT JOIN items i ON t.item_id = i.id
+                   WHERE t.transaction_type = 'Sold' AND i.name IS NOT NULL
+                   GROUP BY i.id, i.name
+                   ORDER BY sale_count DESC
+                   LIMIT 10";
+$bestSellersStmt = $pdo->prepare($bestSellersSql);
+$bestSellersStmt->execute();
+$chartBestSellers = $bestSellersStmt->fetchAll();

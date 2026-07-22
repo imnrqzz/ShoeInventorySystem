@@ -30,7 +30,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Set component variables
 $pageTitle = 'Reports';              // used by head.php
-$pageCss = 'reportanalysis.css';     // used by head.php
+$pageCss = 'reports.css';     // used by head.php
 $activePage = 'reports';             // used by sidebar.php
 ?>
 <!DOCTYPE html>
@@ -54,9 +54,8 @@ $toolbarFilter = [
     'value' => $type,
     'options' => [
         ['value' => 'All Types', 'label' => 'All Types'],
-        ['value' => 'Sale',      'label' => 'Sale'],
+        ['value' => 'Sold',      'label' => 'Sold'],
         ['value' => 'Restock',   'label' => 'Restock'],
-        ['value' => 'Waste',     'label' => 'Waste'],
     ]
 ];
 require __DIR__ . '/components/toolbar.php';
@@ -72,7 +71,7 @@ require __DIR__ . '/components/toolbar.php';
                                 <td class="text-muted col-nowrap"><?= safe($row['transaction_date']) ?></td>
                                 <td><strong><?= safe($row['item_name']) ?></strong></td>
                                 <td><?= safe($row['supplier_name']) ?></td>
-                                <td><span class="badge <?= $row['transaction_type'] === 'Sale' ? 'badge-warning' : ($row['transaction_type'] === 'Restock' ? 'badge-success' : 'badge-danger') ?>"><?= safe($row['transaction_type']) ?></span></td>
+                                <td><span class="badge <?= $row['transaction_type'] === 'Sold' ? 'badge-warning' : 'badge-success' ?>"><?= safe($row['transaction_type']) ?></span></td>
                                 <td><?= safe($row['quantity']) ?></td>
                                 <td><?= safe($row['user_name']) ?></td>
                             </tr>
