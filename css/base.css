@@ -1,0 +1,1119 @@
+/* css/base.css
+ *
+ * SHARED DESIGN SYSTEM for the Shoes Inventory System.
+ * ----------------------------------------------------------
+ * This file defines CSS custom properties (variables) so that
+ * colors, fonts, and spacing are consistent across every page.
+ *
+ * Best Practice: Using CSS variables (custom properties) means
+ * you only change a color in ONE place and it updates everywhere.
+ * This is called a "design token" system.
+ */
+
+/* â”€â”€ Design Tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+:root {
+  /* Primary colors */
+  --color-primary: #2563eb;
+  --color-primary-light: #eff6ff;
+  --color-primary-hover: #1d4ed8;
+
+  /* Neutral colors */
+  --color-bg: #f8f9fb;
+  --color-surface: #ffffff;
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
+
+  /* Text colors */
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+
+  /* Status colors */
+  --color-danger: #dc2626;
+  --color-danger-light: #fef2f2;
+  --color-success: #16a34a;
+  --color-success-light: #f0fdf4;
+  --color-warning: #d97706;
+  --color-warning-light: #fffbeb;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-size-xs: 0.72rem;
+  --font-size-sm: 0.82rem;
+  --font-size-base: 0.9rem;
+  --font-size-lg: 1.1rem;
+  --font-size-xl: 1.3rem;
+
+  /* Spacing */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 99px;
+
+  /* Sidebar */
+  --sidebar-width: 230px;
+}
+
+/* â”€â”€ Global Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+/* â”€â”€ Page Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * The sidebar is position:fixed, so it's removed from normal flow.
+ * We just need .main-content to have margin-left to avoid overlapping.
+ * No CSS Grid needed here â€” fixed sidebar + margin is simpler and reliable.
+ */
+.page-wrapper {
+  min-height: 100vh;
+}
+
+/* â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.sidebar {
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  padding: 0 20px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-border-light);
+  margin-bottom: 12px;
+}
+
+.sidebar-brand .brand-icon {
+  width: 34px;
+  height: 34px;
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-brand .brand-icon img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+.sidebar-brand span {
+  font-weight: 700;
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+}
+
+/* Navigation links inside the sidebar */
+.sidebar-nav {
+  list-style: none;
+  padding: 0 12px;
+  flex: 1;
+}
+
+.sidebar-nav li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  margin-bottom: 2px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-nav li a:hover {
+  background: var(--color-border-light);
+  color: var(--color-text);
+}
+
+/* Best Practice: The "active" class highlights the current page in the nav. */
+.sidebar-nav li a.active {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.sidebar-nav li a i {
+  width: 18px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* User profile section at bottom of sidebar */
+.sidebar-user {
+  padding: 16px 20px;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.sidebar-user .user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--color-primary-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.sidebar-user .user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-user .user-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-user .user-role {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.sidebar-user .logout-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+  text-decoration: none;
+}
+
+.sidebar-user .logout-btn:hover {
+  color: var(--color-danger);
+  background: var(--color-danger-light);
+}
+
+/* â”€â”€ Main Content Area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.main-content {
+  margin-left: var(--sidebar-width);
+  padding: 28px 32px;
+  min-height: 100vh;
+  position: relative;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.page-header p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 4px 0 0;
+}
+
+/* â”€â”€ KPI Stat Cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  border: 1px solid var(--color-border);
+}
+
+.stat-card .stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card .stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 4px;
+}
+
+.stat-card.danger .stat-label { color: var(--color-danger); }
+.stat-card.danger .stat-value { color: var(--color-danger); }
+
+/* â”€â”€ Toolbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.toolbar .search-input {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.toolbar .search-input:focus {
+  border-color: var(--color-primary);
+}
+
+.toolbar select,
+.toolbar-select {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  cursor: pointer;
+}
+
+/* Active search/filter state â€” highlights the input when a search is applied */
+.toolbar .search-input.search-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.toolbar-select.filter-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.toolbar select:focus,
+.toolbar-select:focus {
+  border-color: var(--color-primary);
+}
+
+/* â”€â”€ Active Filters Indicator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * Shows below the toolbar when search/filter is applied.
+ * Gives users a clear visual of what's filtering their results. */
+.toolbar-active-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: -12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.toolbar-filter-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.toolbar-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* â”€â”€ Buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, transform 0.1s;
+  text-decoration: none;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--color-primary-hover); }
+
+.btn-secondary {
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+.btn-secondary:hover { background: var(--color-border); }
+
+.btn-danger {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+.btn-danger:hover { background: #fde8e8; }
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: var(--font-size-xs);
+}
+
+/* â”€â”€ Data Tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.table-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.table-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.data-table thead tr {
+  background: #f9fafb;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 10px 20px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border-light);
+  color: var(--color-text);
+  vertical-align: middle;
+  /* Best Practice: nowrap keeps cell text on one line so the table maintains
+     its min-width and triggers horizontal scroll instead of crushing text. */
+  white-space: nowrap;
+}
+
+.data-table tbody tr:hover {
+  background: #fafbfc;
+}
+
+/* Action buttons column â€” keeps Edit/Delete in a neat row with gap */
+.data-table .actions-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.data-table .actions-cell .btn + .btn {
+  margin-left: 6px;
+}
+
+/* Prevent specific columns from wrapping (prices, short values) */
+.col-nowrap {
+  white-space: nowrap;
+}
+
+.data-table .empty-row td {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--color-text-muted);
+}
+
+/* â”€â”€ Badges â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-success {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.badge-danger {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.badge-warning {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.badge-neutral {
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+
+/* â”€â”€ Modal Overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-overlay.hash-modal {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.modal-overlay.hash-modal:target {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.modal-header h2, .modal-header .modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background: var(--color-border-light);
+  color: var(--color-text);
+}
+
+.modal-body {
+  padding: 20px 24px;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* â”€â”€ Form Elements â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-grid .full-width {
+  grid-column: span 2;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+}
+
+/* â”€â”€ Progress Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.progress-bar {
+  height: 6px;
+  background: var(--color-border-light);
+  border-radius: 3px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.progress-bar .fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.progress-bar .fill.success { background: var(--color-success); }
+.progress-bar .fill.danger { background: var(--color-danger); }
+
+/* â”€â”€ Stock Level Bar (Stock page) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * A wider, more informative progress bar for the stock table.
+ * Shows quantity relative to the minimum threshold:
+ *   - Bar "full" (100%) = 2Ã— the minimum threshold
+ *   - Threshold marker sits at the 50% mark
+ *   - Color: red (below min) â†’ amber (near min) â†’ green (healthy)
+ */
+.stock-level {
+  min-width: 100px;
+}
+
+.stock-level-text {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.stock-level-qty {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.stock-level-unit {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.stock-bar {
+  position: relative;
+  height: 8px;
+  background: var(--color-border-light);
+  border-radius: 4px;
+  overflow: visible;
+}
+
+.stock-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.stock-bar-fill.danger  { background: var(--color-danger); }
+.stock-bar-fill.warning { background: var(--color-warning); }
+.stock-bar-fill.success { background: var(--color-success); }
+
+/* Threshold marker: a small vertical line at the 50% mark.
+ * This shows WHERE the minimum threshold sits on the bar,
+ * so you can see at a glance if stock is above or below it. */
+.stock-bar-threshold {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--color-text-muted);
+  border-radius: 1px;
+  opacity: 0.5;
+}
+
+/* â”€â”€ Form Validation Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * Used by form-validation.js to show inline error messages.
+ * .input-error: red border on the invalid input/select
+ * .field-error: small red text below the field explaining the issue
+ */
+.form-group input.input-error,
+.form-group select.input-error,
+.form-group textarea.input-error {
+  border-color: var(--color-danger);
+  background: var(--color-danger-light);
+}
+
+.field-error {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--color-danger);
+  margin-top: 4px;
+  min-height: 0;
+}
+
+/* â”€â”€ Confirmation Modal (confirm-modal.js) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * A styled replacement for the browser's native confirm() dialog.
+ * The JS file dynamically injects the HTML; these styles control appearance.
+ * Hidden by default, shown when .active class is added by JS.
+ */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+.confirm-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.confirm-box {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.confirm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.confirm-header h3 {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.confirm-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+}
+
+.confirm-close-btn:hover {
+  background: var(--color-border-light);
+  color: var(--color-text);
+}
+
+.confirm-message {
+  padding: 20px 20px 24px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  padding: 0 20px 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirm-btn {
+  padding: 8px 20px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s;
+}
+
+.confirm-btn-cancel {
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+.confirm-btn-cancel:hover { background: var(--color-border); }
+
+.confirm-btn-ok {
+  background: var(--color-primary);
+  color: #fff;
+}
+.confirm-btn-ok:hover { background: var(--color-primary-hover); }
+
+.confirm-btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+.confirm-btn-danger:hover { background: #b91c1c; }
+
+/* â”€â”€ Utility Classes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.text-danger { color: var(--color-danger) !important; }
+.text-success { color: var(--color-success) !important; }
+.text-warning { color: var(--color-warning) !important; }
+.text-muted { color: var(--color-text-muted) !important; }
+.font-bold { font-weight: 600 !important; }
+
+/* â”€â”€ Layout Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.page-header-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* â”€â”€ Mobile Top Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * Best Practice: On mobile, the sidebar is hidden and replaced by a fixed
+ * top bar with a hamburger menu, the app name, and the user avatar.
+ * This gives mobile users a native-feeling navigation pattern.
+ * Hidden on desktop where the full sidebar is visible.
+ */
+.mobile-topbar {
+  display: none;         /* Hidden on desktop */
+}
+
+/* Overlay behind sidebar on mobile â€” dims page content */
+.sidebar-overlay {
+  display: none;
+}
+
+/* â”€â”€ Responsive Design â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * Best Practice: Mobile-first responsive design uses @media queries
+ * to adapt the layout at specific screen widths (breakpoints).
+ *
+ * 768px = tablet breakpoint (sidebar collapses)
+ * 480px = phone breakpoint (single column everything)
+ */
+
+/* â”€â”€ Tablet & Small Laptops (< 768px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (max-width: 768px) {
+
+  /* â”€â”€ Mobile Top Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   * Fixed bar at top with hamburger, app name, and user avatar.
+   * z-index 200 so it sits above everything except modals.
+   */
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 54px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0 16px;
+    z-index: 200;
+    gap: 12px;
+  }
+
+  .mobile-topbar-menu {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-topbar-title {
+    flex: 1;
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+  }
+
+  .mobile-topbar-avatar {
+    width: 30px;
+    height: 30px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+  }
+
+  /* â”€â”€ Sidebar Drawer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   * Slides in from the left. z-index 300 so it covers the
+   * top bar and everything else (except modals at 1000).
+   */
+  .sidebar {
+    left: -280px;
+    width: 260px;
+    transition: left 0.25s ease;
+    box-shadow: none;
+    z-index: 300;
+  }
+
+  .sidebar.open {
+    left: 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+  }
+
+  /* Dark backdrop behind the sidebar â€” covers entire screen.
+   * z-index 250: above topbar (200) but below sidebar (300). */
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 250;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* â”€â”€ Main Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   * Full width, with top padding to clear the fixed top bar.
+   */
+  .main-content {
+    margin-left: 0;
+    padding: 68px 16px 20px;
+  }
+
+  /* Page header stacks vertically */
+  .page-header-with-action {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-2col {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid .full-width {
+    grid-column: span 1;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar .search-input {
+    max-width: 100%;
+  }
+
+  .modal-box {
+    max-width: 95%;
+  }
+
+  .confirm-box {
+    max-width: 90%;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Best Practice: On mobile, tables keep all columns visible but the
+   * table-scroll wrapper enables horizontal scrolling. We set min-widths
+   * on the table so columns maintain readable sizing and the user can
+   * swipe right to see all data. */
+  .data-table {
+    min-width: 700px;
+  }
+
+  .page-header h1 {
+    font-size: 1.15rem;
+  }
+
+  /* Modal buttons stack at tablet for comfortable touch */
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+}
+
+/* â”€â”€ Phone (< 480px) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 62px 12px 16px;
+  }
+
+  .stat-cards {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  /* Best Practice: Touch targets should be at least 44px tall.
+   * We keep font-size readable (0.82rem â‰ˆ 11px, not smaller). */
+  .btn {
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    min-height: 44px;
+  }
+
+  .btn-sm {
+    padding: 8px 12px;
+    min-height: 40px;
+  }
+
+  .modal-box {
+    max-width: 100%;
+    margin: auto 8px;
+    border-radius: var(--radius-lg);
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .data-table {
+    min-width: 700px;
+    font-size: 0.82rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
+  }
+
+  /* Stock level bar */
+  .stock-level {
+    min-width: 70px;
+  }
+}

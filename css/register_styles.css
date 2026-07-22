@@ -1,0 +1,192 @@
+/* css/register_styles.css
+ * Matches the login page design — same centered card, same tokens.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f8f9fb;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.register-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 36px 36px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.register-brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.register-brand .brand-icon {
+  width: 48px;
+  height: 48px;
+  background: #2563eb;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.register-brand .brand-icon img {
+  width: 26px;
+  height: 26px;
+  filter: brightness(0) invert(1);
+}
+
+.register-brand h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.register-brand p {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  background: #f3f4f6;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+  background: #fff;
+}
+
+.btn-register {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.btn-register:hover {
+  background: #1d4ed8;
+}
+
+.register-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.82rem;
+  color: #9ca3af;
+}
+
+.register-footer a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-footer a:hover {
+  text-decoration: underline;
+}
+
+.alert-error {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 16px;
+  border: 1px solid #fecaca;
+}
+
+/* ── Validation Styles ──────────────────────────────────────
+ * .input-error: red border on invalid fields
+ * .field-error: red error message text below the field
+ * .field-hint: gray helper text (always visible, e.g. "Min 3 characters")
+ */
+.form-group input.input-error {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.field-error {
+  display: block;
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 4px;
+  min-height: 0;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+/* ── Password Strength Bar ─────────────────────────────────
+ * Best Practice: A visual indicator that shows how strong the password is.
+ * The bar fills up and changes color (red → yellow → green) as the user
+ * adds length, uppercase, numbers, and special characters.
+ */
+.password-strength {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.password-strength-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 2px;
+  transition: width 0.3s, background 0.3s;
+}
+
+@media (max-width: 480px) {
+  .register-card {
+    padding: 24px 18px;
+  }
+}

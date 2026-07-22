@@ -1,0 +1,8 @@
+/* css/dashboard_style.css
+ * Dashboard-specific styles. Uses base.css for shared layout/components.
+ * Only contains styles unique to the dashboard page.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('base.css');
+
+/* No page-specific overrides needed — base.css covers everything. */

@@ -1,0 +1,213 @@
+/* css/login_style.css
+ * Light & minimal centered card design for the login page.
+ * Uses the same design tokens as the rest of the app for consistency.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f8f9fb;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-brand .brand-icon {
+  width: 48px;
+  height: 48px;
+  background: #2563eb;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.login-brand .brand-icon img {
+  width: 26px;
+  height: 26px;
+  filter: brightness(0) invert(1);
+}
+
+.login-brand h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.login-brand p {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  background: #f3f4f6;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+  background: #fff;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.btn-login:hover {
+  background: #1d4ed8;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 0.82rem;
+  color: #9ca3af;
+}
+
+.login-footer a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+.alert-error {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 18px;
+  border: 1px solid #fecaca;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.modal h4 {
+  font-size: 1rem;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.modal p {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.modal .btn-ok {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal .btn-ok:hover {
+  background: #1d4ed8;
+}
+
+/* ── Validation Styles ──────────────────────────────────────
+ * Best Practice: Visual feedback on form errors using CSS classes.
+ * .input-error adds a red border to indicate which field has an issue.
+ * .field-error is a small red text below the field explaining the problem.
+ */
+.form-group input.input-error {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.field-error {
+  display: block;
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 4px;
+  min-height: 0;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 28px 20px;
+  }
+}
