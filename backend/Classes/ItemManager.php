@@ -35,28 +35,68 @@ class ItemManager {
         return isset($result['next_id']) ? intval($result['next_id']) : 1;
     }
 
-    // 3. Create: Add a New Item
+    // 3. Create: Add a New Item + sync stock table
     public function addItem($name, $supplier_id, $min_quantity, $price) {
         if ($name === '') return false;
 
         $next_id = $this->getNextAvailableId();
-        $stmt = $this->db->prepare('INSERT INTO items (id, name, supplier_id, quantity, min_quantity, price) VALUES (?, ?, ?, ?, ?, ?)');
-        return $stmt->execute([$next_id, $name, $supplier_id, 0, $min_quantity, $price]);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare('INSERT INTO items (id, name, supplier_id, quantity, min_quantity, price) VALUES (?, ?, ?, ?, ?, ?)');
+            $stmt->execute([$next_id, $name, $supplier_id, 0, $min_quantity, $price]);
+
+            // Create corresponding stock record
+            $stockStmt = $this->db->prepare('INSERT INTO stock (item_id, category, supplier_id, current_qty, min_threshold, unit) VALUES (?, ?, ?, ?, ?, ?)');
+            $stockStmt->execute([$next_id, 'Shoes', $supplier_id, 0, $min_quantity, 'pairs']);
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
-    // 4. Update: Edit Existing Item Settings
+    // 4. Update: Edit Existing Item + sync stock table
     public function updateItem($id, $name, $supplier_id, $min_quantity, $price) {
         if ($id <= 0 || $name === '') return false;
 
-        $stmt = $this->db->prepare('UPDATE items SET name = ?, supplier_id = ?, min_quantity = ?, price = ? WHERE id = ?');
-        return $stmt->execute([$name, $supplier_id, $min_quantity, $price, $id]);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare('UPDATE items SET name = ?, supplier_id = ?, min_quantity = ?, price = ? WHERE id = ?');
+            $stmt->execute([$name, $supplier_id, $min_quantity, $price, $id]);
+
+            // Sync stock table
+            $stockStmt = $this->db->prepare('UPDATE stock SET supplier_id = ?, min_threshold = ? WHERE item_id = ?');
+            $stockStmt->execute([$supplier_id, $min_quantity, $id]);
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
-    // 5. Delete: Drop an Item Row Relationship
+    // 5. Delete: Drop an Item + its stock record
     public function deleteItem($id) {
         $id = intval($id);
-        $stmt = $this->db->prepare('DELETE FROM items WHERE id = ?');
-        return $stmt->execute([$id]);
+        $this->db->beginTransaction();
+        try {
+            // Delete stock record first
+            $stockStmt = $this->db->prepare('DELETE FROM stock WHERE item_id = ?');
+            $stockStmt->execute([$id]);
+
+            // Delete item
+            $stmt = $this->db->prepare('DELETE FROM items WHERE id = ?');
+            $stmt->execute([$id]);
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
     // 6. Read: Fetch Single Item For Active Frame Modal Target

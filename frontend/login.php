@@ -17,13 +17,7 @@ $usernameValue = trim($_GET['username'] ?? '');
 </head>
 <body>
     <?php if ($registered): ?>
-    <div class="modal-backdrop" id="successModal">
-        <div class="modal">
-            <h4>Registration Successful</h4>
-            <p>Your account has been created. Please log in to continue.</p>
-            <button class="btn-ok" id="modalOk">OK</button>
-        </div>
-    </div>
+    <div class="alert-error" style="margin-bottom:16px;">Registration is disabled. Please contact the administrator.</div>
     <?php endif; ?>
 
     <div class="login-card">

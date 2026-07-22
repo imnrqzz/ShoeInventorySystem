@@ -16,27 +16,29 @@ class TransactionManager {
      * Uses a transaction block to ensure data integrity
      */
     public function logTransaction($item_id, $type, $qty, $user_id, $reason = '') {
-        // Map frontend types to database ENUM values ('in', 'out', 'adjust')
-        $type_map = ['Restock' => 'in', 'Sale' => 'out', 'Waste' => 'adjust'];
-        $db_type = $type_map[$type] ?? 'adjust';
-
         try {
             $this->db->beginTransaction();
 
-            // 1. Insert record into transactions table
+            // 1. Insert record with original type name (Restock, Sale, Waste)
             $stmt = $this->db->prepare("
                 INSERT INTO transactions (item_id, transaction_type, quantity, user_id) 
                 VALUES (?, ?, ?, ?)
             ");
-            $stmt->execute([$item_id, $db_type, $qty, $user_id]);
+            $stmt->execute([$item_id, $type, $qty, $user_id]);
 
-            // 2. Sync Inventory in the 'items' table
-            // Restock ('in') adds quantity, others subtract
-            $modifier = ($db_type === 'in') ? '+' : '-';
+            // 2. Sync Inventory - Restock adds, Sale/Waste subtracts
+            $modifier = ($type === 'Restock') ? '+' : '-';
             $updateQuery = "UPDATE items SET quantity = quantity $modifier ? WHERE id = ?";
-            
             $updateStmt = $this->db->prepare($updateQuery);
             $updateStmt->execute([$qty, $item_id]);
+
+            // 3. Sync the 'stock' table to match items.quantity
+            $syncStmt = $this->db->prepare("
+                UPDATE stock SET current_qty = (
+                    SELECT quantity FROM items WHERE id = ?
+                ) WHERE item_id = ?
+            ");
+            $syncStmt->execute([$item_id, $item_id]);
 
             $this->db->commit();
             return true;

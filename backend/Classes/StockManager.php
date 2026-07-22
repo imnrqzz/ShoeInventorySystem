@@ -8,6 +8,17 @@ class StockManager {
         $this->db = $pdo;
     }
 
+    // Auto-sync: create stock records for items missing them
+    public function syncMissingStock() {
+        $this->db->exec("
+            INSERT IGNORE INTO stock (item_id, category, supplier_id, current_qty, min_threshold, unit)
+            SELECT i.id, 'Shoes', i.supplier_id, i.quantity, i.min_quantity, 'pairs'
+            FROM items i
+            LEFT JOIN stock s ON i.id = s.item_id
+            WHERE s.id IS NULL
+        ");
+    }
+
     public function getTotalItemsCount() {
         return (int)$this->db->query("SELECT COUNT(*) FROM stock")->fetchColumn();
     }

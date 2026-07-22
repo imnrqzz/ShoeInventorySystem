@@ -1,0 +1,298 @@
+/* item_cards.css - Flip card styles for items page */
+@import url('base.css');
+
+/* Cards Grid */
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 4px;
+}
+
+/* Flip Card Container */
+.flip-card {
+    perspective: 1000px;
+    height: 320px;
+    cursor: pointer;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front & Back faces */
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--color-surface);
+}
+
+/* Front Face - Image Card */
+.flip-card-front {
+    display: flex;
+    flex-direction: column;
+}
+
+.flip-card-image {
+    flex: 1;
+    width: 100%;
+    min-height: 180px;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.flip-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.flip-card-image .no-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
+.flip-card-image .no-image i {
+    font-size: 2.5rem;
+    opacity: 0.3;
+}
+
+.flip-card-info {
+    padding: 14px 16px;
+    border-top: 1px solid var(--color-border);
+}
+
+.flip-card-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flip-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.flip-card-price {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.flip-card-stock {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flip-card-stock .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-success);
+}
+
+.flip-card-stock .dot.low {
+    background: var(--color-danger);
+}
+
+/* Back Face - QR Code */
+.flip-card-back .qr-container {
+    margin-bottom: 16px;
+}
+
+.flip-card-back .qr-container canvas,
+.flip-card-back .qr-container img {
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--color-bg);
+}
+
+.flip-card-back .item-name-back {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.flip-card-back .item-details {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.flip-card-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.flip-card-actions .btn {
+    flex: 1;
+    font-size: 0.8rem;
+    padding: 8px 12px;
+}
+
+.flip-hint {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    background: rgba(255,255,255,0.9);
+    padding: 2px 8px;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+/* Admin-only edit/upload overlay */
+.flip-card-admin {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    z-index: 5;
+}
+
+.flip-card-admin button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.95);
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: all 0.15s;
+}
+
+.flip-card-admin button:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.flip-card-admin button.delete-btn:hover {
+    background: var(--color-danger);
+}
+
+/* Image Upload Modal */
+.image-upload-zone {
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--color-bg);
+}
+
+.image-upload-zone:hover {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.03);
+}
+
+.image-upload-zone.dragover {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.image-upload-zone i {
+    font-size: 2rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+.image-upload-zone p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.image-upload-zone .browse-link {
+    color: var(--color-primary);
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.image-preview {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: var(--radius-sm);
+    margin: 12px auto;
+    display: block;
+}
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+}
+
+.view-toggle button {
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    transition: all 0.15s;
+}
+
+.view-toggle button.active {
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Print styles */
+@media print {
+    .flip-card { break-inside: avoid; }
+    .flip-card-admin, .flip-hint, .no-print { display: none !important; }
+}

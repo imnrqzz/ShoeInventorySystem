@@ -7,8 +7,15 @@
 //   requireAdmin() - Check admin or redirect
 //   csrf_token() / csrf_field() / verify_csrf() - CSRF protection
 
-// 1. Session
+// 1. Session with security flags
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    $config = require __DIR__ . '/config.php';
+    ini_set('session.cookie_httponly', $config['session_httponly'] ? 1 : 0);
+    ini_set('session.use_strict_mode', 1);
+    ini_set('session.cookie_samesite', $config['session_samesite']);
+    if ($config['session_secure']) {
+        ini_set('session.cookie_secure', 1);
+    }
     session_start();
 }
 
