@@ -25,7 +25,7 @@ $stmt->execute($params);
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $pageTitle = 'QR Codes';
-$pageCss = 'qr_generator.css';
+$pageCss = 'qr-generator.css';
 $activePage = 'items';
 ?>
 <!DOCTYPE html>
@@ -92,17 +92,8 @@ $activePage = 'items';
             <div class="qr-grid" id="qrGrid">
                 <?php foreach ($items as $item): ?>
                 <?php
-                // Auto-detect the server IP for phone access
-                $ip = gethostbyname(gethostname());
-                if ($ip === '127.0.0.1' || $ip === gethostname()) {
-                    $sock = @socket_create(AF_INET, SOCK_DGRAM, 0);
-                    if ($sock) {
-                        @socket_connect($sock, '8.8.8.8', 80);
-                        @socket_getsockname($sock, $ip);
-                        @socket_close($sock);
-                    }
-                }
-                // QR points to the clean landing page (not the API directly)
+                require_once __DIR__ . '/../backend/utils/helpers.php';
+                $ip = getServerIp();
                 $restockUrl = 'http://' . $ip . '/ShoeInventorySystem/frontend/restock_scan.php?id=' . $item['id'];
                 ?>
                 <div class="qr-card" data-item-id="<?= $item['id'] ?>" data-item-name="<?= htmlspecialchars($item['name']) ?>" data-restock-url="<?= htmlspecialchars($restockUrl) ?>">

@@ -1,14 +1,14 @@
 <?php
-// backend/process_user.php
+// backend/handlers/process_user.php
 
-require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 if (!isset($_SESSION['username']) || !isAdmin()) {
     header('Location: /ShoeInventorySystem/frontend/login.php');
     exit;
 }
 
-require_once __DIR__ . '/classes/UserManager.php';
+require_once __DIR__ . '/../Classes/UserManager.php';
 $userMgr = new UserManager($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,13 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $role = trim($_POST['role'] ?? 'User');
         $status = trim($_POST['status'] ?? 'Active');
 
-        if ($username !== '' && $password !== '' && $name !== '' && $email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if ($username !== '' && strlen($password) >= 6 && $name !== '' && $email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $userMgr->addUser($username, $password, $name, $email, $role, $status);
-        }
-    } elseif ($action === 'disable' || $action === 'delete') {
-        $id = (int)($_POST['id'] ?? 0);
-        if ($id > 0) {
-            $userMgr->disableUser($id);
         }
     }
 
@@ -39,4 +34,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 header("Location: ../frontend/user.php");
 exit;
-?>

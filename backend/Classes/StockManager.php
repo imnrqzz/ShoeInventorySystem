@@ -73,9 +73,16 @@ class StockManager {
         try {
             $this->db->beginTransaction();
 
+            // Get current quantity for transaction logging
+            $stmtCurrent = $this->db->prepare("SELECT quantity FROM items WHERE id = ?");
+            $stmtCurrent->execute([(int)$itemId]);
+            $currentItemQty = (int)$stmtCurrent->fetchColumn();
+            $newQty = (int)$currentQty;
+            $qtyDiff = $newQty - $currentItemQty;
+
             // 1. Synchronize the catalog table (items)
             $stmtItem = $this->db->prepare("UPDATE items SET name = ?, supplier_id = ?, quantity = ?, min_quantity = ? WHERE id = ?");
-            $stmtItem->execute([$itemName, $supplierId ?: null, (int)$currentQty, (int)$minThreshold, (int)$itemId]);
+            $stmtItem->execute([$itemName, $supplierId ?: null, $newQty, (int)$minThreshold, (int)$itemId]);
 
             // 2. Synchronize the operational table (stock)
             $stmtStock = $this->db->prepare("UPDATE stock SET supplier_id = ?, current_qty = ?, min_threshold = ? WHERE id = ?");
@@ -87,6 +94,20 @@ class StockManager {
                 $stmtSup->execute([$companyName, (int)$supplierId]);
             }
 
+            // 4. Create transaction record if quantity changed
+            if ($qtyDiff !== 0) {
+                $userId = $_SESSION['user_id'] ?? null;
+                if ($qtyDiff > 0) {
+                    $txType = 'Restock';
+                    $txQty = $qtyDiff;
+                } else {
+                    $txType = 'Sold';
+                    $txQty = abs($qtyDiff);
+                }
+                $stmtTx = $this->db->prepare("INSERT INTO transactions (item_id, transaction_type, quantity, user_id, reason) VALUES (?, ?, ?, ?, ?)");
+                $stmtTx->execute([(int)$itemId, $txType, $txQty, $userId, 'Stock adjustment via admin']);
+            }
+
             $this->db->commit();
             return true;
         } catch (\Exception $e) {
@@ -94,6 +115,116 @@ class StockManager {
                 $this->db->rollBack();
             }
             error_log("Global multi-table atomic operation crashed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get all variants for a stock item
+     */
+    public function getVariantsByItemId($itemId) {
+        $stmt = $this->db->prepare("
+            SELECT iv.*, i.name AS item_name
+            FROM item_variants iv
+            JOIN items i ON iv.item_id = i.id
+            WHERE iv.item_id = ?
+            ORDER BY iv.color ASC, iv.size ASC
+        ");
+        $stmt->execute([(int)$itemId]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Update a variant's quantity
+     */
+    public function updateVariant($variantId, $color, $size, $quantity) {
+        try {
+            $this->db->beginTransaction();
+
+            // Update the variant
+            $stmt = $this->db->prepare("UPDATE item_variants SET color = ?, size = ?, quantity = ? WHERE id = ?");
+            $stmt->execute([$color, $size, (int)$quantity, (int)$variantId]);
+
+            // Get item_id for this variant
+            $stmtItem = $this->db->prepare("SELECT item_id FROM item_variants WHERE id = ?");
+            $stmtItem->execute([(int)$variantId]);
+            $itemId = (int)$stmtItem->fetchColumn();
+
+            // Sync total quantity to items and stock tables
+            $stmtTotal = $this->db->prepare("SELECT COALESCE(SUM(quantity), 0) FROM item_variants WHERE item_id = ?");
+            $stmtTotal->execute([$itemId]);
+            $totalQty = (int)$stmtTotal->fetchColumn();
+
+            $this->db->prepare("UPDATE items SET quantity = ? WHERE id = ?")->execute([$totalQty, $itemId]);
+            $this->db->prepare("UPDATE stock SET current_qty = ? WHERE item_id = ?")->execute([$totalQty, $itemId]);
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            error_log("Variant update failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Update stock and all variants in one transaction
+     */
+    public function updateStockAndVariants($stockId, $itemId, $supplierId, $itemName, $companyName, $minThreshold, $variantIds, $variantColors, $variantSizes, $variantQuantities) {
+        try {
+            $this->db->beginTransaction();
+
+            // Get old quantity for transaction logging
+            $stmtOld = $this->db->prepare("SELECT quantity FROM items WHERE id = ?");
+            $stmtOld->execute([(int)$itemId]);
+            $oldQty = (int)$stmtOld->fetchColumn();
+
+            // Update min threshold in items and stock
+            $this->db->prepare("UPDATE items SET min_quantity = ? WHERE id = ?")->execute([(int)$minThreshold, (int)$itemId]);
+            $this->db->prepare("UPDATE stock SET supplier_id = ?, min_threshold = ? WHERE id = ?")->execute([$supplierId ?: null, (int)$minThreshold, (int)$stockId]);
+
+            // Update supplier name if provided
+            if (!empty($supplierId) && !empty($companyName)) {
+                $this->db->prepare("UPDATE suppliers SET company_name = ? WHERE order_id = ?")->execute([$companyName, (int)$supplierId]);
+            }
+
+            // Update all variants
+            $newTotal = 0;
+            for ($i = 0; $i < count($variantIds); $i++) {
+                $vid = (int)$variantIds[$i];
+                $color = trim($variantColors[$i] ?? '');
+                $size = trim($variantSizes[$i] ?? '');
+                $qty = (int)($variantQuantities[$i] ?? 0);
+
+                if ($vid > 0) {
+                    $this->db->prepare("UPDATE item_variants SET color = ?, size = ?, quantity = ? WHERE id = ?")->execute([$color, $size, $qty, $vid]);
+                    $newTotal += $qty;
+                }
+            }
+
+            // Sync total to items and stock
+            $this->db->prepare("UPDATE items SET quantity = ? WHERE id = ?")->execute([$newTotal, (int)$itemId]);
+            $this->db->prepare("UPDATE stock SET current_qty = ? WHERE item_id = ?")->execute([$newTotal, (int)$itemId]);
+
+            // Create transaction if quantity changed
+            $qtyDiff = $newTotal - $oldQty;
+            if ($qtyDiff !== 0) {
+                $userId = $_SESSION['user_id'] ?? null;
+                $txType = $qtyDiff > 0 ? 'Restock' : 'Sold';
+                $txQty = abs($qtyDiff);
+                $this->db->prepare("INSERT INTO transactions (item_id, transaction_type, quantity, user_id, reason) VALUES (?, ?, ?, ?, ?)")
+                    ->execute([(int)$itemId, $txType, $txQty, $userId, 'Stock adjustment via admin']);
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (\Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            error_log("Stock and variants update failed: " . $e->getMessage());
             return false;
         }
     }

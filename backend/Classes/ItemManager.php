@@ -36,14 +36,14 @@ class ItemManager {
     }
 
     // 3. Create: Add a New Item + sync stock table
-    public function addItem($name, $supplier_id, $min_quantity, $price) {
+    public function addItem($name, $supplier_id, $min_quantity, $price, $color = '', $size = '') {
         if ($name === '') return false;
 
         $next_id = $this->getNextAvailableId();
         $this->db->beginTransaction();
         try {
-            $stmt = $this->db->prepare('INSERT INTO items (id, name, supplier_id, quantity, min_quantity, price) VALUES (?, ?, ?, ?, ?, ?)');
-            $stmt->execute([$next_id, $name, $supplier_id, 0, $min_quantity, $price]);
+            $stmt = $this->db->prepare('INSERT INTO items (id, name, supplier_id, quantity, min_quantity, price, color, size) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+            $stmt->execute([$next_id, $name, $supplier_id, 0, $min_quantity, $price, $color, $size]);
 
             // Create corresponding stock record
             $stockStmt = $this->db->prepare('INSERT INTO stock (item_id, category, supplier_id, current_qty, min_threshold, unit) VALUES (?, ?, ?, ?, ?, ?)');
@@ -58,13 +58,13 @@ class ItemManager {
     }
 
     // 4. Update: Edit Existing Item + sync stock table
-    public function updateItem($id, $name, $supplier_id, $min_quantity, $price) {
+    public function updateItem($id, $name, $supplier_id, $min_quantity, $price, $color = '', $size = '') {
         if ($id <= 0 || $name === '') return false;
 
         $this->db->beginTransaction();
         try {
-            $stmt = $this->db->prepare('UPDATE items SET name = ?, supplier_id = ?, min_quantity = ?, price = ? WHERE id = ?');
-            $stmt->execute([$name, $supplier_id, $min_quantity, $price, $id]);
+            $stmt = $this->db->prepare('UPDATE items SET name = ?, supplier_id = ?, min_quantity = ?, price = ?, color = ?, size = ? WHERE id = ?');
+            $stmt->execute([$name, $supplier_id, $min_quantity, $price, $color, $size, $id]);
 
             // Sync stock table
             $stockStmt = $this->db->prepare('UPDATE stock SET supplier_id = ?, min_threshold = ? WHERE item_id = ?');

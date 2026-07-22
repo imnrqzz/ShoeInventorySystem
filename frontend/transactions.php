@@ -14,7 +14,7 @@ $transactions = $txHandler->getAll($search, $type);
 
 // Set component variables
 $pageTitle = 'Transactions';                // used by head.php
-$pageCss = 'transactions_style.css';        // used by head.php
+$pageCss = 'transactions.css';        // used by head.php
 $activePage = 'transactions';               // used by sidebar.php
 ?>
 <!DOCTYPE html>
@@ -42,9 +42,8 @@ $toolbarFilter = [
     'value' => $type,
     'options' => [
         ['value' => 'All Types', 'label' => 'All Types'],
-        ['value' => 'Sale',      'label' => 'Sale'],
+        ['value' => 'Sold',      'label' => 'Sold'],
         ['value' => 'Restock',   'label' => 'Restock'],
-        ['value' => 'Waste',     'label' => 'Waste'],
     ]
 ];
 require __DIR__ . '/components/toolbar.php';
@@ -60,7 +59,7 @@ require __DIR__ . '/components/toolbar.php';
                                 <td>#<?= safe($tx['id']) ?></td>
                                 <td class="text-muted col-nowrap"><?= safe($tx['transaction_date']) ?></td>
                                 <td><strong><?= safe($tx['item_name']) ?></strong></td>
-                                <td><span class="badge <?= $tx['transaction_type'] === 'Sale' ? 'badge-warning' : ($tx['transaction_type'] === 'Restock' ? 'badge-success' : 'badge-danger') ?>"><?= safe($tx['transaction_type']) ?></span></td>
+                                <td><span class="badge <?= $tx['transaction_type'] === 'Sold' ? 'badge-warning' : 'badge-success' ?>"><?= safe($tx['transaction_type']) ?></span></td>
                                 <td><?= safe($tx['quantity']) ?></td>
                                 <td><?= safe($tx['user_name']) ?></td>
                                 <td class="text-muted"><?= safe($tx['reason']) ?></td>
@@ -80,17 +79,33 @@ require __DIR__ . '/components/toolbar.php';
 
             <!-- Invoice Print Layout (visible only when printing) -->
             <?php
-            $summaryByType = [];
-            $totalQty = 0;
+            // Build detailed summaries by type and item
+            $soldItems = [];
+            $restockItems = [];
+            $soldTotal = 0;
+            $restockTotal = 0;
             $totalTransactions = 0;
+
             foreach ($transactions as $tx) {
-                $t = $tx['transaction_type'];
-                if (!isset($summaryByType[$t])) $summaryByType[$t] = ['count' => 0, 'qty' => 0];
-                $summaryByType[$t]['count']++;
-                $summaryByType[$t]['qty'] += (int)$tx['quantity'];
-                $totalQty += (int)$tx['quantity'];
                 $totalTransactions++;
+                $itemName = $tx['item_name'];
+                $qty = (int)$tx['quantity'];
+                $type = $tx['transaction_type'];
+
+                if ($type === 'Sold') {
+                    if (!isset($soldItems[$itemName])) $soldItems[$itemName] = 0;
+                    $soldItems[$itemName] += $qty;
+                    $soldTotal += $qty;
+                } elseif ($type === 'Restock') {
+                    if (!isset($restockItems[$itemName])) $restockItems[$itemName] = 0;
+                    $restockItems[$itemName] += $qty;
+                    $restockTotal += $qty;
+                }
             }
+
+            // Sort by quantity descending
+            arsort($soldItems);
+            arsort($restockItems);
             ?>
             <div class="print-invoice" style="display:none;">
                 <div style="border:2px solid #111;padding:30px;max-width:700px;margin:0 auto;font-family:'Inter',sans-serif;color:#111;">
@@ -111,32 +126,82 @@ require __DIR__ . '/components/toolbar.php';
                         </div>
                     </div>
 
-                    <!-- Summary Table -->
-                    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
-                        <thead>
-                            <tr style="background:#f5f5f5;">
-                                <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #111;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Type</th>
-                                <th style="padding:10px 12px;text-align:center;border-bottom:2px solid #111;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Transactions</th>
-                                <th style="padding:10px 12px;text-align:right;border-bottom:2px solid #111;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Total Qty</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($summaryByType as $typeName => $data): ?>
-                            <tr>
-                                <td style="padding:10px 12px;border-bottom:1px solid #e5e5e5;font-weight:600;"><?= safe($typeName) ?></td>
-                                <td style="padding:10px 12px;border-bottom:1px solid #e5e5e5;text-align:center;"><?= $data['count'] ?></td>
-                                <td style="padding:10px 12px;border-bottom:1px solid #e5e5e5;text-align:right;"><?= $data['qty'] ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                        <tfoot>
-                            <tr style="font-weight:700;">
-                                <td style="padding:10px 12px;border-top:2px solid #111;font-size:14px;">TOTAL</td>
-                                <td style="padding:10px 12px;border-top:2px solid #111;text-align:center;font-size:14px;"><?= $totalTransactions ?></td>
-                                <td style="padding:10px 12px;border-top:2px solid #111;text-align:right;font-size:14px;"><?= $totalQty ?></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <!-- Overview Summary -->
+                    <div style="display:flex;gap:20px;margin-bottom:24px;">
+                        <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:12px;text-align:center;">
+                            <div style="font-size:11px;text-transform:uppercase;color:#166534;font-weight:600;margin-bottom:4px;">Restocked</div>
+                            <div style="font-size:24px;font-weight:700;color:#166534;"><?= $restockTotal ?></div>
+                            <div style="font-size:11px;color:#16a34a;">pairs</div>
+                        </div>
+                        <div style="flex:1;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:12px;text-align:center;">
+                            <div style="font-size:11px;text-transform:uppercase;color:#92400e;font-weight:600;margin-bottom:4px;">Sold</div>
+                            <div style="font-size:24px;font-weight:700;color:#92400e;"><?= $soldTotal ?></div>
+                            <div style="font-size:11px;color:#d97706;">pairs</div>
+                        </div>
+                        <div style="flex:1;background:#f0f4ff;border:1px solid #bfdbfe;border-radius:6px;padding:12px;text-align:center;">
+                            <div style="font-size:11px;text-transform:uppercase;color:#1e40af;font-weight:600;margin-bottom:4px;">Transactions</div>
+                            <div style="font-size:24px;font-weight:700;color:#1e40af;"><?= $totalTransactions ?></div>
+                            <div style="font-size:11px;color:#3b82f6;">total</div>
+                        </div>
+                    </div>
+
+                    <!-- Sold Items Detail -->
+                    <div style="margin-bottom:24px;">
+                        <h3 style="margin:0 0 10px;font-size:14px;color:#92400e;border-bottom:2px solid #fde68a;padding-bottom:6px;">
+                            <i class="fa-solid fa-tag"></i> Items Sold (<?= count($soldItems) ?> types, <?= $soldTotal ?> pairs)
+                        </h3>
+                        <?php if (!empty($soldItems)): ?>
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="background:#fffbeb;">
+                                    <th style="padding:8px 12px;text-align:left;border-bottom:1px solid #e5e5e5;font-size:11px;text-transform:uppercase;">Item</th>
+                                    <th style="padding:8px 12px;text-align:center;border-bottom:1px solid #e5e5e5;font-size:11px;text-transform:uppercase;">Qty Sold</th>
+                                    <th style="padding:8px 12px;text-align:right;border-bottom:1px solid #e5e5e5;font-size:11px;text-transform:uppercase;">% of Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($soldItems as $itemName => $qty): ?>
+                                <tr>
+                                    <td style="padding:8px 12px;border-bottom:1px solid #f5f5f5;font-weight:500;"><?= safe($itemName) ?></td>
+                                    <td style="padding:8px 12px;border-bottom:1px solid #f5f5f5;text-align:center;font-weight:700;color:#92400e;"><?= $qty ?></td>
+                                    <td style="padding:8px 12px;border-bottom:1px solid #f5f5f5;text-align:right;color:#666;"><?= $soldTotal > 0 ? round(($qty / $soldTotal) * 100, 1) : 0 ?>%</td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <?php else: ?>
+                        <p style="color:#999;font-size:12px;padding:8px 0;">No items sold in this period.</p>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Restock Items Detail -->
+                    <div style="margin-bottom:24px;">
+                        <h3 style="margin:0 0 10px;font-size:14px;color:#166534;border-bottom:2px solid #bbf7d0;padding-bottom:6px;">
+                            <i class="fa-solid fa-truck"></i> Items Restocked (<?= count($restockItems) ?> types, <?= $restockTotal ?> pairs)
+                        </h3>
+                        <?php if (!empty($restockItems)): ?>
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="background:#f0fdf4;">
+                                    <th style="padding:8px 12px;text-align:left;border-bottom:1px solid #e5e5e5;font-size:11px;text-transform:uppercase;">Item</th>
+                                    <th style="padding:8px 12px;text-align:center;border-bottom:1px solid #e5e5e5;font-size:11px;text-transform:uppercase;">Qty Restocked</th>
+                                    <th style="padding:8px 12px;text-align:right;border-bottom:1px solid #e5e5e5;font-size:11px;text-transform:uppercase;">% of Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($restockItems as $itemName => $qty): ?>
+                                <tr>
+                                    <td style="padding:8px 12px;border-bottom:1px solid #f5f5f5;font-weight:500;"><?= safe($itemName) ?></td>
+                                    <td style="padding:8px 12px;border-bottom:1px solid #f5f5f5;text-align:center;font-weight:700;color:#166534;"><?= $qty ?></td>
+                                    <td style="padding:8px 12px;border-bottom:1px solid #f5f5f5;text-align:right;color:#666;"><?= $restockTotal > 0 ? round(($qty / $restockTotal) * 100, 1) : 0 ?>%</td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <?php else: ?>
+                        <p style="color:#999;font-size:12px;padding:8px 0;">No items restocked in this period.</p>
+                        <?php endif; ?>
+                    </div>
 
                     <!-- Footer -->
                     <div style="border-top:1px solid #ccc;padding-top:12px;display:flex;justify-content:space-between;">
@@ -165,10 +230,10 @@ require __DIR__ . '/components/toolbar.php';
         <div class="modal-box">
             <div class="modal-header"><h2>Log Transaction</h2><button class="modal-close" onclick="document.getElementById('addTxModal').style.display='none'">&times;</button></div>
             <div class="modal-body">
-                <form method="POST" action="../backend/process_transaction.php" data-validate novalidate>
+                <form method="POST" action="../backend/handlers/process_transaction.php" data-validate novalidate>
                     <div class="form-grid">
                         <div class="form-group full-width"><label>Item *</label><select name="item_id" required><?php foreach($items as $i): ?><option value="<?= $i['id'] ?>"><?= safe($i['name']) ?></option><?php endforeach; ?></select></div>
-                        <div class="form-group"><label>Type *</label><select name="type"><option value="Restock">Restock</option><option value="Sale">Sale</option><option value="Waste">Waste</option></select></div>
+                        <div class="form-group"><label>Type *</label><select name="type"><option value="Restock">Restock</option><option value="Sold">Sold</option></select></div>
                         <div class="form-group"><label>Quantity *</label><input type="number" name="quantity" required min="1" step="1"><span class="field-error"></span></div>
                         <div class="form-group full-width"><label>Reason</label><input type="text" name="reason" placeholder="Optional note"></div>
                     </div>

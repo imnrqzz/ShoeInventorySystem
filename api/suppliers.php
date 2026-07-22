@@ -10,8 +10,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/../backend/Classes/SupplierManager.php';
 
 $userId = requireApiAuth();
-$db = new Database();
-$pdo = $db->getConnection();
+$pdo = getApiDb();
 $supplierManager = new SupplierManager($pdo);
 
 switch ($method) {

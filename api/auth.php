@@ -3,15 +3,23 @@
 
 require_once __DIR__ . '/../backend/Classes/Database.php';
 
+// Shared database connection for API
+function getApiDb(): PDO {
+    static $pdo = null;
+    if ($pdo === null) {
+        $db = new Database();
+        $pdo = $db->getConnection();
+    }
+    return $pdo;
+}
+
 function getApiUser(): ?int {
     $apiKey = $_SERVER['HTTP_X_API_KEY'] ?? '';
     if ($apiKey === '') {
         return null;
     }
 
-    $db = new Database();
-    $pdo = $db->getConnection();
-
+    $pdo = getApiDb();
     $hash = hash('sha256', $apiKey);
 
     $stmt = $pdo->prepare(
@@ -39,9 +47,7 @@ function requireApiAuth(): int {
 
 function requireApiAdmin(): int {
     $userId = requireApiAuth();
-
-    $db = new Database();
-    $pdo = $db->getConnection();
+    $pdo = getApiDb();
 
     $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
     $stmt->execute([$userId]);

@@ -1,8 +1,8 @@
 <?php
-// backend/process_register.php
+// backend/handlers/process_register.php
 
-require_once __DIR__ . '/bootstrap.php';
-require_once __DIR__ . '/validate.php';
+require_once __DIR__ . '/../bootstrap.php';
+require_once __DIR__ . '/../utils/validate.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../frontend/register.php');

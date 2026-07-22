@@ -10,8 +10,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/../backend/Classes/ItemManager.php';
 
 $userId = requireApiAuth();
-$db = new Database();
-$pdo = $db->getConnection();
+$pdo = getApiDb();
 $itemManager = new ItemManager($pdo);
 
 switch ($method) {

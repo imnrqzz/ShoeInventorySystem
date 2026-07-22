@@ -12,8 +12,7 @@ require_once __DIR__ . '/../backend/Classes/ItemManager.php';
 require_once __DIR__ . '/../backend/Classes/SupplierManager.php';
 
 $userId = requireApiAuth();
-$db = new Database();
-$pdo = $db->getConnection();
+$pdo = getApiDb();
 $stockManager = new StockManager($pdo);
 
 // Auto-sync missing stock records
@@ -77,7 +76,8 @@ switch ($method) {
             jsonResponse(['success' => true, 'data' => $newStock, 'message' => 'Stock created'], 201);
         } catch (\Exception $e) {
             $pdo->rollBack();
-            jsonError('Failed to create stock: ' . $e->getMessage(), 500);
+            error_log("Stock create error: " . $e->getMessage());
+            jsonError('Failed to create stock', 500);
         }
         break;
 
@@ -137,7 +137,8 @@ switch ($method) {
             jsonSuccess(null, 'Stock deleted');
         } catch (\Exception $e) {
             $pdo->rollBack();
-            jsonError('Failed to delete stock: ' . $e->getMessage(), 500);
+            error_log("Stock delete error: " . $e->getMessage());
+            jsonError('Failed to delete stock', 500);
         }
         break;
 

@@ -9,13 +9,14 @@ require_once __DIR__ . '/../backend/db.php';
 
 // Set component variables
 $pageTitle = 'Dashboard';
-$pageCss = 'dashboard_style.css';
+$pageCss = 'dashboard.css';
 $activePage = 'dashboard';
 
 // Encode chart data as JSON for JavaScript
 $chartItemsJson = json_encode($chartItems);
 $chartTxJson = json_encode($chartTransactions);
 $chartHealthJson = json_encode($chartStockHealth);
+$chartBestSellersJson = json_encode($chartBestSellers);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -168,6 +169,22 @@ $chartHealthJson = json_encode($chartStockHealth);
                         <canvas id="stockHealthChart"></canvas>
                     </div>
                 </div>
+
+                <!-- Best Sellers Chart -->
+                <div class="chart-card">
+                    <h3>Best Sellers (by Transaction Count)</h3>
+                    <div class="chart-wrap">
+                        <canvas id="bestSellersChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Least Sellers Chart -->
+                <div class="chart-card">
+                    <h3>Least Sellers (by Transaction Count)</h3>
+                    <div class="chart-wrap">
+                        <canvas id="leastSellersChart"></canvas>
+                    </div>
+                </div>
             </div>
 
             <!-- Chart Raw Data -->
@@ -318,7 +335,7 @@ $chartHealthJson = json_encode($chartStockHealth);
 
         // 2. Transaction Types Doughnut
         var txData = <?= $chartTxJson ?>;
-        var txColors = { Sale: '#d97706', Restock: '#16a34a', Waste: '#dc2626' };
+        var txColors = { Sold: '#d97706', Restock: '#16a34a' };
         new Chart(document.getElementById('transactionChart'), {
             type: 'doughnut',
             data: {
@@ -355,6 +372,52 @@ $chartHealthJson = json_encode($chartStockHealth);
                 scales: {
                     y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { stepSize: 1, font: { family: "'Inter', sans-serif" } } },
                     x: { grid: { display: false }, ticks: { font: { family: "'Inter', sans-serif", size: 13, weight: '600' } } }
+                }
+            })
+        });
+
+        // 4. Best Sellers Horizontal Bar Chart
+        var bestSellersData = <?= $chartBestSellersJson ?>;
+        new Chart(document.getElementById('bestSellersChart'), {
+            type: 'bar',
+            data: {
+                labels: bestSellersData.map(function(d) { return d.name; }),
+                datasets: [{
+                    label: 'Sales',
+                    data: bestSellersData.map(function(d) { return parseInt(d.sale_count); }),
+                    backgroundColor: '#16a34a',
+                    borderRadius: 4
+                }]
+            },
+            options: Object.assign({}, chartDefaults, {
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { stepSize: 1, font: { family: "'Inter', sans-serif" } } },
+                    y: { grid: { display: false }, ticks: { font: { family: "'Inter', sans-serif", size: 11 } } }
+                }
+            })
+        });
+
+        // 5. Least Sellers Horizontal Bar Chart (reverse order)
+        var leastSellersData = bestSellersData.slice().reverse();
+        new Chart(document.getElementById('leastSellersChart'), {
+            type: 'bar',
+            data: {
+                labels: leastSellersData.map(function(d) { return d.name; }),
+                datasets: [{
+                    label: 'Sales',
+                    data: leastSellersData.map(function(d) { return parseInt(d.sale_count); }),
+                    backgroundColor: '#dc2626',
+                    borderRadius: 4
+                }]
+            },
+            options: Object.assign({}, chartDefaults, {
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { stepSize: 1, font: { family: "'Inter', sans-serif" } } },
+                    y: { grid: { display: false }, ticks: { font: { family: "'Inter', sans-serif", size: 11 } } }
                 }
             })
         });

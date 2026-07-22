@@ -2,7 +2,7 @@
 // backend/suppliertab.php
 // Requires auth.php (which loads bootstrap.php) to be included first by the parent page.
 
-require_once __DIR__ . '/validate.php';
+require_once __DIR__ . '/utils/validate.php';
 require_once __DIR__ . '/classes/SupplierManager.php';
 $supplierManager = new SupplierManager($pdo);
 
@@ -33,13 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         header("Location: Supplier.php");
         exit();
     }
-}
-
-if (isset($_GET['delete_id'])) {
-    $id = intval($_GET['delete_id']);
-    $supplierManager->deleteSupplier($id);
-    header("Location: Supplier.php");
-    exit();
 }
 
 $editing_supplier = null;
