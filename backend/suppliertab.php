@@ -3,7 +3,7 @@
 // Requires auth.php (which loads bootstrap.php) to be included first by the parent page.
 
 require_once __DIR__ . '/utils/validate.php';
-require_once __DIR__ . '/classes/SupplierManager.php';
+require_once __DIR__ . '/Classes/SupplierManager.php';
 $supplierManager = new SupplierManager($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {

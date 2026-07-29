@@ -2,7 +2,7 @@
 // backend/recover_admin.php - Create/recover admin account
 // Access: http://localhost/ShoeInventorySystem/backend/recover_admin.php
 
-require_once __DIR__ . '/Classes/Database.php';
+require_once __DIR__ . '/../Classes/Database.php';
 
 $db = new Database();
 $pdo = $db->getConnection();

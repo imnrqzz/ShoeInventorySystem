@@ -3,7 +3,7 @@
 // Requires auth.php (which loads bootstrap.php) to be included first by the parent page.
 
 require_once __DIR__ . '/utils/validate.php';
-require_once __DIR__ . '/classes/ItemManager.php';
+require_once __DIR__ . '/Classes/ItemManager.php';
 $itemManager = new ItemManager($pdo);
 
 $suppliers = $itemManager->getActiveSuppliers();

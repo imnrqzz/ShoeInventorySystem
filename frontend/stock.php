@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/components/auth.php';
 
-require_once __DIR__ . '/../backend/classes/StockManager.php';
+require_once __DIR__ . '/../backend/Classes/StockManager.php';
 
 // Only admins can edit/delete stock
 $isAdmin = isAdmin();

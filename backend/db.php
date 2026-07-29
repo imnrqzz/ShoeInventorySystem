@@ -3,8 +3,8 @@
 // Session, cache headers, DB connection, and safe() are loaded via bootstrap.
 
 require_once __DIR__ . '/bootstrap.php';
-require_once __DIR__ . '/classes/InventoryManager.php';
-require_once __DIR__ . '/classes/TransactionManager.php';
+require_once __DIR__ . '/Classes/InventoryManager.php';
+require_once __DIR__ . '/Classes/TransactionManager.php';
 
 $manager = new InventoryManager($pdo);
 $transManager = new TransactionManager($pdo);

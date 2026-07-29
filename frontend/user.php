@@ -9,7 +9,7 @@ if (!isset($_SESSION['role']) || !in_array(strtolower((string)$_SESSION['role'])
     exit;
 }
 
-require_once __DIR__ . '/../backend/classes/UserManager.php';
+require_once __DIR__ . '/../backend/Classes/UserManager.php';
 
 $userManager = new UserManager($pdo);
 $search = $_GET['search'] ?? '';
