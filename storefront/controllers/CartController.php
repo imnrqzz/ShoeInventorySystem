@@ -52,6 +52,16 @@ class CartController
                 exit;
             }
 
+            if (isset($_GET['remove_cart'])) {
+                $cartItemId = (int)$_GET['remove_cart'];
+                Cart::removeItem((int)$customerId, $cartItemId);
+                if (isset($_SESSION['cart_customizations'][$cartItemId])) {
+                    unset($_SESSION['cart_customizations'][$cartItemId]);
+                }
+                header('Location: ' . STOREFRONT_BASE . '/index.php?page=cart');
+                exit;
+            }
+
             $cartItems     = Cart::getForCustomer((int) $customerId);
             $wishlistItems = Wishlist::getForCustomer((int) $customerId);
         }
