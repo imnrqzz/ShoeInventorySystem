@@ -97,6 +97,7 @@
                   $custom = $_SESSION['cart_customizations'][$item['id']]; ?>
                   <div class="custom-specs" style="margin-top: 0.5rem; font-size: 0.8rem; background: rgba(255,255,255,0.03); padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border);">
                     <div style="color: var(--accent); font-weight:600; margin-bottom: 2px;">3D Customization (Click to Edit):</div>
+                    <div style="color: var(--white); margin-bottom: 4px; font-weight: 500;">Size: US <?= htmlspecialchars($custom['shoeSize'] ?? '9') ?></div>
                     <ul style="list-style:none; padding:0; margin:0; display:flex; flex-wrap:wrap; gap:0.5rem;">
                       <?php foreach ($custom['colors'] as $layer => $color): ?>
                         <li><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:<?= htmlspecialchars($color) ?>; margin-right:3px; vertical-align:middle; border:1px solid #555;"></span><?= ucfirst($layer) ?></li>
