@@ -33,8 +33,6 @@ function verify_csrf(): void {
         http_response_code(403);
         die('Invalid or missing CSRF token.');
     }
-    // Regenerate token after successful verification to prevent replay
-    unset($_SESSION['_storefront_csrf']);
 }
 
 // ── Rate Limiting ───────────────────────────────────────────
