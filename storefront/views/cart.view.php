@@ -76,7 +76,7 @@
     </div>
   <?php endif; ?>
 
-  <div class="product-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+  <div class="product-grid" style="grid-template-columns: 1fr; gap: 1.5rem; max-width: 800px; margin: 0 auto;">
     <div class="product-card" style="padding: 1.25rem;">
       <div class="card-brand">Cart</div>
       <div class="card-name">Items added by you</div>
@@ -148,42 +148,6 @@
         </ul>
       <?php else: ?>
         <p style="margin-top: 1rem; color: var(--muted);">No wishlist items yet. Save favorites from the shop to see them here.</p>
-      <?php endif; ?>
-    </div>
-
-    <div class="product-card" style="padding: 1.25rem;">
-      <div class="card-brand">Shipping</div>
-      <div class="card-name">On the way</div>
-      <?php if (!empty($shippingItems)): ?>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-top: 1rem; color: var(--muted);">
-          <?php foreach ($shippingItems as $item): ?>
-            <li style="border-bottom:1px solid var(--border); padding-bottom:0.5rem;">
-              <strong style="display:block; color: var(--white);"><?= htmlspecialchars($item['name']) ?></strong>
-              <small><?= htmlspecialchars($item['status']) ?></small><br>
-              <small><?= htmlspecialchars($item['eta']) ?></small>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      <?php else: ?>
-        <p style="margin-top: 1rem; color: var(--muted);">Sign in to see your active shipments.</p>
-      <?php endif; ?>
-    </div>
-
-    <div class="product-card" style="padding: 1.25rem;">
-      <div class="card-brand">Received</div>
-      <div class="card-name">Delivered</div>
-      <?php if (!empty($receivedItems)): ?>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-top: 1rem; color: var(--muted);">
-          <?php foreach ($receivedItems as $item): ?>
-            <li style="border-bottom:1px solid var(--border); padding-bottom:0.5rem;">
-              <strong style="display:block; color: var(--white);"><?= htmlspecialchars($item['name']) ?></strong>
-              <small><?= htmlspecialchars($item['status']) ?></small><br>
-              <small><?= htmlspecialchars($item['eta']) ?></small>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      <?php else: ?>
-        <p style="margin-top: 1rem; color: var(--muted);">Sign in to view your received orders.</p>
       <?php endif; ?>
     </div>
   </div>
