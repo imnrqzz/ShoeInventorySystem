@@ -19,7 +19,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     $isSecure = !empty($adminConfig['session_secure']) || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on');
     session_set_cookie_params([
         'lifetime' => 0,
-        'path' => STOREFRONT_BASE,
+        'path' => '/',
         'domain' => '',
         'secure' => $isSecure,
         'httponly' => true,
