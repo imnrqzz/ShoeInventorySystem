@@ -26,7 +26,20 @@ class AuthController
 
         $pdo      = Database::getConnection();
         $name     = trim($_POST['name'] ?? '');
-        $address  = trim($_POST['address'] ?? '');
+        // Reconstruct full shipping address from detailed fields
+        $houseNumber = trim($_POST['house_number'] ?? '');
+        $barangay    = trim($_POST['barangay'] ?? '');
+        $city        = trim($_POST['city'] ?? '');
+        $province    = trim($_POST['province'] ?? '');
+        $region      = trim($_POST['region'] ?? '');
+        $country     = trim($_POST['country'] ?? '');
+        $postalCode  = trim($_POST['postal_code'] ?? '');
+
+        if ($houseNumber !== '' && $barangay !== '' && $city !== '' && $province !== '' && $region !== '' && $country !== '' && $postalCode !== '') {
+            $address = "{$houseNumber}, {$barangay}, {$city}, {$province}, {$region}, {$country}, {$postalCode}";
+        } else {
+            $address = '';
+        }
         $email    = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $confirm  = $_POST['confirm_password'] ?? '';

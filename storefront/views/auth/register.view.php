@@ -54,9 +54,36 @@
       <label>Full Name
         <input type="text" name="name" required autocomplete="name">
       </label>
-      <label>Address
-        <input type="text" name="address" required placeholder="Enter your shipping address">
-      </label>
+      <div class="address-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.5rem; width: 100%;">
+        <div style="grid-column: span 2;">
+          <label style="display: block; margin-bottom: 0.25rem;">House Number & Street</label>
+          <input type="text" name="house_number" required placeholder="e.g. Unit 4B, 123 Rizal Ave" style="width: 100%;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.25rem;">Barangay</label>
+          <input type="text" name="barangay" required placeholder="e.g. Barangay 76" style="width: 100%;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.25rem;">City</label>
+          <input type="text" name="city" required placeholder="e.g. Pasay City" style="width: 100%;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.25rem;">Province</label>
+          <input type="text" name="province" required placeholder="e.g. Metro Manila" style="width: 100%;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.25rem;">Region</label>
+          <input type="text" name="region" required placeholder="e.g. NCR" style="width: 100%;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.25rem;">Country</label>
+          <input type="text" name="country" required placeholder="Philippines" value="Philippines" style="width: 100%;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.25rem;">Postal Code</label>
+          <input type="text" name="postal_code" required placeholder="e.g. 1300" style="width: 100%;">
+        </div>
+      </div>
       <label>Email
         <input type="email" name="email" required autocomplete="email">
       </label>
