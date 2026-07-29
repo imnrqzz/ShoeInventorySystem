@@ -17,6 +17,27 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     
     // Explicitly configure secure session cookie settings
     $isSecure = !empty($adminConfig['session_secure']) || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on');
+    // Clear old path-restricted storefront session cookies if they exist to prevent browser path collisions
+    if (isset($_COOKIE['storefront_session'])) {
+        setcookie('storefront_session', '', [
+            'expires' => time() - 3600,
+            'path' => STOREFRONT_BASE,
+            'domain' => '',
+            'secure' => $isSecure,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+        setcookie('storefront_session', '', [
+            'expires' => time() - 3600,
+            'path' => strtolower(STOREFRONT_BASE),
+            'domain' => '',
+            'secure' => $isSecure,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+    }
+
+    // Explicitly configure secure session cookie settings
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
