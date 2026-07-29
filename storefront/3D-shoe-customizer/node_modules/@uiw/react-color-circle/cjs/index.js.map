@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "names": [
+    "Circle",
+    "React",
+    "forwardRef",
+    "props",
+    "ref",
+    "prefixCls",
+    "className",
+    "color",
+    "colors",
+    "rectProps",
+    "onChange",
+    "other",
+    "hsva",
+    "validHex",
+    "hexToHsva",
+    "hex",
+    "hsvaToHex",
+    "filter",
+    "Boolean",
+    "join",
+    "hsvColor",
+    "handleColor",
+    "displayName"
+  ],
+  "sources": [
+    "../src/index.tsx"
+  ],
+  "sourcesContent": [
+    "import React from 'react';\nimport { validHex, hsvaToHex, HsvaColor, hexToHsva, ColorResult, color as handleColor } from '@uiw/color-convert';\nimport Swatch, { SwatchProps } from '@uiw/react-color-swatch';\nimport Point from './Point';\n\nexport interface CircleProps extends Omit<SwatchProps, 'color' | 'onChange'> {\n  color?: string | HsvaColor;\n  onChange?: (color: ColorResult) => void;\n}\n\nconst Circle = React.forwardRef<HTMLDivElement, CircleProps>((props, ref) => {\n  const { prefixCls = 'w-color-circle', className, color, colors = [], rectProps = {}, onChange, ...other } = props;\n  const hsva = (typeof color === 'string' && validHex(color) ? hexToHsva(color) : color || {}) as HsvaColor;\n  const hex = color ? hsvaToHex(hsva) : '';\n  return (\n    <Swatch\n      ref={ref}\n      colors={colors}\n      color={hex}\n      {...other}\n      className={[prefixCls, className].filter(Boolean).join(' ')}\n      rectRender={({ ...props }) => <Point {...props} rectProps={rectProps} />}\n      onChange={(hsvColor) => {\n        onChange && onChange(handleColor(hsvColor));\n      }}\n    />\n  );\n});\n\nCircle.displayName = 'Circle';\n\nexport default Circle;\n"
+  ],
+  "mappings": ";;;;;;;;;;;AAAA;AACA;AACA;AACA;AAA4B;AAAA;AAO5B,IAAMA,MAAM,gBAAGC,iBAAK,CAACC,UAAU,CAA8B,UAACC,KAAK,EAAEC,GAAG,EAAK;EAC3E,uBAA4GD,KAAK,CAAzGE,SAAS;IAATA,SAAS,iCAAG,gBAAgB;IAAEC,SAAS,GAA6DH,KAAK,CAA3EG,SAAS;IAAEC,KAAK,GAAsDJ,KAAK,CAAhEI,KAAK;IAAA,gBAAsDJ,KAAK,CAAzDK,MAAM;IAANA,MAAM,8BAAG,EAAE;IAAA,mBAAyCL,KAAK,CAA5CM,SAAS;IAATA,SAAS,iCAAG,CAAC,CAAC;IAAEC,SAAQ,GAAeP,KAAK,CAA5BO,QAAQ;IAAKC,KAAK,6CAAKR,KAAK;EACjH,IAAMS,IAAI,GAAI,OAAOL,KAAK,KAAK,QAAQ,IAAI,IAAAM,sBAAQ,EAACN,KAAK,CAAC,GAAG,IAAAO,uBAAS,EAACP,KAAK,CAAC,GAAGA,KAAK,IAAI,CAAC,CAAe;EACzG,IAAMQ,GAAG,GAAGR,KAAK,GAAG,IAAAS,uBAAS,EAACJ,IAAI,CAAC,GAAG,EAAE;EACxC,oBACE,qBAAC,4BAAM;IACL,GAAG,EAAER,GAAI;IACT,MAAM,EAAEI,MAAO;IACf,KAAK,EAAEO;EAAI,GACPJ,KAAK;IACT,SAAS,EAAE,CAACN,SAAS,EAAEC,SAAS,CAAC,CAACW,MAAM,CAACC,OAAO,CAAC,CAACC,IAAI,CAAC,GAAG,CAAE;IAC5D,UAAU,EAAE;MAAA,IAAMhB,KAAK;MAAA,oBAAO,qBAAC,iBAAK,oEAAKA,KAAK;QAAE,SAAS,EAAEM;MAAU,GAAG;IAAA,CAAC;IACzE,QAAQ,EAAE,kBAACW,QAAQ,EAAK;MACtBV,SAAQ,IAAIA,SAAQ,CAAC,IAAAW,mBAAW,EAACD,QAAQ,CAAC,CAAC;IAC7C;EAAE,GACF;AAEN,CAAC,CAAC;AAEFpB,MAAM,CAACsB,WAAW,GAAG,QAAQ;AAAC,eAEftB,MAAM;AAAA;AAAA"
+}
