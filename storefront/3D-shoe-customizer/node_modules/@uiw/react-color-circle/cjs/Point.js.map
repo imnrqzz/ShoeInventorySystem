@@ -1,0 +1,40 @@
+{
+  "version": 3,
+  "names": [
+    "Point",
+    "style",
+    "title",
+    "checked",
+    "color",
+    "onClick",
+    "rectProps",
+    "btn",
+    "useRef",
+    "handleMouseEnter",
+    "useCallback",
+    "evn",
+    "current",
+    "handleMouseLeave",
+    "display",
+    "alignItems",
+    "justifyContent",
+    "width",
+    "height",
+    "padding",
+    "borderRadius",
+    "marginRight",
+    "marginBottom",
+    "boxSizing",
+    "transform",
+    "boxShadow",
+    "transition",
+    "backgroundColor"
+  ],
+  "sources": [
+    "../src/Point.tsx"
+  ],
+  "sourcesContent": [
+    "import React, { useCallback } from 'react';\nimport { SwatchRectRenderProps, SwatchProps } from '@uiw/react-color-swatch';\nimport { useRef } from 'react';\n\ninterface PointProps extends SwatchRectRenderProps {\n  rectProps?: SwatchProps['rectProps'];\n}\n\nexport default function Point({ style, title, checked, color, onClick, rectProps }: PointProps) {\n  const btn = useRef<HTMLDivElement>(null);\n  const handleMouseEnter = useCallback((evn) => {\n    btn.current!.style['transform'] = 'scale(1.2)';\n  }, []);\n\n  const handleMouseLeave = useCallback((evn) => {\n    btn.current!.style['transform'] = 'scale(1)';\n  }, []);\n\n  return (\n    <div\n      ref={btn}\n      onClick={onClick}\n      onMouseEnter={handleMouseEnter}\n      onMouseLeave={handleMouseLeave}\n      title={title}\n      style={{\n        ...style,\n        display: 'flex',\n        alignItems: 'center',\n        justifyContent: 'center',\n        width: 28,\n        height: 28,\n        padding: 3,\n        borderRadius: '50%',\n        marginRight: 12,\n        marginBottom: 12,\n        boxSizing: 'border-box',\n        transform: 'scale(1)',\n        boxShadow: `${color} 0px 0px ${checked ? 5 : 0}px`,\n        transition: 'transform 100ms ease 0s, box-shadow 100ms ease 0s',\n      }}\n    >\n      <div\n        {...rectProps}\n        style={{\n          height: checked ? '100%' : 0,\n          width: checked ? '100%' : 0,\n          borderRadius: '50%',\n          backgroundColor: '#fff',\n          boxSizing: 'border-box',\n          transition: 'height 100ms ease 0s, width 100ms ease 0s',\n          ...rectProps!.style,\n        }}\n      />\n    </div>\n  );\n}\n"
+  ],
+  "mappings": ";;;;;;;;;AAAA;AAA2C;AAQ5B,SAASA,KAAK,OAAmE;EAAA,IAAhEC,KAAK,QAALA,KAAK;IAAEC,KAAK,QAALA,KAAK;IAAEC,OAAO,QAAPA,OAAO;IAAEC,KAAK,QAALA,KAAK;IAAEC,OAAO,QAAPA,OAAO;IAAEC,SAAS,QAATA,SAAS;EAC9E,IAAMC,GAAG,GAAG,IAAAC,aAAM,EAAiB,IAAI,CAAC;EACxC,IAAMC,gBAAgB,GAAG,IAAAC,kBAAW,EAAC,UAACC,GAAG,EAAK;IAC5CJ,GAAG,CAACK,OAAO,CAAEX,KAAK,CAAC,WAAW,CAAC,GAAG,YAAY;EAChD,CAAC,EAAE,EAAE,CAAC;EAEN,IAAMY,gBAAgB,GAAG,IAAAH,kBAAW,EAAC,UAACC,GAAG,EAAK;IAC5CJ,GAAG,CAACK,OAAO,CAAEX,KAAK,CAAC,WAAW,CAAC,GAAG,UAAU;EAC9C,CAAC,EAAE,EAAE,CAAC;EAEN,oBACE;IACE,GAAG,EAAEM,GAAI;IACT,OAAO,EAAEF,OAAQ;IACjB,YAAY,EAAEI,gBAAiB;IAC/B,YAAY,EAAEI,gBAAiB;IAC/B,KAAK,EAAEX,KAAM;IACb,KAAK,oEACAD,KAAK;MACRa,OAAO,EAAE,MAAM;MACfC,UAAU,EAAE,QAAQ;MACpBC,cAAc,EAAE,QAAQ;MACxBC,KAAK,EAAE,EAAE;MACTC,MAAM,EAAE,EAAE;MACVC,OAAO,EAAE,CAAC;MACVC,YAAY,EAAE,KAAK;MACnBC,WAAW,EAAE,EAAE;MACfC,YAAY,EAAE,EAAE;MAChBC,SAAS,EAAE,YAAY;MACvBC,SAAS,EAAE,UAAU;MACrBC,SAAS,YAAKrB,KAAK,sBAAYD,OAAO,GAAG,CAAC,GAAG,CAAC,OAAI;MAClDuB,UAAU,EAAE;IAAmD,EAC/D;IAAA,uBAEF,8FACMpB,SAAS;MACb,KAAK;QACHY,MAAM,EAAEf,OAAO,GAAG,MAAM,GAAG,CAAC;QAC5Bc,KAAK,EAAEd,OAAO,GAAG,MAAM,GAAG,CAAC;QAC3BiB,YAAY,EAAE,KAAK;QACnBO,eAAe,EAAE,MAAM;QACvBJ,SAAS,EAAE,YAAY;QACvBG,UAAU,EAAE;MAA2C,GACpDpB,SAAS,CAAEL,KAAK;IACnB;EACF,EACE;AAEV;AAAC"
+}
