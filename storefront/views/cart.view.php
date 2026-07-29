@@ -105,7 +105,10 @@
                   </div>
                 <?php endif; ?>
               </a>
-              <span>₱<?= number_format((float)($item['price'] ?? 0) * (int)($item['qty'] ?? 1), 2) ?></span>
+              <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.25rem;">
+                <span style="color: var(--white); font-weight: 500;">₱<?= number_format((float)($item['price'] ?? 0) * (int)($item['qty'] ?? 1), 2) ?></span>
+                <a href="index.php?page=cart&remove_cart=<?= urlencode($item['id'] ?? '') ?>" style="color: var(--muted); font-size:0.8rem; text-decoration:none;" onmouseover="this.style.color='#FF6384'" onmouseout="this.style.color='var(--muted)'">Remove</a>
+              </div>
             </li>
           <?php endforeach; ?>
         </ul>
@@ -113,7 +116,7 @@
           <strong style="color: var(--white);">Total Subtotal:</strong>
           <strong style="color: var(--accent); font-size: 1.2rem;">₱<?= number_format($subtotal, 2) ?></strong>
         </div>
-        <form action="index.php?page=checkout" method="POST" style="margin-top: 1rem;">
+        <form action="index.php?page=checkout" method="POST" style="margin-top: 1rem;" onsubmit="return confirm('Warning: Proceeding will reserve these items and subtract their stock from the inventory system database. Are you sure you want to place this order?');">
           <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
           <button type="submit" class="checkout-submit-btn" style="width: 100%; justify-content: center; background: var(--accent); color: var(--black); font-weight: 600; padding: 0.75rem; border-radius: 4px; border: none; cursor: pointer; transition: opacity 0.2s; display: flex; align-items: center; gap: 0.5rem;">
             <i class="fa-solid fa-credit-card"></i> Proceed to Checkout
