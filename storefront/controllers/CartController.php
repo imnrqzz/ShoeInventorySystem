@@ -109,6 +109,7 @@ class CartController
                 $editCartItemId = isset($input['editCartItemId']) ? (int)$input['editCartItemId'] : null;
                 $layerColor     = $input['layerColor'] ?? null;
                 $layerSize      = $input['layerSize'] ?? null;
+                $shoeSize       = $input['shoeSize'] ?? 9;
 
                 if (!$productId || !$layerColor || !$layerSize) {
                     $this->json(['success' => false, 'message' => 'Missing customization details.'], 400);
@@ -116,8 +117,9 @@ class CartController
 
                 if ($editCartItemId && isset($_SESSION['cart_customizations'][$editCartItemId])) {
                     $_SESSION['cart_customizations'][$editCartItemId] = [
-                        'colors' => $layerColor,
-                        'sizes'  => $layerSize
+                        'colors'   => $layerColor,
+                        'sizes'    => $layerSize,
+                        'shoeSize' => $shoeSize
                     ];
                     $this->json([
                         'success'   => true,
@@ -128,8 +130,9 @@ class CartController
                     $result = Cart::addItem($customerId, $productId, null, 1);
                     if ($result['ok'] && isset($result['cart_item_id'])) {
                         $_SESSION['cart_customizations'][$result['cart_item_id']] = [
-                            'colors' => $layerColor,
-                            'sizes'  => $layerSize
+                            'colors'   => $layerColor,
+                            'sizes'    => $layerSize,
+                            'shoeSize' => $shoeSize
                         ];
                         $this->json([
                             'success'   => true,

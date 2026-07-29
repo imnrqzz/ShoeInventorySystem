@@ -94,7 +94,8 @@ window.addEventListener('message', function(event) {
         productId: payload.productId,
         editCartItemId: payload.editCartItemId || null,
         layerColor: payload.layerColor,
-        layerSize: payload.layerSize
+        layerSize: payload.layerSize,
+        shoeSize: payload.shoeSize || 9
       })
     })
     .then(r => r.json())
