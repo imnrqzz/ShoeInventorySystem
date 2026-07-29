@@ -1,4 +1,4 @@
-<?php
+<?>
 /**
  * components/auth.php — Authentication Guard
  *
@@ -11,9 +11,9 @@
 
 require_once __DIR__ . '/../../backend/bootstrap.php';
 
-// If user is not logged in, allow the page to render so the layout and navigation remain available.
-// The app can still be used after the login flow is restored by the user.
-if (!isset($_SESSION['username'])) {
-    $_SESSION['username'] = 'Guest';
-    $_SESSION['role'] = 'User';
+// If user is not logged in, redirect them to the login page
+if (!isset($_SESSION['username']) || $_SESSION['username'] === 'Guest') {
+    // Adjust the path to your actual login page file if needed
+    header('Location: /login.php');
+    exit;
 }
