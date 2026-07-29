@@ -13,4 +13,5 @@ return [
     'session_secure'   => false,  // Set to true if using HTTPS
     'session_httponly'  => true,
     'session_samesite' => 'Lax',
+    'session_path'     => '/ShoeInventorySystem',
 ];

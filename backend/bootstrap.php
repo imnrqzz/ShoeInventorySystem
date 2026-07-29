@@ -13,6 +13,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     ini_set('session.cookie_httponly', $config['session_httponly'] ? 1 : 0);
     ini_set('session.use_strict_mode', 1);
     ini_set('session.cookie_samesite', $config['session_samesite']);
+    ini_set('session.cookie_path', '/ShoeInventorySystem');
+    ini_set('session.cookie_lifetime', 0);
     if ($config['session_secure']) {
         ini_set('session.cookie_secure', 1);
     }
@@ -25,7 +27,7 @@ header('Pragma: no-cache');
 header('Expires: 0');
 
 // 3. Database connection
-require_once __DIR__ . '/classes/Database.php';
+require_once __DIR__ . '/Classes/Database.php';
 $database = new Database();
 $pdo = $database->getConnection();
 
