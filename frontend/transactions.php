@@ -12,6 +12,27 @@ $search = $_GET['search'] ?? '';
 $type = $_GET['type'] ?? 'All Types';
 $transactions = $txHandler->getAll($search, $type);
 
+// Query restock summaries grouped by supplier and item
+$stmtSummary = $pdo->query("
+    SELECT 
+        sup.company_name AS supplier_name,
+        i.name AS item_name,
+        SUM(t.quantity) AS total_qty
+    FROM transactions t
+    INNER JOIN items i ON t.item_id = i.id
+    INNER JOIN suppliers sup ON i.supplier_id = sup.order_id
+    WHERE t.transaction_type = 'Restock'
+    GROUP BY sup.order_id, i.id
+    ORDER BY sup.company_name ASC, total_qty DESC
+");
+$supplierDeliveries = [];
+while ($rowSummary = $stmtSummary->fetch(PDO::FETCH_ASSOC)) {
+    $supplierDeliveries[$rowSummary['supplier_name']][] = [
+        'item_name' => $rowSummary['item_name'],
+        'total_qty' => $rowSummary['total_qty']
+    ];
+}
+
 // Set component variables
 $pageTitle = 'Transactions';                // used by head.php
 $pageCss = 'transactions.css';        // used by head.php
@@ -33,6 +54,54 @@ $headerAction = ['label' => '+ Log Transaction', 'onclick' => "document.getEleme
 require __DIR__ . '/components/page_header.php';
 ?>
 
+            <!-- Collapsible Supplier Deliveries Overview -->
+            <div class="table-card no-print" style="margin-bottom: 20px;">
+                <div class="table-card-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;" onclick="toggleSupplierDeliveries()">
+                    <span style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-truck-ramp-box"></i> Supplier Restock Deliveries Overview
+                    </span>
+                    <button class="btn btn-secondary btn-sm" id="supplierToggleBtn" style="padding: 4px 8px; font-size: 0.8rem;">
+                        <i class="fa-solid fa-chevron-down"></i> Expand
+                    </button>
+                </div>
+                <div id="supplierDeliveriesPanel" style="display: none; padding: 16px; background: var(--color-surface); border-top: 1px solid var(--color-border);">
+                    <?php if (!empty($supplierDeliveries)): ?>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+                            <?php foreach ($supplierDeliveries as $supplier => $deliveries): ?>
+                                <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px; background: var(--color-bg);">
+                                    <h4 style="margin: 0 0 10px; font-size: 0.95rem; border-bottom: 2px solid var(--color-primary); padding-bottom: 4px; color: var(--color-text);">
+                                        <?= safe($supplier) ?>
+                                    </h4>
+                                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px;">
+                                        <?php foreach ($deliveries as $del): ?>
+                                            <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--color-border); padding-bottom: 4px;">
+                                                <span style="color: var(--color-text-secondary);"><?= safe($del['item_name']) ?></span>
+                                                <strong style="color: var(--color-success);"><?= $del['total_qty'] ?> pairs</strong>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p style="margin: 0; color: var(--color-text-muted); font-size: 0.9rem;">No restock delivery records found.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <script>
+            function toggleSupplierDeliveries() {
+                var panel = document.getElementById('supplierDeliveriesPanel');
+                var btn = document.getElementById('supplierToggleBtn');
+                if (panel.style.display === 'none') {
+                    panel.style.display = 'block';
+                    btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Collapse';
+                } else {
+                    panel.style.display = 'none';
+                    btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Expand';
+                }
+            }
+            </script>
 <?php
 $toolbarAction = 'transactions.php';
 $toolbarSearch = $search;
