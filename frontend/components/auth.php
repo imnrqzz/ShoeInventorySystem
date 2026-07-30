@@ -1,4 +1,4 @@
-<?>
+<?php
 /**
  * components/auth.php — Authentication Guard
  *
@@ -11,9 +11,7 @@
 
 require_once __DIR__ . '/../../backend/bootstrap.php';
 
-// If user is not logged in, redirect them to the login page
 if (!isset($_SESSION['username']) || $_SESSION['username'] === 'Guest') {
-    // Adjust the path to your actual login page file if needed
-    header('Location: /login.php');
+    header('Location: login.php');
     exit;
 }
