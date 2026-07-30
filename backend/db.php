@@ -48,10 +48,12 @@ $lowStockItems = $manager->getRows("SELECT i.name AS item_name, i.quantity, i.mi
                                     ORDER BY i.quantity ASC LIMIT 5");
 
 // 3. Fetch Recent Transactions (filtered by date range)
-$recentTxSql = "SELECT i.name AS item_name, t.transaction_type, t.quantity, COALESCE(u.username, 'Unknown') AS user_name, t.created_at 
+$recentTxSql = "SELECT i.name AS item_name, t.transaction_type, t.quantity, COALESCE(u.username, c.name, 'QR Scan') AS user_name, COALESCE(sup.company_name, '—') AS supplier_name, t.created_at 
                 FROM transactions t 
                 LEFT JOIN items i ON t.item_id=i.id 
                 LEFT JOIN users u ON t.user_id=u.id 
+                LEFT JOIN customers c ON t.customer_id=c.id
+                LEFT JOIN suppliers sup ON i.supplier_id=sup.order_id
                 WHERE 1=1 $dateWhere
                 ORDER BY t.created_at DESC LIMIT 5";
 $recentTxStmt = $pdo->prepare($recentTxSql);

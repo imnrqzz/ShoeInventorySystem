@@ -256,17 +256,18 @@ $chartBestSellersJson = json_encode($chartBestSellers);
                     <div class="table-card-header">Recent Transactions<?= $hasDateFilter ? ' (Filtered)' : '' ?></div>
                     <div class="table-scroll">
                         <table class="data-table">
-                            <thead><tr><th>Item</th><th>Type</th><th>Qty</th><th>By</th></tr></thead>
+                            <thead><tr><th>Item</th><th>Supplier</th><th>Type</th><th>Qty</th><th>By</th></tr></thead>
                             <tbody>
                                 <?php if (!empty($recentTransactions)): foreach ($recentTransactions as $tx): ?>
                                 <tr>
                                     <td><?= safe($tx['item_name']) ?></td>
+                                    <td><?= safe($tx['supplier_name']) ?></td>
                                     <td><span class="font-bold"><?= safe($tx['transaction_type']) ?></span></td>
                                     <td><?= safe($tx['quantity']) ?></td>
                                     <td><?= safe($tx['user_name']) ?></td>
                                 </tr>
                                 <?php endforeach; else: ?>
-                                <tr class="empty-row"><td colspan="4">No transactions found<?= $hasDateFilter ? ' in this date range' : '' ?>.</td></tr>
+                                <tr class="empty-row"><td colspan="5">No transactions found<?= $hasDateFilter ? ' in this date range' : '' ?>.</td></tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
