@@ -58,6 +58,7 @@ $isFiltered = $hasSearch || $hasFilter;
                 <?php else: ?>
                 <a href="<?= safe($toolbarAction) ?>" class="btn btn-secondary btn-sm">Reset</a>
                 <?php endif; ?>
+                <?php if (isset($toolbarExtraBtn)) echo $toolbarExtraBtn; ?>
             </form>
             <?php if ($isFiltered): ?>
             <!-- Active filters indicator — shows what's currently applied -->
