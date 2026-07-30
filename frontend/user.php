@@ -172,7 +172,9 @@ require __DIR__ . '/components/toolbar.php';
             function() {
                 document.getElementById('disableUserForm').submit();
             },
-            'danger'
+            'danger',
+            'Disable',
+            'Disable Confirmation'
         );
     }
 
