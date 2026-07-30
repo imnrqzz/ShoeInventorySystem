@@ -190,7 +190,7 @@ require __DIR__ . '/components/toolbar.php';
                         <div class="form-group">
                             <label>Total Quantity</label>
                             <?php if (!empty($variants)): ?>
-                                <input type="number" id="totalQtyDisplay" value="<?= $variantTotal ?>" readonly style="background: var(--color-bg); font-weight: 600;">
+                                <input type="number" id="totalQtyDisplay" value="<?= $variantTotal ?>" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: var(--font-size-sm); color: var(--color-text); background: var(--color-surface); width: 100%; font-weight: 600;">
                             <?php else: ?>
                                 <input type="number" name="current_qty" value="<?= (int)$editItem['current_qty'] ?>" required min="0" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: var(--font-size-sm); color: var(--color-text); background: var(--color-surface); width: 100%;">
                             <?php endif; ?>
@@ -255,28 +255,61 @@ require __DIR__ . '/components/toolbar.php';
             qtyInputs.forEach(function(input) {
                 total += parseInt(input.value) || 0;
             });
-            totalDisplay.value = total;
+            if (totalDisplay) {
+                totalDisplay.value = total;
+            }
 
             // Check if variants sum matches the expected total
             var expectedTotal = <?= $variantTotal ?>;
-            if (total === expectedTotal) {
-                matchStatus.style.display = 'block';
-                matchStatus.style.background = '#f0fdf4';
-                matchStatus.style.color = '#166534';
-                matchStatus.style.border = '1px solid #bbf7d0';
-                matchStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Variants match total stock (' + total + ' pairs)';
-            } else {
-                matchStatus.style.display = 'block';
-                matchStatus.style.background = '#fef2f2';
-                matchStatus.style.color = '#991b1b';
-                matchStatus.style.border = '1px solid #fecaca';
-                matchStatus.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Variants (' + total + ') do not match original total (<?= $variantTotal ?>). Total will be updated.';
+            if (matchStatus) {
+                if (total === expectedTotal) {
+                    matchStatus.style.display = 'block';
+                    matchStatus.style.background = '#f0fdf4';
+                    matchStatus.style.color = '#166534';
+                    matchStatus.style.border = '1px solid #bbf7d0';
+                    matchStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Variants match total stock (' + total + ' pairs)';
+                } else {
+                    matchStatus.style.display = 'block';
+                    matchStatus.style.background = '#fef2f2';
+                    matchStatus.style.color = '#991b1b';
+                    matchStatus.style.border = '1px solid #fecaca';
+                    matchStatus.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Variants (' + total + ') do not match original total (<?= $variantTotal ?>). Total will be updated.';
+                }
             }
         }
 
         qtyInputs.forEach(function(input) {
             input.addEventListener('input', updateTotal);
         });
+
+        if (totalDisplay && qtyInputs.length > 0) {
+            totalDisplay.addEventListener('input', function() {
+                var newTotal = parseInt(totalDisplay.value) || 0;
+                var currentVariantsSum = 0;
+                qtyInputs.forEach(function(input) {
+                    currentVariantsSum += parseInt(input.value) || 0;
+                });
+                var diff = newTotal - currentVariantsSum;
+                if (diff !== 0) {
+                    if (diff > 0) {
+                        qtyInputs[0].value = (parseInt(qtyInputs[0].value) || 0) + diff;
+                    } else {
+                        var absDiff = Math.abs(diff);
+                        for (var i = 0; i < qtyInputs.length; i++) {
+                            var val = parseInt(qtyInputs[i].value) || 0;
+                            if (val >= absDiff) {
+                                qtyInputs[i].value = val - absDiff;
+                                break;
+                            } else {
+                                qtyInputs[i].value = 0;
+                                absDiff -= val;
+                            }
+                        }
+                    }
+                    updateTotal();
+                }
+            });
+        }
 
         // Initial check
         updateTotal();
