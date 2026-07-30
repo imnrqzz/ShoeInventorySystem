@@ -89,8 +89,8 @@ nav {
 .search-results {
   position: absolute; right: 2.6rem; top: calc(100% + 0.35rem);
   width: 220px; max-height: 280px; overflow-y: auto;
-  background: rgba(20,20,20,0.98); border: 1px solid var(--border);
-  border-radius: 14px; box-shadow: 0 16px 32px rgba(0,0,0,0.25);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; box-shadow: 0 16px 32px rgba(0,0,0,0.15);
   opacity: 0; pointer-events: none; transform: translateY(4px);
   transition: all 0.2s ease; z-index: 130;
 }
@@ -100,15 +100,15 @@ nav {
 .search-results a,
 .search-results a:link,
 .search-results a:visited {
-  display: block; padding: 0.7rem 0.9rem; color: #ffffff !important;
-  text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: block; padding: 0.7rem 0.9rem; color: var(--white) !important;
+  text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid var(--border);
 }
 .search-results a small {
-  color: #a0aec0 !important;
+  color: var(--muted) !important;
   font-size: 0.75rem;
 }
 .search-results a:last-child { border-bottom: 0; }
-.search-results a:hover { background: rgba(255,255,255,0.05); color: var(--accent) !important; }
+.search-results a:hover { background: rgba(120,120,120,0.08); color: var(--accent) !important; }
 .nav-search i { color: var(--muted); font-size: 0.9rem; }
 .nav-search input {
   border: 0; outline: 0; background: transparent; color: var(--white);
