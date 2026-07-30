@@ -14,24 +14,8 @@
 <body>
 
 <!-- NAV -->
-<nav>
-  <a href="index.php" class="nav-logo">SOLE<span>HAUS</span></a>
-  <ul class="nav-links">
-    <li><a href="index.php">Home</a></li>
-    <li><a href="index.php#products">Collection</a></li>
-    <li><a href="index.php#brands">Brands</a></li>
-    <li><a href="index.php?page=about">About</a></li>
-  </ul>
-  <div class="nav-actions">
-    <!-- Theme Toggle Button -->
-    <button id="themeToggleBtn" type="button" class="theme-toggle-btn" title="Toggle Light/Dark Theme" style="background:transparent; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; cursor:pointer; color:var(--white); display:flex; align-items:center; justify-content:center; transition:background 0.2s; margin-right: 0.5rem;">
-      <i class="fa-solid fa-moon"></i>
-    </button>
-    <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
-    <a href="index.php?page=cart" class="cart-badge" data-count="<?= max(0, (int)($cartCount ?? 0)) ?>"><i class="fa-solid fa-bag-shopping"></i></a>
-    <a href="#"><i class="fa-solid fa-circle-user"></i></a>
-  </div>
-</nav>
+<?php require __DIR__ . '/partials/nav.php'; ?>
+
 
 <!-- CUSTOMIZER HEADER -->
 <section class="customizer-header">
