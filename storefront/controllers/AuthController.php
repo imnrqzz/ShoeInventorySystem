@@ -513,7 +513,6 @@ class AuthController
             $reason = empty($smtpUser) ? 'Missing GMAIL_SMTP_USER in .env' : 'Failed to fetch fresh access token using GMAIL_SMTP_REFRESH_TOKEN';
             $this->lastSmtpError = $reason;
             error_log("SMTP Send Failed: " . $reason);
-            echo "<pre style='background:#f8d7da;color:#721c24;padding:15px;border:1px solid #f5c6cb;margin:20px;border-radius:4px;'>DEBUG ERROR: " . htmlspecialchars($reason) . "</pre>"; // TEMPORARY - remove after debugging
             return false;
         }
 
@@ -554,7 +553,6 @@ class AuthController
             $errFiltered = preg_replace('/\b\d{6}\b/', '[REDACTED_CODE]', $err);
             $this->lastSmtpError = $errFiltered;
             error_log("PHPMailer SMTP error: " . $errFiltered);
-            echo "<pre style='background:#f8d7da;color:#721c24;padding:15px;border:1px solid #f5c6cb;margin:20px;border-radius:4px;'>DEBUG ERROR: " . htmlspecialchars($errFiltered) . "</pre>"; // TEMPORARY - remove after debugging
             return false;
         }
     }
