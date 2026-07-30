@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("UPDATE users SET status = ? WHERE id = ?");
             $stmt->execute(['Inactive', $id]);
         }
-        header("Location: ../frontend/user.php");
+        header("Location: ../../frontend/user.php");
         exit;
     } elseif ($action === 'enable') {
         $id = (int)($_POST['id'] ?? 0);
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("UPDATE users SET status = ? WHERE id = ?");
             $stmt->execute(['Active', $id]);
         }
-        header("Location: ../frontend/user.php");
+        header("Location: ../../frontend/user.php");
         exit;
     } elseif ($action === 'update') {
         $id = (int)($_POST['id'] ?? 0);
@@ -40,10 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("UPDATE users SET username = ?, name = ?, email = ?, status = ? WHERE id = ?");
             $stmt->execute([$username, $name, $email, $status, $id]);
         }
-        header("Location: ../frontend/user.php");
+        header("Location: ../../frontend/user.php");
         exit;
     }
 }
 
-header("Location: ../frontend/user.php");
+header("Location: ../../frontend/user.php");
 exit;

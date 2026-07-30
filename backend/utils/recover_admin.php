@@ -135,7 +135,7 @@ $adminCount = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'admin'")->fe
         </form>
 
         <div class="footer">
-            <a href="../frontend/login.php">Back to Login</a>
+            <a href="../../frontend/login.php">Back to Login</a>
         </div>
     </div>
 </body>
