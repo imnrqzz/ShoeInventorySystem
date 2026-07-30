@@ -458,11 +458,8 @@ $chartBestSellersJson = json_encode($chartBestSellers);
                         </tbody>
                     </table>
                 </div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                    <a href="stock.php" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; padding: 8px 16px;">
-                        Manage Stock
-                    </a>
-                    <button class="btn btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;" onclick="document.getElementById('lowStockWarningModal').style.display='none'">
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="btn btn-primary" style="font-size: 0.85rem; padding: 8px 16px; width: 100px; justify-content: center; display: inline-flex;" onclick="document.getElementById('lowStockWarningModal').style.display='none'">
                         Dismiss
                     </button>
                 </div>

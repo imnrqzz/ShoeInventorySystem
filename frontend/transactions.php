@@ -99,9 +99,13 @@ require __DIR__ . '/components/page_header.php';
                 } else {
                     panel.style.display = 'none';
                     btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Expand';
-                }
             }
             </script>
+
+            <!-- Print Button (Top) -->
+            <div class="no-print" style="margin-bottom:16px; display:flex; gap:10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Invoice</button>
+            </div>
 <?php
 $toolbarAction = 'transactions.php';
 $toolbarSearch = $search;
@@ -140,11 +144,6 @@ require __DIR__ . '/components/toolbar.php';
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <!-- Print Button -->
-            <div style="margin-top:16px;display:flex;gap:10px;">
-                <button class="btn btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Invoice</button>
             </div>
 
             <!-- Invoice Print Layout (visible only when printing) -->
