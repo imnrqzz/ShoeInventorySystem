@@ -95,16 +95,16 @@
      * @param {function} onConfirm — Callback if user clicks Confirm
      * @param {string} type — 'danger' (red button) or 'warning' (blue button, default)
      */
-    window.confirmAction = function(message, onConfirm, type) {
+    window.confirmAction = function(message, onConfirm, type, confirmText, titleText) {
         type = type || 'warning';
 
-        // Set title based on action type
-        titleEl.textContent = (type === 'danger') ? 'Delete Confirmation' : 'Confirm Action';
+        // Set title based on action type or custom text
+        titleEl.textContent = titleText || ((type === 'danger') ? 'Delete Confirmation' : 'Confirm Action');
         messageEl.textContent = message;
 
         // Style the confirm button based on type
         okBtn.className = 'confirm-btn ' + (type === 'danger' ? 'confirm-btn-danger' : 'confirm-btn-ok');
-        okBtn.textContent = (type === 'danger') ? 'Delete' : 'Confirm';
+        okBtn.textContent = confirmText || ((type === 'danger') ? 'Delete' : 'Confirm');
 
         onConfirmCallback = onConfirm;
         showModal();
