@@ -99,13 +99,9 @@ require __DIR__ . '/components/page_header.php';
                 } else {
                     panel.style.display = 'none';
                     btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Expand';
+                }
             }
             </script>
-
-            <!-- Print Button (Top) -->
-            <div class="no-print" style="margin-bottom:16px; display:flex; gap:10px; justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Invoice</button>
-            </div>
 <?php
 $toolbarAction = 'transactions.php';
 $toolbarSearch = $search;
@@ -119,6 +115,7 @@ $toolbarFilter = [
         ['value' => 'Restock',   'label' => 'Restock'],
     ]
 ];
+$toolbarExtraBtn = '<button type="button" class="btn btn-secondary btn-sm no-print" onclick="window.print()" style="margin-left: 8px;"><i class="fa-solid fa-print"></i> Print Invoice</button>';
 require __DIR__ . '/components/toolbar.php';
 ?>
 
