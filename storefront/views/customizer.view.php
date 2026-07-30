@@ -87,6 +87,7 @@ window.addEventListener('message', function(event) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'X-CSRF-Token': '<?= csrf_token() ?>'
       },
       body: JSON.stringify({
