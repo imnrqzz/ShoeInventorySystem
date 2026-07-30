@@ -172,7 +172,7 @@ $chartBestSellersJson = json_encode($chartBestSellers);
 
                 <!-- Best Sellers Chart -->
                 <div class="chart-card">
-                    <h3>Best Sellers (by Transaction Count)</h3>
+                    <h3>Top Selling Products (by Transaction Count)</h3>
                     <div class="chart-wrap">
                         <canvas id="bestSellersChart"></canvas>
                     </div>
@@ -180,7 +180,7 @@ $chartBestSellersJson = json_encode($chartBestSellers);
 
                 <!-- Least Sellers Chart -->
                 <div class="chart-card">
-                    <h3>Least Sellers (by Transaction Count)</h3>
+                    <h3>Least Selling Products (by Transaction Count)</h3>
                     <div class="chart-wrap">
                         <canvas id="leastSellersChart"></canvas>
                     </div>
@@ -423,4 +423,51 @@ $chartBestSellersJson = json_encode($chartBestSellers);
         });
     });
     </script>
+    <?php if ($lowStockAlerts > 0): ?>
+    <!-- Low Stock Warning Modal -->
+    <div id="lowStockWarningModal" class="modal-overlay" style="display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div class="modal-box" style="background: var(--color-surface); border-radius: var(--radius-lg); max-width: 480px; width: 90%; border: 1px solid var(--color-border); padding: 0;">
+            <div class="modal-header" style="background: #fee2e2; color: #dc2626; padding: 16px 20px; border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border);">
+                <h2 style="font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 8px; color: #dc2626;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Low Stock Warning!
+                </h2>
+                <button class="modal-close" style="background: none; border: none; font-size: 1.5rem; color: #dc2626; cursor: pointer; line-height: 1;" onclick="document.getElementById('lowStockWarningModal').style.display='none'">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <p style="margin-bottom: 12px; font-size: 0.9rem; color: var(--color-text-secondary);">
+                    The following items have reached or dropped below their minimum stock thresholds:
+                </p>
+                <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 20px;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: var(--color-bg); border-bottom: 1px solid var(--color-border);">
+                                <th style="padding: 10px 12px; font-weight: 600;">Item Name</th>
+                                <th style="padding: 10px 12px; font-weight: 600; text-align: center;">Stock</th>
+                                <th style="padding: 10px 12px; font-weight: 600; text-align: center;">Min</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($lowStockItems as $item): ?>
+                            <tr style="border-bottom: 1px solid var(--color-border);">
+                                <td style="padding: 10px 12px; font-weight: 500;"><?= safe($item['item_name']) ?></td>
+                                <td style="padding: 10px 12px; text-align: center; color: #dc2626; font-weight: bold;"><?= $item['quantity'] ?></td>
+                                <td style="padding: 10px 12px; text-align: center; color: var(--color-text-muted);"><?= $item['min_quantity'] ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <a href="stock.php" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; padding: 8px 16px;">
+                        Manage Stock
+                    </a>
+                    <button class="btn btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;" onclick="document.getElementById('lowStockWarningModal').style.display='none'">
+                        Dismiss
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <?php require __DIR__ . '/components/footer.php'; ?>

@@ -7,11 +7,12 @@ class Transaction {
     }
 
     public function getAll($search = '', $type = 'All Types') {
-        $query = "SELECT t.*, i.name as item_name, COALESCE(u.username, c.name, 'QR Scan') as user_name 
+        $query = "SELECT t.*, i.name as item_name, COALESCE(u.username, c.name, 'QR Scan') as user_name, COALESCE(sup.company_name, '—') as supplier_name 
                 FROM transactions t 
                 JOIN items i ON t.item_id = i.id 
                 LEFT JOIN users u ON t.user_id = u.id 
                 LEFT JOIN customers c ON t.customer_id = c.id
+                LEFT JOIN suppliers sup ON i.supplier_id = sup.order_id
                 WHERE 1=1";
 
         $params = [];
@@ -22,8 +23,10 @@ class Transaction {
                             OR t.reason LIKE ? 
                             OR u.username LIKE ? 
                             OR c.name LIKE ? 
+                            OR sup.company_name LIKE ? 
                             OR CAST(t.id AS CHAR) LIKE ?)";
             $searchTerm = "%" . trim($search) . "%";
+            $params[] = $searchTerm;
             $params[] = $searchTerm;
             $params[] = $searchTerm;
             $params[] = $searchTerm;
