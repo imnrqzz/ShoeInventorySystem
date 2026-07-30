@@ -173,7 +173,7 @@ require __DIR__ . '/components/toolbar.php';
 
                 <!-- Single Form for Stock + Variants -->
                 <form method="POST" action="stock.php?<?= http_build_query($filters) ?>" id="stockEditForm" data-validate novalidate>
-                    <input type="hidden" name="action" value="update_stock_and_variants">
+                    <input type="hidden" name="action" value="<?= !empty($variants) ? 'update_stock_and_variants' : 'update_stock' ?>">
                     <input type="hidden" name="stock_id" value="<?= safe($editItem['id']) ?>">
                     <input type="hidden" name="item_id" value="<?= safe($editItem['item_id']) ?>">
                     <input type="hidden" name="supplier_id" value="<?= safe($editItem['supplier_id'] ?? '') ?>">
@@ -189,7 +189,11 @@ require __DIR__ . '/components/toolbar.php';
                         </div>
                         <div class="form-group">
                             <label>Total Quantity</label>
-                            <input type="number" id="totalQtyDisplay" value="<?= $variantTotal ?>" readonly style="background: var(--color-bg); font-weight: 600;">
+                            <?php if (!empty($variants)): ?>
+                                <input type="number" id="totalQtyDisplay" value="<?= $variantTotal ?>" readonly style="background: var(--color-bg); font-weight: 600;">
+                            <?php else: ?>
+                                <input type="number" name="current_qty" value="<?= (int)$editItem['current_qty'] ?>" required min="0" style="padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: var(--font-size-sm); color: var(--color-text); background: var(--color-surface); width: 100%;">
+                            <?php endif; ?>
                         </div>
                     </div>
 
