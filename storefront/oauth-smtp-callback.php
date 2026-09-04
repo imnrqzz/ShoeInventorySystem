@@ -9,8 +9,7 @@ require_once __DIR__ . '/env.php';
 
 $clientId = $_ENV['GOOGLE_CLIENT_ID'] ?? '';
 $clientSecret = $_ENV['GOOGLE_CLIENT_SECRET'] ?? '';
-$appBase = rtrim($_ENV['APP_URL'] ?? 'http://localhost/ShoeInventorySystem/storefront', '/');
-$redirectUri = $appBase . '/oauth-smtp-callback.php';
+$redirectUri = 'http://localhost/ShoeInventorySystem/storefront/oauth-smtp-callback.php';
 
 $code = $_GET['code'] ?? null;
 $error = $_GET['error'] ?? null;

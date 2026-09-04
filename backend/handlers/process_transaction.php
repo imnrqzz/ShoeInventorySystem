@@ -3,7 +3,7 @@ require_once __DIR__ . '/../bootstrap.php';
 
 // Redirect if not logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: " . ADMIN_BASE . "/login.php");
+    header("Location: /ShoeInventorySystem/frontend/login.php");
     exit();
 }
 

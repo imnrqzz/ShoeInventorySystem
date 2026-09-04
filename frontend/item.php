@@ -68,7 +68,7 @@ require __DIR__ . '/components/toolbar.php';
         var container = document.getElementById('qr-back-' + id);
         if (!container || container.hasChildNodes()) return;
 
-        var restockUrl = (window.location.protocol + '//' + window.location.host + '<?= ADMIN_BASE ?>' + '/restock_scan.php?id=' + id);
+        var restockUrl = 'http://' + window.serverIp + '/ShoeInventorySystem/frontend/restock_scan.php?id=' + id;
 
         var qr = qrcode(0, 'M');
         qr.addData(restockUrl);

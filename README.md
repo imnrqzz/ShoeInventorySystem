@@ -2,10 +2,8 @@
 
 ShoeInventory System is a full-stack shoe store management platform that combines an inventory dashboard, a storefront, and a 3D shoe customizer in one project. The admin area is built with PHP, MySQL, and classic server-rendered pages, while the storefront includes a modern product experience and a React/Vite-based customizer.
 
-**Stack:** PHP, MySQL, JavaScript, HTML, CSS, React (customizer)
-**Live:** https://shoemarketingsystem.onrender.com/index.php
-
-## What's included
+<<<<<<< HEAD
+## What’s included
 
 ### Admin inventory system
 - Dashboard with sales and stock insights
@@ -27,10 +25,6 @@ ShoeInventory System is a full-stack shoe store management platform that combine
 - Three.js-based shoe preview experience
 - Color, size, and customization controls
 - Integration with the storefront experience
-
-## My role
-
-Led a team of 5 as head programmer — built the full CRUD flows, search, auth, and sales reporting in PHP/MySQL. Currently rebuilding v2 with a cleaner architecture.
 
 ## Tech stack
 
@@ -55,7 +49,7 @@ Led a team of 5 as head programmer — built the full CRUD flows, search, auth, 
 3. Import the SQL file from pos_inventory_system.sql
 
 ### 2. Configure the backend
-Update the database settings in backend/utils/config.php. For deployment (e.g. InfinityFree), copy backend/utils/.env.example to backend/utils/.env (and storefront/.env) and fill in your host, database name, username, and password:
+Update the database settings in backend/utils/config.php:
 
 ```php
 return [
@@ -104,3 +98,32 @@ ShoeInventorySystem/
 
 ## Repository
 - GitHub: https://github.com/imnrqzz/ShoeInventorySystem
+=======
+**Stack:** PHP, MySQL, JavaScript, HTML, CSS, React (customizer)  
+**Live:** https://shoemarketingsystem.onrender.com/index.php
+
+## What's included
+
+### Admin inventory system
+- Dashboard with sales and stock insights
+- Item and variant management with photo support
+- Supplier management
+- Stock updates with transaction logging
+- User management with role-based access
+- Sales reporting and transaction history
+
+### Storefront
+- Product catalog with search filtering
+- Shopping cart functionality
+- 3D shoe customizer (React/Vite)
+
+## My role
+
+Led a team of 5 as head programmer — built the full CRUD flows, search, auth, and sales reporting in PHP/MySQL. Currently rebuilding v2 with a cleaner architecture.
+
+## Quick start
+
+1. Import `pos_inventory_system.sql` into MySQL
+2. Configure database credentials in `backend/config.php`
+3. Serve with Apache/PHP or deploy to a PHP hosting platform
+>>>>>>> origin/main

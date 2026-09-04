@@ -110,8 +110,7 @@ echo "[TEST 5] SMTP CLI Setup URL Generation Checks... ";
 try {
     $clientId = $_ENV['GOOGLE_CLIENT_ID'] ?? '';
     $clientSecret = $_ENV['GOOGLE_CLIENT_SECRET'] ?? '';
-$appBase = rtrim($_ENV['APP_URL'] ?? 'http://localhost/ShoeInventorySystem/storefront', '/');
-$redirectUri = $appBase . '/oauth-smtp-callback.php';
+    $redirectUri = 'http://localhost/ShoeInventorySystem/storefront/oauth-smtp-callback.php';
 
     $params = [
         'client_id'     => $clientId,

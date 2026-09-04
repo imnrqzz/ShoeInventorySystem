@@ -4,7 +4,7 @@
 require_once __DIR__ . '/../bootstrap.php';
 
 if (!isset($_SESSION['username']) || !isAdmin()) {
-    header('Location: ' . ADMIN_BASE . '/login.php');
+    header('Location: /ShoeInventorySystem/frontend/login.php');
     exit;
 }
 

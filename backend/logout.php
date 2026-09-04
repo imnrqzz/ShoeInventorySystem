@@ -7,5 +7,5 @@ require_once __DIR__ . '/bootstrap.php';
 // Together they ensure a clean logout with no leftover session data.
 session_unset();
 session_destroy();
-header('Location: ' . ADMIN_BASE . '/login.php');
+header('Location: /ShoeInventorySystem/frontend/login.php');
 exit;

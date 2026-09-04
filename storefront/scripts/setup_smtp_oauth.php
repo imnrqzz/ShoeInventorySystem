@@ -15,8 +15,7 @@ if (empty($clientId) || empty($clientSecret)) {
 }
 
 // Redirect URI specifically for the standalone callback file
-$appBase = rtrim($_ENV['APP_URL'] ?? 'http://localhost/ShoeInventorySystem/storefront', '/');
-$redirectUri = $appBase . '/oauth-smtp-callback.php';
+$redirectUri = 'http://localhost/ShoeInventorySystem/storefront/oauth-smtp-callback.php';
 
 $authUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
 $params = [
