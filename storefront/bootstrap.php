@@ -7,8 +7,11 @@ require_once __DIR__ . '/env.php';
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/config/security.php';
 
-/** Base URL path for storefront assets and links */
-define('STOREFRONT_BASE', '/ShoeInventorySystem/storefront');
+/** Base URL path for storefront assets and links.
+ *  Computed dynamically so it works on localhost (/ShoeInventorySystem/storefront)
+ *  and on InfinityFree (e.g. /storefront or /). */
+$__scriptDir = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php'), '/');
+define('STOREFRONT_BASE', $__scriptDir === '' ? '/' : $__scriptDir);
 
 // Distinct session cookie so customer auth never collides with admin sessions
 if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -68,7 +71,7 @@ function item_image_url(?string $path): ?string
     if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
         return $path;
     }
-    return '/ShoeInventorySystem/' . ltrim($path, '/');
+    return STOREFRONT_BASE . '/' . ltrim($path, '/');
 }
 
 /** Check if a customer is logged in */

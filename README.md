@@ -2,7 +2,10 @@
 
 ShoeInventory System is a full-stack shoe store management platform that combines an inventory dashboard, a storefront, and a 3D shoe customizer in one project. The admin area is built with PHP, MySQL, and classic server-rendered pages, while the storefront includes a modern product experience and a React/Vite-based customizer.
 
-## What’s included
+**Stack:** PHP, MySQL, JavaScript, HTML, CSS, React (customizer)
+**Live:** https://shoemarketingsystem.onrender.com/index.php
+
+## What's included
 
 ### Admin inventory system
 - Dashboard with sales and stock insights
@@ -24,6 +27,10 @@ ShoeInventory System is a full-stack shoe store management platform that combine
 - Three.js-based shoe preview experience
 - Color, size, and customization controls
 - Integration with the storefront experience
+
+## My role
+
+Led a team of 5 as head programmer — built the full CRUD flows, search, auth, and sales reporting in PHP/MySQL. Currently rebuilding v2 with a cleaner architecture.
 
 ## Tech stack
 
@@ -48,7 +55,7 @@ ShoeInventory System is a full-stack shoe store management platform that combine
 3. Import the SQL file from pos_inventory_system.sql
 
 ### 2. Configure the backend
-Update the database settings in backend/utils/config.php:
+Update the database settings in backend/utils/config.php. For deployment (e.g. InfinityFree), copy backend/utils/.env.example to backend/utils/.env (and storefront/.env) and fill in your host, database name, username, and password:
 
 ```php
 return [

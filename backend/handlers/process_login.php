@@ -4,7 +4,7 @@ require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../utils/validate.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /ShoeInventorySystem/frontend/login.php');
+    header('Location: ' . ADMIN_BASE . '/login.php');
     exit;
 }
 
@@ -16,7 +16,7 @@ verify_csrf();
 $errors = validateForm('login', $_POST);
 if ($errors) {
     $redirectUsername = rawurlencode($username);
-    header('Location: /ShoeInventorySystem/frontend/login.php?err=1&username=' . $redirectUsername);
+    header('Location: ' . ADMIN_BASE . '/login.php?err=1&username=' . $redirectUsername);
     exit;
 }
 
@@ -31,7 +31,7 @@ try {
 
         if (!$isActiveAccount) {
             $redirectUsername = rawurlencode($username);
-            header('Location: /ShoeInventorySystem/frontend/login.php?err=disabled&username=' . $redirectUsername);
+            header('Location: ' . ADMIN_BASE . '/login.php?err=disabled&username=' . $redirectUsername);
             exit;
         }
 
@@ -41,7 +41,7 @@ try {
             $_SESSION['username'] = $username;
             $_SESSION['role'] = $user['role'] ?? 'User';
 
-            header('Location: /ShoeInventorySystem/frontend/index.php');
+            header('Location: ' . ADMIN_BASE . '/index.php');
             exit;
         }
     }
@@ -50,5 +50,5 @@ try {
 }
 
 $redirectUsername = rawurlencode($username);
-header('Location: /ShoeInventorySystem/frontend/login.php?err=invalid&username=' . $redirectUsername);
+header('Location: ' . ADMIN_BASE . '/login.php?err=invalid&username=' . $redirectUsername);
 exit;

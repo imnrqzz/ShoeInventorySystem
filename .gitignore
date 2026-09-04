@@ -1,1 +1,8 @@
 .superpowers/
+node_modules/
+vendor/
+.env
+*.log
+.DS_Store
+storefront/3D-shoe-customizer/node_modules/
+storefront/3D-shoe-customizer/dist/

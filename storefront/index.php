@@ -1,4 +1,9 @@
 <?php
+// TEMP DIAGNOSTIC — shows PHP errors instead of a blank 500.
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+ini_set('log_errors', '1');
+
 /**
  * Front controller for the customer-facing storefront.
  * URL: http://localhost/ShoeInventorySystem/storefront/
