@@ -38,7 +38,7 @@ function getInput(): array {
 // --- Route Parsing ---
 
 $uri = $_SERVER['REQUEST_URI'];
-$base = '/ShoeInventorySystem/api';
+$base = '/api';
 $path = parse_url($uri, PHP_URL_PATH);
 $path = substr($path, strlen($base));
 $path = '/' . trim($path, '/');

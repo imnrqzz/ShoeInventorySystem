@@ -94,7 +94,7 @@ $activePage = 'items';
                 <?php
                 require_once __DIR__ . '/../backend/utils/helpers.php';
                 $ip = getServerIp();
-                $restockUrl = 'http://' . $ip . '/ShoeInventorySystem/frontend/restock_scan.php?id=' . $item['id'];
+                $restockUrl = 'http://' . $ip . '/frontend/restock_scan.php?id=' . $item['id'];
                 ?>
                 <div class="qr-card" data-item-id="<?= $item['id'] ?>" data-item-name="<?= htmlspecialchars($item['name']) ?>" data-restock-url="<?= htmlspecialchars($restockUrl) ?>">
                     <div class="qr-image" id="qr-<?= $item['id'] ?>"></div>

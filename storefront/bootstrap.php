@@ -8,7 +8,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/config/security.php';
 
 /** Base URL path for storefront assets and links */
-define('STOREFRONT_BASE', '/ShoeInventorySystem/storefront');
+define('STOREFRONT_BASE', '/storefront');
 
 // Distinct session cookie so customer auth never collides with admin sessions
 if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -68,7 +68,7 @@ function item_image_url(?string $path): ?string
     if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
         return $path;
     }
-    return '/ShoeInventorySystem/' . ltrim($path, '/');
+    return '/' . ltrim($path, '/');
 }
 
 /** Check if a customer is logged in */

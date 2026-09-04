@@ -44,7 +44,7 @@
   <div class="hero-image-wrap">
     <div class="hero-glow"></div>
     <img class="hero-img"
-         src="/ShoeInventorySystem/images/solehaus_logo.jpg"
+         src="/images/solehaus_logo.jpg"
          alt="SOLEHAUS Logo"
          style="border-radius: 20px; box-shadow: var(--border);">
   </div>

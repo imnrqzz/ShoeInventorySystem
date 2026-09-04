@@ -13,7 +13,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     ini_set('session.cookie_httponly', $config['session_httponly'] ? 1 : 0);
     ini_set('session.use_strict_mode', 1);
     ini_set('session.cookie_samesite', $config['session_samesite']);
-    ini_set('session.cookie_path', '/ShoeInventorySystem');
+    ini_set('session.cookie_path', '/');
     ini_set('session.cookie_lifetime', 0);
     if ($config['session_secure']) {
         ini_set('session.cookie_secure', 1);
@@ -48,7 +48,7 @@ if (!function_exists('isAdmin')) {
 if (!function_exists('requireLogin')) {
     function requireLogin() {
         if (!isset($_SESSION['username'])) {
-            header('Location: /ShoeInventorySystem/frontend/login.php');
+            header('Location: /frontend/login.php');
             exit;
         }
     }
@@ -57,7 +57,7 @@ if (!function_exists('requireLogin')) {
 if (!function_exists('requireAdmin')) {
     function requireAdmin() {
         if (!isAdmin()) {
-            header('Location: /ShoeInventorySystem/frontend/login.php');
+            header('Location: /frontend/login.php');
             exit;
         }
     }

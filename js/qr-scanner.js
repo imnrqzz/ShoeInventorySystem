@@ -143,7 +143,7 @@ class QRScanner {
         try {
             // Use server IP for restock URL (works from any device on network)
             var serverIp = window.serverIp || window.location.hostname;
-            const restockUrl = `http://${serverIp}/ShoeInventorySystem/api/restock.php?id=${itemId}`;
+            const restockUrl = `http://${serverIp}/api/restock.php?id=${itemId}`;
 
             const response = await fetch(restockUrl);
             const data = await response.json();
